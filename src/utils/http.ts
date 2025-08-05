@@ -1,9 +1,9 @@
-import { useAuth } from '@clerk/clerk-react';
 import axios, {
   AxiosError,
   AxiosInstance,
   InternalAxiosRequestConfig
 } from 'axios';
+import { getClerkToken } from './auth';
 
 class Http {
   instance: AxiosInstance;
@@ -19,8 +19,7 @@ class Http {
   private setupInterceptors(): void {
     this.instance.interceptors.request.use(
       async (config: InternalAxiosRequestConfig) => {
-        const { getToken } = useAuth();
-        const token = await getToken();
+        const token = await getClerkToken();
         if (token && !config.headers.Authorization) {
           config.headers.Authorization = `Bearer ${token}`;
         }

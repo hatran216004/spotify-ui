@@ -1,18 +1,24 @@
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import Logo from '@/components/Logo';
 import Search from '@/components/Search';
-import { Button } from '@/components/ui/button';
+import TopBarGuest from './TopBarGuest';
+import TopBarUser from './TopBarUser';
+import { useUserStore } from '@/store/ui.store';
 
 export default function Topbar() {
   const location = useLocation();
+  const { user } = useUserStore();
 
   return (
     <header>
       <div className="flex items-center p-2 bg-black justify-between">
         <Logo />
         <div className="flex items-center gap-2">
-          <div className="group size-12 rounded-full flex items-center justify-center bg-[#1f1f1f] cursor-pointer hover:scale-[1.05] transition-transform duration-250">
+          <Link
+            to="/"
+            className="group size-12 rounded-full flex items-center justify-center bg-[#1f1f1f] cursor-pointer hover:scale-[1.05] transition-transform duration-250"
+          >
             <svg
               data-encore-id="icon"
               role="img"
@@ -27,17 +33,10 @@ export default function Topbar() {
             >
               <path d="M13.5 1.515a3 3 0 0 0-3 0L3 5.845a2 2 0 0 0-1 1.732V21a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-6h4v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V7.577a2 2 0 0 0-1-1.732z"></path>
             </svg>
-          </div>
+          </Link>
           <Search />
         </div>
-        <div>
-          <Button className="rounded-full font-semibold h-12 text-[#929092] bg-transparent hover:bg-transparent hover:text-white">
-            Sign up
-          </Button>
-          <Button className="rounded-full h-12 w-[144px] max-w-full font-semibold">
-            Sign in
-          </Button>
-        </div>
+        {user?.clerkId ? <TopBarUser /> : <TopBarGuest />}
       </div>
     </header>
   );

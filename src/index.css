@@ -146,3 +146,15 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(999, 999, 999, 0.1);
 }
+
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+textarea:-webkit-autofill:active,
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 1s 9999s;
+  -webkit-text-fill-color: #fff;
+}

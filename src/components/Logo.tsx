@@ -1,12 +1,13 @@
+import clsx from 'clsx';
 import { Link } from 'react-router-dom';
 
-export default function Logo() {
+export default function Logo({ className = '' }: { className?: string }) {
   return (
-    <Link to="/" className="mx-5">
+    <Link to="/" className="mx-5 block outline-none">
       <svg
         role="img"
         viewBox="0 0 24 24"
-        className="e-91000-logo e-91000-baseline"
+        className={clsx('e-91000-logo e-91000-baseline', className)}
         aria-label="Spotify"
         aria-hidden="false"
         height="32"
