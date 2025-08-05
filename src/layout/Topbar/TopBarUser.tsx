@@ -86,7 +86,7 @@ export default function TopBarUser() {
           <MenuItem>Account</MenuItem>
           <MenuItem>Profile</MenuItem>
           <MenuItem>Settings</MenuItem>
-          <MenuItem onClick={handleSignOut}>
+          <MenuItem hasSeparate onClick={handleSignOut}>
             Log out <LogOut size={18} />
           </MenuItem>
         </PopoverContent>

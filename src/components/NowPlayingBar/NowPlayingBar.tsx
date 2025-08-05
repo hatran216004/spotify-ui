@@ -5,7 +5,7 @@ import TrackInfo from './TrackInfo';
 
 export default function NowPlayingBar() {
   return (
-    <div className="h-[var(--now-playing-bar-height)] p-2">
+    <div className="h-[var(--now-playing-bar-height)] p-2 bg-black absolute z-1 bottom-0 left-0 right-0">
       <div className="grid grid-cols-12 items-center h-full">
         <div className="col-span-3">
           <TrackInfo />

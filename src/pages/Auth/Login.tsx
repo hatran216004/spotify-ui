@@ -90,7 +90,7 @@ export default function Login() {
       }
     } catch (error: unknown) {
       if (error) {
-        toast.error('Email or Password is incorrect');
+        toast.error('Email/Username or Password is incorrect');
       }
     }
   };

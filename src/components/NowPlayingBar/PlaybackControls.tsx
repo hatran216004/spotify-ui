@@ -1,13 +1,16 @@
-import { Play, Repeat, Shuffle, SkipBack, SkipForward } from 'lucide-react';
+import { Repeat, Shuffle, SkipBack, SkipForward } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
+import PlayAudio from '../PlayAudio';
 
 export default function PlaybackControls() {
   return (
     <div className="flex items-center gap-4">
       <div className="flex items-center gap-2">
         <Tooltip>
-          <TooltipTrigger className="p-2 cursor-pointer hover:opacity-80">
-            <Shuffle size={18} />
+          <TooltipTrigger asChild>
+            <button className="p-2 cursor-pointer hover:opacity-80">
+              <Shuffle size={18} />
+            </button>
           </TooltipTrigger>
           <TooltipContent>
             <p>Enable shuffle</p>
@@ -15,8 +18,10 @@ export default function PlaybackControls() {
         </Tooltip>
 
         <Tooltip>
-          <TooltipTrigger className="p-2 cursor-pointer hover:opacity-80">
-            <SkipBack size={18} fill="#fff" />
+          <TooltipTrigger asChild>
+            <button className="p-2 cursor-pointer hover:opacity-80">
+              <SkipBack size={18} fill="#fff" />
+            </button>
           </TooltipTrigger>
           <TooltipContent>
             <p>Previous</p>
@@ -24,19 +29,14 @@ export default function PlaybackControls() {
         </Tooltip>
       </div>
 
-      <Tooltip>
-        <TooltipTrigger className="w-8 h-8 bg-white rounded-full flex items-center justify-center cursor-pointer hover:opacity-80">
-          <Play size={18} fill="#000" />
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>Play</p>
-        </TooltipContent>
-      </Tooltip>
+      <PlayAudio variant="secondary" />
 
       <div className="flex items-center gap-2">
         <Tooltip>
-          <TooltipTrigger className="p-2 cursor-pointer hover:opacity-80">
-            <SkipForward size={18} fill="#fff" />
+          <TooltipTrigger asChild>
+            <button className="p-2 cursor-pointer hover:opacity-80">
+              <SkipForward size={18} fill="#fff" />
+            </button>
           </TooltipTrigger>
           <TooltipContent>
             <p>Next</p>
@@ -44,8 +44,10 @@ export default function PlaybackControls() {
         </Tooltip>
 
         <Tooltip>
-          <TooltipTrigger className="p-2 cursor-pointer hover:opacity-80">
-            <Repeat size={18} />
+          <TooltipTrigger asChild>
+            <button className="p-2 cursor-pointer hover:opacity-80">
+              <Repeat size={18} />
+            </button>
           </TooltipTrigger>
           <TooltipContent>
             <p>Enable repeat</p>
