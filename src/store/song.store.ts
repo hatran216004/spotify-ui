@@ -59,11 +59,11 @@ export const useSong = create<SongStore>()(
         if (!audioElement) return;
 
         if (isMute) {
-          audioElement.volume = volume;
+          audioElement.volume = volume || 1;
         } else {
           audioElement.volume = 0;
         }
-        set({ isMute: !isMute, volume });
+        set({ isMute: !isMute, volume: volume || 1 });
       },
 
       playSong: (song) => {
