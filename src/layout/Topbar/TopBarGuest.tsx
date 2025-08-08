@@ -15,7 +15,7 @@ export default function TopBarGuest() {
         onClick={() => navigate('/login')}
         className="rounded-full h-12 w-[144px] max-w-full font-semibold"
       >
-        Sign in
+        Log in
       </Button>
     </div>
   );

@@ -9,23 +9,27 @@ import {
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip';
-import useAdmin from '@/hooks/ui/useAdmin';
+import useAdmin from '@/hooks/useAdmin';
+import { useSong } from '@/store/song.store';
 import { useUserStore } from '@/store/ui.store';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import { Bell, LayoutDashboard, LogOut } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { PiUsersThreeBold } from 'react-icons/pi';
+import { Link } from 'react-router-dom';
 
 export default function TopBarUser() {
   const { isAdmin } = useAdmin();
   const { signOut } = useAuth();
   const { user: userStore, setUser } = useUserStore();
   const { user } = useUser();
+  const { setCurrentSong } = useSong();
 
   async function handleSignOut() {
     try {
       await signOut({ redirectUrl: '/login' });
       setUser(null);
+      setCurrentSong(null);
       toast.success('Logout successfully');
     } catch (error: unknown) {
       if (error) {
@@ -38,10 +42,13 @@ export default function TopBarUser() {
     <div className="flex items-center gap-2">
       <div className="flex items-center gap-2 px-2">
         {isAdmin && (
-          <div className="flex items-center gap-2 p-2 cursor-pointer rounded-md bg-[#1f1f1f] hover:opacity-90">
+          <Link
+            to="/admin"
+            className="flex items-center gap-2 p-2 cursor-pointer rounded-md bg-[#1f1f1f] hover:opacity-90"
+          >
             <LayoutDashboard size={18} color="#b3b3b3" />
             <span className="text-sm">Dashboard</span>
-          </div>
+          </Link>
         )}
 
         <Tooltip>

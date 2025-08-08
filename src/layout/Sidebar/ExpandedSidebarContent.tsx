@@ -10,6 +10,7 @@ import Artist from '@/components/Artist';
 import { AlignJustify, PanelRightOpen, Plus } from 'lucide-react';
 import { useSidebar } from '@/store/ui.store';
 import clsx from 'clsx';
+import TagButton from '@/components/TagButton';
 
 export default function ExpandedSidebarContent({
   isShowIcon
@@ -55,15 +56,8 @@ export default function ExpandedSidebarContent({
       </header>
 
       <div className="mt-5 px-3 flex items-center gap-3">
-        <button className="py-2 px-4 text-sm rounded-full gap-2 cursor-pointer bg-[#1f1f1f] hover:bg-[#2a2a2a]">
-          Playlist
-        </button>
-        <button className="py-2 px-4 text-sm rounded-full gap-2 cursor-pointer bg-[#1f1f1f] hover:bg-[#2a2a2a]">
-          Albums
-        </button>
-        <button className="py-2 px-4 text-sm rounded-full gap-2 cursor-pointer bg-[#1f1f1f] hover:bg-[#2a2a2a]">
-          Artists
-        </button>
+        <TagButton>Playlist</TagButton>
+        <TagButton>Artists</TagButton>
       </div>
 
       <div className="mt-5 px-3 flex items-center justify-between">

@@ -1,8 +1,11 @@
 import { Repeat, Shuffle, SkipBack, SkipForward } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
-import PlayAudio from '../PlayAudio';
+import TogglePlayBackAudio from '../TogglePlayBackAudio';
+import { useSong } from '@/store/song.store';
 
 export default function PlaybackControls() {
+  const { isPlaying, togglePlayBack } = useSong();
+
   return (
     <div className="flex items-center gap-4">
       <div className="flex items-center gap-2">
@@ -29,7 +32,11 @@ export default function PlaybackControls() {
         </Tooltip>
       </div>
 
-      <PlayAudio variant="secondary" />
+      <TogglePlayBackAudio
+        variant="secondary"
+        isPlaying={isPlaying}
+        onPlayAudio={togglePlayBack}
+      />
 
       <div className="flex items-center gap-2">
         <Tooltip>

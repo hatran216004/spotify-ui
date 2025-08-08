@@ -1,14 +1,21 @@
-import { Artist } from './artist.type';
-
 export type Song = {
   _id?: string;
   title?: string;
   imageUrl?: string;
-  artists?: Artist[];
-  albumId?: string;
+  artists?: {
+    _id: string;
+    name: string;
+    bio: string;
+    avatarUrl: string;
+  }[];
+  albumId?: {
+    _id: string;
+    title: string;
+    id: string;
+  };
   audioUrl?: string;
   duration?: number;
-  // genres: never[];
+  genres?: string[];
   playCount?: number;
   releaseDate?: string;
   createdAt?: string;

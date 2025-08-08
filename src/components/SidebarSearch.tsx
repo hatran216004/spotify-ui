@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import clsx from 'clsx';
-import useOutsideClick from '@/hooks/ui/useOutsideClick';
+import useOutsideClick from '@/hooks/useOutsideClick';
 
 export default function SidebarSearch() {
   const [isFocused, setIsFocused] = useState(false);

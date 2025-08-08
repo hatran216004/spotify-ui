@@ -28,6 +28,8 @@
     "axios": "^1.11.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "colorthief": "^2.6.0",
+    "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.6.0",
     "lucide-react": "^0.533.0",
     "react": "^19.0.0",
@@ -43,6 +45,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
+    "@types/colorthief": "^2.6.0",
     "@types/node": "^24.1.0",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",

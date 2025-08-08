@@ -28,7 +28,7 @@ export default function Artist() {
 
       <Avatar className="w-[48px] h-[48px] rounded-full group-hover:opacity-70">
         <AvatarImage
-          src="https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/335849762_647057723892150_2740165209836350945_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeF9yJp0S9wtQK4a-rJaA32vUN3YSYbt2CpQ3dhJhu3YKtYoh2fuWZMbcfc6xNljlVig5_krn99ByVBrjXRH5bds&_nc_ohc=0wvsZ2hlBegQ7kNvwHEYX8e&_nc_oc=AdlizDU5Z9RQPhIniAOqjWcRJhAPk7ocSiouvR375UN722WC07PONwMSK1NyGPsFcCo&_nc_zt=23&_nc_ht=scontent.fsgn19-1.fna&_nc_gid=uOM-k59YWyVxFZceA1bOmw&oh=00_AfSzM3fPlrOsYazQNlRg9BFSqZv1f345X1UkzTp4PywGrA&oe=6894582D"
+          src="https://i.pinimg.com/736x/1c/40/cf/1c40cff6872abab3ba5dd8f4cce4df98.jpg"
           className="object-cover"
         />
       </Avatar>

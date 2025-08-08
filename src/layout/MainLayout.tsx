@@ -1,12 +1,14 @@
 import { Outlet } from 'react-router-dom';
 import Topbar from './Topbar';
 import clsx from 'clsx';
-import { useSidebar } from '@/store/ui.store';
+import { useSidebar, useUserStore } from '@/store/ui.store';
 import NowPlayingBar from '@/components/NowPlayingBar';
 import Sidebar from './Sidebar/Sidebar';
+import PublicFooter from './PublicFooter';
 
 export default function MainLayout() {
-  const { isExpanded } = useSidebar();
+  const { isExpanded, isSidebarRightExpanded } = useSidebar();
+  const { isLogin } = useUserStore();
 
   return (
     <>
@@ -16,20 +18,28 @@ export default function MainLayout() {
           <Sidebar />
           <div
             className={clsx(
-              'h-full transition-all duration-250',
-              isExpanded ? 'col-span-6' : 'col-span-8'
+              'h-[calc(100vh-var(--now-playing-bar-height)-var(--top-bar-height))] rounded-[10px] bg-[#121212] transition-all duration-250',
+              {
+                'col-span-6': isExpanded && isSidebarRightExpanded,
+                'col-span-9': isExpanded && !isSidebarRightExpanded,
+                'col-span-8': !isExpanded && isSidebarRightExpanded,
+                'col-span-11': !isExpanded && !isSidebarRightExpanded
+              }
             )}
           >
-            <div className="bg-[#121212] h-[calc(100vh-var(--now-playing-bar-height)-var(--top-bar-height))] rounded-[10px]">
-              <Outlet />
-            </div>
+            <Outlet />
           </div>
-          <div className="col-span-3 bg-[#121212] rounded-[10px] transition-all duration-250">
+          <div
+            className={clsx(
+              'col-span-3 bg-[#121212] rounded-[10px] transition-all duration-250',
+              isSidebarRightExpanded ? 'block' : 'hidden'
+            )}
+          >
             Right sidebar
           </div>
         </div>
       </div>
-      <NowPlayingBar />
+      {isLogin ? <NowPlayingBar /> : <PublicFooter />}
     </>
   );
 }

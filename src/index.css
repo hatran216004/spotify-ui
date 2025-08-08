@@ -43,7 +43,9 @@
 
 :root {
   --now-playing-bar-height: 88px;
+  --public-footer-height: 88px;
   --top-bar-height: 64px;
+  --home-header-height: 64px;
 
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -126,6 +128,7 @@
 
 body {
   font-family: 'Inter', sans-serif;
+  user-select: none;
 }
 
 /* Custom scrollbar global */
@@ -145,6 +148,10 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(999, 999, 999, 0.1);
+}
+
+.scrollbar-overlay {
+  scrollbar-gutter: stable overlay;
 }
 
 textarea:-webkit-autofill,
