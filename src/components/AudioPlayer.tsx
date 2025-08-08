@@ -6,11 +6,17 @@ export default function AudioPlayer({
 }: {
   audioRef: RefObject<HTMLAudioElement | null>;
 }) {
-  const { currentSong, audioElement, currentTime } = useSong();
+  const { currentSong, audioElement, currentTime, isMute, volume } = useSong();
 
   useEffect(() => {
     if (currentTime && audioElement) {
       audioElement.currentTime = currentTime;
+
+      if (!isMute) {
+        audioElement.volume = volume;
+      } else {
+        audioElement.volume = 0;
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [audioElement]);

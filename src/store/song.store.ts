@@ -5,9 +5,10 @@ import { persist } from 'zustand/middleware';
 type SongState = {
   currentSong: Song | null;
   isPlaying: boolean;
+  isMute: boolean;
   audioElement: HTMLAudioElement | null;
   currentTime: number;
-  sound: number;
+  volume: number;
 };
 
 type SongAction = {
@@ -15,9 +16,10 @@ type SongAction = {
   setIsPlayling: (audioPlayState: boolean) => void;
   setAudioElement: (audio: HTMLAudioElement) => void;
   setCurrentTime: (curretTime: number) => void;
-  setSound: (sound: number) => void;
+  setVolume: (volume: number) => void;
 
   togglePlayBack: () => void;
+  toggleMute: () => void;
   playSong: (song: Song) => void;
   handlePlaySong: (song: Song) => void;
 };
@@ -31,12 +33,13 @@ export const useSong = create<SongStore>()(
       isPlaying: false,
       audioElement: null,
       currentTime: 0,
-      sound: 0,
+      volume: 0,
+      isMute: false,
 
       setAudioElement: (audio) => set({ audioElement: audio }),
       setCurrentSong: (song) => set({ currentSong: song }),
       setCurrentTime: (currentTime) => set({ currentTime }),
-      setSound: (sound) => set({ sound }),
+      setVolume: (volume) => set({ volume, isMute: volume <= 0 }),
       setIsPlayling: (audioPlayState) =>
         set(() => ({ isPlaying: audioPlayState })),
 
@@ -51,6 +54,18 @@ export const useSong = create<SongStore>()(
         }
         set({ isPlaying: !isPlaying });
       },
+      toggleMute: () => {
+        const { audioElement, isMute, volume } = get();
+        if (!audioElement) return;
+
+        if (isMute) {
+          audioElement.volume = volume;
+        } else {
+          audioElement.volume = 0;
+        }
+        set({ isMute: !isMute, volume });
+      },
+
       playSong: (song) => {
         const { audioElement } = get();
         if (!audioElement) return;
@@ -76,10 +91,11 @@ export const useSong = create<SongStore>()(
     }),
     {
       name: 'track-storage',
-      partialize: ({ currentSong, currentTime, sound }) => ({
+      partialize: ({ isMute, currentSong, currentTime, volume }) => ({
+        isMute,
         currentSong,
         currentTime,
-        sound
+        volume
       })
     }
   )

@@ -29,18 +29,18 @@ export default function NowPlayingBar() {
       setCurrentTime(audioElement.currentTime);
     };
 
-    const handlePause = () => {
+    const handleAudioEnded = () => {
       setIsPlayling(false);
       setCurrentTime(0);
       setProgressValue(0);
     };
 
     audioElement.addEventListener('timeupdate', handleTimeupdate);
-    audioElement.addEventListener('pause', handlePause);
+    audioElement.addEventListener('ended', handleAudioEnded);
     return () => {
       if (audioElement) {
         audioElement.removeEventListener('timeupdate', handleTimeupdate);
-        audioElement.removeEventListener('pause', handlePause);
+        audioElement.removeEventListener('ended', handleAudioEnded);
       }
     };
   }, [
@@ -60,13 +60,17 @@ export default function NowPlayingBar() {
         <div className="col-span-6">
           <div className="flex flex-col items-center space-y-2">
             <PlaybackControls />
-            <ProgressBar
-              progressValue={progressValue}
-              progressRef={progressRef}
-              isSeeking={isSeeking}
-              onSeeking={handleSeeking}
-              onStartSeeking={() => setIsSeeking(true)}
-            />
+            <div className="flex items-center gap-2 cursor-pointer">
+              <span className="text-xs text-[#929092]">0:26</span>
+              <ProgressBar
+                progressValue={progressValue}
+                progressRef={progressRef}
+                isSeeking={isSeeking}
+                onSeeking={handleSeeking}
+                onStartSeeking={() => setIsSeeking(true)}
+              />
+              <span className="text-xs text-[#929092]">4:53</span>
+            </div>
           </div>
         </div>
         <div className="col-span-3">

@@ -1,8 +1,11 @@
 import { useSong } from '@/store/song.store';
 import { RefObject, useCallback, useEffect, useState } from 'react';
 
-function useAudioSeeking(progressRef: RefObject<HTMLDivElement | null>) {
-  const { audioElement, setCurrentTime } = useSong();
+function useAudioSeeking(
+  progressRef: RefObject<HTMLDivElement | null>,
+  type: 'volume' | 'playback' = 'playback'
+) {
+  const { audioElement, setCurrentTime, setVolume } = useSong();
   const [isSeeking, setIsSeeking] = useState(false);
   const [progressValue, setProgressValue] = useState(0);
 
@@ -11,21 +14,30 @@ function useAudioSeeking(progressRef: RefObject<HTMLDivElement | null>) {
       const progressElement = progressRef.current;
       if (!progressElement || !audioElement) return 0;
 
-      const { offsetWidth, offsetLeft } = progressElement!;
+      const { offsetWidth, offsetLeft } = progressElement;
 
       const coordinateXInProgress = clientX - offsetLeft;
-      const value = Math.floor((coordinateXInProgress / offsetWidth) * 100);
+      const value = (coordinateXInProgress / offsetWidth) * 100;
+
       return Math.max(0, Math.min(100, value));
     },
     [progressRef, audioElement]
   );
 
-  const handleSeeking = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const value = calculateProgress(e.clientX);
-    audioElement!.currentTime = (value / 100) * audioElement!.duration;
+  const handleSeeking = (clientX: number) => {
+    const value = calculateProgress(clientX);
+    if (type === 'playback') {
+      audioElement!.currentTime = (value / 100) * audioElement!.duration;
+      setCurrentTime(audioElement!.currentTime);
+    }
 
+    if (type === 'volume') {
+      // value / 100 beacause volumn value between 0 and 1
+      const volumeValue = value / 100;
+      audioElement!.volume = volumeValue;
+      setVolume(volumeValue);
+    }
     setIsSeeking(false);
-    setCurrentTime(audioElement!.currentTime);
     setProgressValue(value);
   };
 
@@ -39,9 +51,19 @@ function useAudioSeeking(progressRef: RefObject<HTMLDivElement | null>) {
 
     const handleMouseUp = () => {
       if (!audioElement) return;
-      audioElement.currentTime = (progressValue / 100) * audioElement.duration;
+
+      if (type === 'playback') {
+        audioElement.currentTime =
+          (progressValue / 100) * audioElement.duration;
+        setCurrentTime(audioElement.currentTime);
+      }
+
+      if (type === 'volume') {
+        const volumeValue = progressValue / 100;
+        audioElement!.volume = volumeValue;
+        setVolume(volumeValue);
+      }
       setIsSeeking(false);
-      setCurrentTime(audioElement.currentTime);
     };
 
     document.addEventListener('mousemove', handleMouseMove);
@@ -51,11 +73,13 @@ function useAudioSeeking(progressRef: RefObject<HTMLDivElement | null>) {
       document.removeEventListener('mouseup', handleMouseUp);
     };
   }, [
+    type,
     isSeeking,
     audioElement,
     progressValue,
     setCurrentTime,
-    calculateProgress
+    calculateProgress,
+    setVolume
   ]);
 
   return {

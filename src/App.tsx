@@ -42,8 +42,6 @@ export default function App() {
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      e.preventDefault();
-
       if (e.code === 'Space') {
         togglePlayBack();
       }

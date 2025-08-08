@@ -131,7 +131,7 @@ export default function SongPage() {
                 <TooltipTrigger asChild>
                   <button className="group p-1 cursor-pointer">
                     <CirclePlus
-                      size={24}
+                      size={32}
                       className="text-[#929092] group-hover:text-white group-hover:scale-[1.05]"
                     />
                   </button>
@@ -144,7 +144,7 @@ export default function SongPage() {
                 <TooltipTrigger asChild>
                   <button className="group p-1 cursor-pointer">
                     <Ellipsis
-                      size={24}
+                      size={32}
                       className="text-[#929092] group-hover:text-white group-hover:scale-[1.05]"
                     />
                   </button>
