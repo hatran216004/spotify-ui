@@ -6,7 +6,15 @@ export default function AudioPlayer({
 }: {
   audioRef: RefObject<HTMLAudioElement | null>;
 }) {
-  const { currentSong, audioElement, currentTime, isMute, volume } = useSong();
+  const {
+    currentSong,
+    audioElement,
+    currentTime,
+    isMute,
+    volume,
+    isLoop,
+    setIsPlayling
+  } = useSong();
 
   useEffect(() => {
     if (currentTime && audioElement) {
@@ -17,9 +25,29 @@ export default function AudioPlayer({
       } else {
         audioElement.volume = 0;
       }
+
+      audioElement.loop = isLoop;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [audioElement]);
+
+  useEffect(() => {
+    const handlePlaying = () => {
+      setIsPlayling(true);
+    };
+
+    const handlePause = () => {
+      setIsPlayling(false);
+    };
+    audioElement?.addEventListener('play', handlePlaying);
+    audioElement?.addEventListener('pause', handlePause);
+    return () => {
+      if (audioElement) {
+        audioElement?.removeEventListener('play', handlePlaying);
+        audioElement?.removeEventListener('pause', handlePause);
+      }
+    };
+  }, [audioElement, setIsPlayling]);
 
   return (
     <audio

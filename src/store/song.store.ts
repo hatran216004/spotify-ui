@@ -4,11 +4,13 @@ import { persist } from 'zustand/middleware';
 
 type SongState = {
   currentSong: Song | null;
-  isPlaying: boolean;
-  isMute: boolean;
   audioElement: HTMLAudioElement | null;
   currentTime: number;
   volume: number;
+
+  isPlaying: boolean;
+  isMute: boolean;
+  isLoop: boolean;
 };
 
 type SongAction = {
@@ -20,6 +22,7 @@ type SongAction = {
 
   togglePlayBack: () => void;
   toggleMute: () => void;
+  toggleLoop: () => void;
   playSong: (song: Song) => void;
   handlePlaySong: (song: Song) => void;
 };
@@ -30,11 +33,13 @@ export const useSong = create<SongStore>()(
   persist(
     (set, get) => ({
       currentSong: null,
-      isPlaying: false,
       audioElement: null,
       currentTime: 0,
       volume: 0,
+
+      isPlaying: false,
       isMute: false,
+      isLoop: false,
 
       setAudioElement: (audio) => set({ audioElement: audio }),
       setCurrentSong: (song) => set({ currentSong: song }),
@@ -65,7 +70,17 @@ export const useSong = create<SongStore>()(
         }
         set({ isMute: !isMute, volume: volume || 1 });
       },
+      toggleLoop: () => {
+        const { audioElement, isLoop } = get();
+        if (!audioElement) return;
 
+        if (!isLoop) {
+          audioElement.loop = true;
+        } else {
+          audioElement.loop = false;
+        }
+        set({ isLoop: !isLoop });
+      },
       playSong: (song) => {
         const { audioElement } = get();
         if (!audioElement) return;
@@ -91,10 +106,11 @@ export const useSong = create<SongStore>()(
     }),
     {
       name: 'track-storage',
-      partialize: ({ isMute, currentSong, currentTime, volume }) => ({
+      partialize: ({ isMute, currentSong, currentTime, volume, isLoop }) => ({
         isMute,
         currentSong,
         currentTime,
+        isLoop,
         volume
       })
     }

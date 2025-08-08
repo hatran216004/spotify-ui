@@ -4,15 +4,15 @@ import TogglePlayBackAudio from '../TogglePlayBackAudio';
 import { useSong } from '@/store/song.store';
 
 export default function PlaybackControls() {
-  const { isPlaying, togglePlayBack } = useSong();
+  const { isPlaying, isLoop, togglePlayBack, toggleLoop } = useSong();
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center justify-center gap-4">
       <div className="flex items-center gap-2">
         <Tooltip>
           <TooltipTrigger asChild>
             <button className="p-2 cursor-pointer hover:opacity-80">
-              <Shuffle size={18} />
+              <Shuffle size={18} color="#eee" />
             </button>
           </TooltipTrigger>
           <TooltipContent>
@@ -23,7 +23,7 @@ export default function PlaybackControls() {
         <Tooltip>
           <TooltipTrigger asChild>
             <button className="p-2 cursor-pointer hover:opacity-80">
-              <SkipBack size={18} fill="#fff" />
+              <SkipBack size={18} fill="#eee" />
             </button>
           </TooltipTrigger>
           <TooltipContent>
@@ -42,7 +42,7 @@ export default function PlaybackControls() {
         <Tooltip>
           <TooltipTrigger asChild>
             <button className="p-2 cursor-pointer hover:opacity-80">
-              <SkipForward size={18} fill="#fff" />
+              <SkipForward size={18} fill="#eee" />
             </button>
           </TooltipTrigger>
           <TooltipContent>
@@ -52,8 +52,11 @@ export default function PlaybackControls() {
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <button className="p-2 cursor-pointer hover:opacity-80">
-              <Repeat size={18} />
+            <button
+              className="p-2 cursor-pointer hover:opacity-80"
+              onClick={toggleLoop}
+            >
+              <Repeat size={18} color={isLoop ? '#1db954' : '#eee'} />
             </button>
           </TooltipTrigger>
           <TooltipContent>

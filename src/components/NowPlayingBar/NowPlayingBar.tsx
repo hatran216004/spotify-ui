@@ -8,7 +8,8 @@ import useAudioSeeking from '@/hooks/useAudioSeeking';
 
 export default function NowPlayingBar() {
   const progressRef = useRef<HTMLDivElement | null>(null);
-  const { audioElement, setCurrentTime, setIsPlayling } = useSong();
+  const { audioElement, currentSong, setCurrentTime, setIsPlayling } =
+    useSong();
   const {
     isSeeking,
     progressValue,
@@ -46,6 +47,7 @@ export default function NowPlayingBar() {
   }, [
     audioElement,
     isSeeking,
+    currentSong,
     setCurrentTime,
     setIsPlayling,
     setProgressValue
@@ -53,27 +55,25 @@ export default function NowPlayingBar() {
 
   return (
     <div className="h-[var(--now-playing-bar-height)] p-2 bg-black absolute z-1 bottom-0 left-0 right-0">
-      <div className="grid grid-cols-12 items-center h-full">
-        <div className="col-span-3">
+      <div className="flex items-center h-full">
+        <div className="w-[30%]">
           <TrackInfo />
         </div>
-        <div className="col-span-6">
-          <div className="flex flex-col items-center space-y-2">
-            <PlaybackControls />
-            <div className="flex items-center gap-2 cursor-pointer">
-              <span className="text-xs text-[#929092]">0:26</span>
-              <ProgressBar
-                progressValue={progressValue}
-                progressRef={progressRef}
-                isSeeking={isSeeking}
-                onSeeking={handleSeeking}
-                onStartSeeking={() => setIsSeeking(true)}
-              />
-              <span className="text-xs text-[#929092]">4:53</span>
-            </div>
+        <div className="space-y-2 w-[40%] max-w-full">
+          <PlaybackControls />
+          <div className="flex items-center gap-2 cursor-pointer w-full">
+            <span className="text-xs text-[#929092]">0:26</span>
+            <ProgressBar
+              progressValue={progressValue}
+              progressRef={progressRef}
+              isSeeking={isSeeking}
+              onSeeking={handleSeeking}
+              onStartSeeking={() => setIsSeeking(true)}
+            />
+            <span className="text-xs text-[#929092]">4:53</span>
           </div>
         </div>
-        <div className="col-span-3">
+        <div className="w-[30%]">
           <PlayerActions />
         </div>
       </div>

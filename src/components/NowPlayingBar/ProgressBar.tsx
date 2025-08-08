@@ -18,15 +18,15 @@ export default function ProgressBar({
 }) {
   return (
     <div
-      className="group py-1"
+      className="group py-1 flex-1"
       onMouseDown={onStartSeeking}
       onMouseUp={(e) => onSeeking(e.clientX)}
     >
       <div
         ref={progressRef}
         className={clsx(
-          'h-1 max-w-full rounded-full bg-gray-500',
-          type === 'playback' ? 'w-[516px]' : 'w-[94px]'
+          'h-1 rounded-full bg-gray-500 ',
+          type === 'volume' && 'w-[94px]'
         )}
       >
         <div
