@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 export default function InfoFooter() {
   return (
     <footer className="pt-12 pb-4">
-      <SectionSeparator className="mx-8 opacity-20" />
+      <SectionSeparator className="mx-4 opacity-20" />
       <div className="p-8 grid grid-cols-12">
         <div className="col-span-3 text-[16px]">
           <p className="text-white font-bold">Company</p>

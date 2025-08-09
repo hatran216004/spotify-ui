@@ -8,7 +8,10 @@ export type Playlist = {
     username?: string;
   };
   isPublic?: boolean;
-  songs?: Song[];
+  songs?: {
+    songId: Song;
+    order: number;
+  }[];
   totalDuration?: number;
   coverImage?: string;
   description?: string;

@@ -16,9 +16,10 @@ import { useAuth, useUser } from '@clerk/clerk-react';
 import { Bell, LayoutDashboard, LogOut } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { PiUsersThreeBold } from 'react-icons/pi';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function TopBarUser() {
+  const naviage = useNavigate();
   const { isAdmin } = useAdmin();
   const { signOut } = useAuth();
   const { user: userStore, setUser } = useUserStore();
@@ -30,6 +31,7 @@ export default function TopBarUser() {
       await signOut({ redirectUrl: '/login' });
       setUser(null);
       setCurrentSong(null);
+      naviage('/');
       toast.success('Logout successfully');
     } catch (error: unknown) {
       if (error) {

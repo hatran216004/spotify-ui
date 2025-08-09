@@ -19,6 +19,7 @@ import { useEffect, useRef } from 'react';
 import AdminPage from './pages/Auth/Admin/AdminPage';
 import AdminLayout from './layout/AdminLayout';
 import HomeLayout from './layout/HomeLayout';
+import PlaylistPage from './pages/PlaylistPage';
 
 function ProtecedRoute() {
   const { user } = useUserStore();
@@ -75,6 +76,14 @@ export default function App() {
                   element={
                     <HomeLayout>
                       <SongPage />
+                    </HomeLayout>
+                  }
+                />
+                <Route
+                  path="/playlists/:playlistId"
+                  element={
+                    <HomeLayout>
+                      <PlaylistPage />
                     </HomeLayout>
                   }
                 />

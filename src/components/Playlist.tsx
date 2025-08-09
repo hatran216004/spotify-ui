@@ -1,20 +1,26 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import clsx from 'clsx';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Play, Volume2 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { Playlist as PlaylistType } from '@/types/playlist.type';
+import { useSong } from '@/store/song.store';
 
 export default function Playlist({ playlist }: { playlist: PlaylistType }) {
-  const [isActive, setIsActive] = useState(false);
+  const { playlistId } = useParams();
+  const { currentSong, isPlaying } = useSong();
+
+  const isActive = playlistId === playlist._id;
+  const hasSongPlaying =
+    isPlaying && playlist.songs?.some((s) => s.songId._id === currentSong?._id);
 
   return (
     <Link
-      to="/"
-      className="group flex items-center gap-3 p-2 rounded-lg hover:bg-[#2a2a2a] relative"
-      onMouseEnter={() => setIsActive(true)}
-      onMouseLeave={() => setIsActive(false)}
+      to={`/playlists/${playlist._id}`}
+      className={clsx(
+        'group/playlist flex items-center gap-3 p-2 rounded-lg hover:bg-[#2a2a2a] relative',
+        isActive && 'bg-[#333]'
+      )}
     >
       {isActive && (
         <Tooltip>
@@ -27,7 +33,7 @@ export default function Playlist({ playlist }: { playlist: PlaylistType }) {
         </Tooltip>
       )}
 
-      <Avatar className="w-[48px] h-[48px] rounded-[4px] group-hover:opacity-70">
+      <Avatar className="w-[48px] h-[48px] rounded-[4px] group-hover/playlist:opacity-60">
         <AvatarImage src={playlist.coverImage} className="object-cover" />
       </Avatar>
       <div>
@@ -44,7 +50,7 @@ export default function Playlist({ playlist }: { playlist: PlaylistType }) {
         </span>
       </div>
 
-      {isActive && (
+      {hasSongPlaying && (
         <Volume2
           size={18}
           className="absolute right-2.5"
