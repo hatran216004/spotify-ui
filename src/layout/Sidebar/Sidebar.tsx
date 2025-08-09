@@ -1,22 +1,18 @@
 import clsx from 'clsx';
-import { useState } from 'react';
 import CollapseSidebarContent from './CollapseSidebarContent';
 import ExpandedSidebarContent from './ExpandedSidebarContent';
 import { useSidebar } from '@/store/ui.store';
 
 export default function Sidebar({ className = '' }: { className?: string }) {
-  const [isShowIcon, setIsShowIcon] = useState(false);
   const { isExpanded } = useSidebar();
 
   return (
     <aside
       className={clsx(
-        'relative h-[calc(100vh-var(--now-playing-bar-height)-var(--top-bar-height))] rounded-[10px] bg-[#121212] transition-all duration-300 ease-in-out overflow-hidden',
+        'group relative h-[calc(100vh-var(--now-playing-bar-height)-var(--top-bar-height))] rounded-[10px] bg-[#121212] transition-all duration-300 ease-in-out overflow-hidden',
         className,
         isExpanded ? 'col-span-3' : 'col-span-1'
       )}
-      onMouseEnter={() => setIsShowIcon(true)}
-      onMouseLeave={() => setIsShowIcon(false)}
     >
       <div
         className={clsx(
@@ -27,7 +23,7 @@ export default function Sidebar({ className = '' }: { className?: string }) {
         )}
       >
         <div className="w-full flex-shrink-0">
-          <ExpandedSidebarContent isShowIcon={isShowIcon} />
+          <ExpandedSidebarContent />
         </div>
       </div>
 

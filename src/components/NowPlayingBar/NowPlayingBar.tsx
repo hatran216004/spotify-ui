@@ -5,6 +5,7 @@ import ProgressBar from './ProgressBar';
 import TrackInfo from './TrackInfo';
 import { useSong } from '@/store/song.store';
 import useAudioSeeking from '@/hooks/useAudioSeeking';
+import { trackTimeFormat } from '@/utils/datetime';
 
 export default function NowPlayingBar() {
   const progressRef = useRef<HTMLDivElement | null>(null);
@@ -54,7 +55,7 @@ export default function NowPlayingBar() {
   ]);
 
   return (
-    <div className="h-[var(--now-playing-bar-height)] p-2 bg-black absolute z-1 bottom-0 left-0 right-0">
+    <div className="h-[var(--now-playing-bar-height)] p-2 bg-black fixed z-1 bottom-0 left-0 right-0">
       <div className="flex items-center h-full">
         <div className="w-[30%]">
           <TrackInfo />
@@ -62,7 +63,9 @@ export default function NowPlayingBar() {
         <div className="space-y-2 w-[40%] max-w-full">
           <PlaybackControls />
           <div className="flex items-center gap-2 cursor-pointer w-full">
-            <span className="text-xs text-[#929092]">0:26</span>
+            <span className="text-xs text-[#929092]">
+              {trackTimeFormat(audioElement?.currentTime || 0)}
+            </span>
             <ProgressBar
               progressValue={progressValue}
               progressRef={progressRef}
@@ -70,7 +73,9 @@ export default function NowPlayingBar() {
               onSeeking={handleSeeking}
               onStartSeeking={() => setIsSeeking(true)}
             />
-            <span className="text-xs text-[#929092]">4:53</span>
+            <span className="text-xs text-[#929092]">
+              {trackTimeFormat(audioElement?.duration || 0)}
+            </span>
           </div>
         </div>
         <div className="w-[30%]">

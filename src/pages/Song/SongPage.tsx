@@ -1,6 +1,6 @@
 import DotIndicator from '@/components/DotIndicator';
 import { songServices } from '@/services/song';
-import { formatDate } from '@/utils/date';
+import { formatDate } from '@/utils/datetime';
 import { formatPlayCount } from '@/utils/number';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
@@ -17,7 +17,6 @@ import TogglePlayBackAudio from '@/components/TogglePlayBackAudio';
 
 export default function SongPage() {
   const { songId } = useParams();
-
   const imgRef = useRef<HTMLImageElement | null>(null);
 
   const { isPlaying, currentSong, setCurrentSong, handlePlaySong } = useSong();
@@ -30,13 +29,13 @@ export default function SongPage() {
 
   // Set song data from api
   useEffect(() => {
-    if (currentSong) return;
+    if (currentSong && isPlaying) return;
 
     const songData = data?.data.data?.song;
     if (songData) {
       setCurrentSong(songData);
     }
-  }, [data, currentSong, setCurrentSong]);
+  }, [data, currentSong, isPlaying, setCurrentSong]);
 
   // Set background with main color of song image
   useEffect(() => {
@@ -72,13 +71,12 @@ export default function SongPage() {
   return (
     <>
       {song && (
-        <div>
-          <div
-            className="px-4 shadow-2xl py-[18px] rounded-tl-[10px] rounded-tr-[10px]"
-            style={{
-              background: `linear-gradient(to bottom, rgba(${bgColor?.[0]},${bgColor?.[1]},${bgColor?.[2]},0.8), rgba(${bgColor?.[0]},${bgColor?.[1]},${bgColor?.[2]},0))`
-            }}
-          >
+        <div
+          style={{
+            background: `linear-gradient(to bottom, rgba(${bgColor?.[0]},${bgColor?.[1]},${bgColor?.[2]},0.6), rgba(${bgColor?.[0]},${bgColor?.[1]},${bgColor?.[2]},0))`
+          }}
+        >
+          <div className="px-4 shadow-2xl py-[18px] rounded-tl-[10px] rounded-tr-[10px]">
             <div className="grid grid-cols-12 gap-5 items-end">
               <div className="col-span-3">
                 <div className="pt-[100%] relative rounded-sm overflow-hidden">
@@ -94,7 +92,7 @@ export default function SongPage() {
               <div className="col-span-9">
                 <div className="space-y-5">
                   <span className="text-sm text-white font-medium">Song</span>
-                  <h1 className="text-7xl text-white font-bold truncate">
+                  <h1 className="text-7xl text-white font-bold truncate uppercase">
                     {song.title}
                   </h1>
                   <div className="flex items-center gap-2 text-white font-semibold text-sm">

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import TogglePlayBackAudio from './TogglePlayBackAudio';
 import { useSong } from '@/store/song.store';
 import { HTMLAttributes } from 'react';
+import { useUserStore } from '@/store/ui.store';
 
 type SongCardType = {
   song?: Song;
@@ -17,6 +18,7 @@ export default function SongCard({
 }: SongCardType) {
   const navigate = useNavigate();
   const { isPlaying, currentSong, handlePlaySong } = useSong();
+  const { isLogin } = useUserStore();
 
   return (
     <div onClick={() => navigate(`/songs/${song?._id}`)} {...rest}>
@@ -33,7 +35,13 @@ export default function SongCard({
             alt={song?.title}
           />
           <TogglePlayBackAudio
-            onPlayAudio={() => handlePlaySong(song!)}
+            onPlayAudio={() => {
+              if (!isLogin) {
+                navigate('/register');
+                return;
+              }
+              handlePlaySong(song!);
+            }}
             isPlaying={isPlaying && song?._id === currentSong?._id}
             hasTooltip={false}
             size="md"

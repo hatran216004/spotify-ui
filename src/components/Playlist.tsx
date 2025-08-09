@@ -4,8 +4,9 @@ import clsx from 'clsx';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Play, Volume2 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+import { Playlist as PlaylistType } from '@/types/playlist.type';
 
-export default function Playlist() {
+export default function Playlist({ playlist }: { playlist: PlaylistType }) {
   const [isActive, setIsActive] = useState(false);
 
   return (
@@ -21,16 +22,13 @@ export default function Playlist() {
             <Play className="fill-white text-white" />
           </TooltipTrigger>
           <TooltipContent sideOffset={20}>
-            <p>Play ...</p>
+            <p>Play {playlist.name}</p>
           </TooltipContent>
         </Tooltip>
       )}
 
       <Avatar className="w-[48px] h-[48px] rounded-[4px] group-hover:opacity-70">
-        <AvatarImage
-          src="https://i.pinimg.com/736x/1c/40/cf/1c40cff6872abab3ba5dd8f4cce4df98.jpg"
-          className="object-cover"
-        />
+        <AvatarImage src={playlist.coverImage} className="object-cover" />
       </Avatar>
       <div>
         <h4
@@ -39,9 +37,11 @@ export default function Playlist() {
             isActive ? 'text-[#1db954]' : 'text-[#eee]'
           )}
         >
-          My playlist #
+          {playlist.name}
         </h4>
-        <span className="text-[#929092] text-sm">Playlist . Ha Tran</span>
+        <span className="text-[#929092] text-sm capitalize">
+          Playlist . {playlist.userId?.username}
+        </span>
       </div>
 
       {isActive && (

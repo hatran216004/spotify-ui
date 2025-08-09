@@ -5,13 +5,14 @@ import { useSidebar, useUserStore } from '@/store/ui.store';
 import NowPlayingBar from '@/components/NowPlayingBar';
 import Sidebar from './Sidebar/Sidebar';
 import PublicFooter from './PublicFooter';
+import RightSidebar from './Sidebar/RightSidebar';
 
 export default function MainLayout() {
   const { isExpanded, isSidebarRightExpanded } = useSidebar();
   const { isLogin } = useUserStore();
 
   return (
-    <>
+    <main>
       <Topbar />
       <div className="px-2">
         <div className="grid grid-cols-12 gap-2 h-full max-h-full">
@@ -35,11 +36,11 @@ export default function MainLayout() {
               isSidebarRightExpanded ? 'block' : 'hidden'
             )}
           >
-            Right sidebar
+            <RightSidebar />
           </div>
         </div>
       </div>
       {isLogin ? <NowPlayingBar /> : <PublicFooter />}
-    </>
+    </main>
   );
 }

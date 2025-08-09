@@ -7,6 +7,11 @@ export type Song = {
     name: string;
     bio: string;
     avatarUrl: string;
+    socialLinks: {
+      facebook?: string;
+      instagram?: string;
+      youtube?: string;
+    };
   }[];
   albumId?: {
     _id: string;

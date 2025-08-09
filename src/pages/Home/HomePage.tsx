@@ -4,7 +4,6 @@ import PlaylistGrid from './components/PlaylistGrid';
 import RecommendedCarouselList from './components/RecommendedCarouselList';
 import clsx from 'clsx';
 import TopTrending from './components/TopTrending';
-import InfoFooter from '@/layout/InfoFooter';
 
 export default function HomePage() {
   const [scrollValue, setScrollValue] = useState(0);
@@ -29,7 +28,6 @@ export default function HomePage() {
     <main
       ref={mainRef}
       onScroll={(e) => setScrollValue((e.target as HTMLElement).scrollTop)}
-      className="h-full overflow-auto scrollbar-overlay rounded-[10px]"
     >
       <section
         className={clsx(
@@ -44,7 +42,6 @@ export default function HomePage() {
           <TopTrending />
         </div>
       </section>
-      <InfoFooter />
     </main>
   );
 }

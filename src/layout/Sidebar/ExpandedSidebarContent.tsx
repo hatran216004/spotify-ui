@@ -1,40 +1,25 @@
-import Playlist from '@/components/Playlist';
-import RenderList from '@/components/RenderList';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip';
 import SidebarSearch from '@/components/SidebarSearch';
-import Artist from '@/components/Artist';
 import { AlignJustify, PanelRightOpen, Plus } from 'lucide-react';
 import { useSidebar } from '@/store/ui.store';
-import clsx from 'clsx';
 import TagButton from '@/components/TagButton';
+import MyPlaylists from '@/components/MyPlaylists';
 
-export default function ExpandedSidebarContent({
-  isShowIcon
-}: {
-  isShowIcon?: boolean;
-}) {
+export default function ExpandedSidebarContent() {
   const { onExpanded } = useSidebar();
 
   return (
     <div className="py-[32px] h-full shadow-xl flex flex-col">
       <header className="px-3 flex items-center justify-between">
-        <div
-          className={clsx(
-            'flex items-center gap-3 cursor-pointer transition-transform duration-150',
-            isShowIcon ? 'translate-x-0' : '-translate-x-[36px]'
-          )}
-        >
+        <div className="group-hover:translate-x-0 -translate-x-[36px] flex items-center gap-3 cursor-pointer transition-transform duration-150">
           <Tooltip>
             <TooltipTrigger
               onClick={onExpanded}
-              className={clsx(
-                'transition-all duration-300',
-                isShowIcon ? 'opacity-100 visible' : 'opacity-0 invisible '
-              )}
+              className="group-hover:opacity-100 group-hover:visible opacity-0 invisible transition-all duration-300"
             >
               <PanelRightOpen className="hover:text-[#fff] text-[#929092]" />
             </TooltipTrigger>
@@ -68,16 +53,7 @@ export default function ExpandedSidebarContent({
         </div>
       </div>
 
-      <div className="mt-5 mx-[6px] px-[6px] overflow-y-auto">
-        <RenderList
-          data={Array(5).fill(0)}
-          render={(_, index) => <Playlist key={index} />}
-        />
-        <RenderList
-          data={Array(5).fill(0)}
-          render={(_, index) => <Artist key={index} />}
-        />
-      </div>
+      <MyPlaylists />
     </div>
   );
 }
