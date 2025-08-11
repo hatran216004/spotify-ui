@@ -25,6 +25,9 @@ function useControlsPlaylist() {
   const getRandomIndex = () => {
     const currIndex = getCurrentTrackIndex();
     const playlistTrackLength = getCurrentPlaylistLength();
+
+    if (playlistTrackLength === 1) return 0;
+
     let randomIndex = null;
 
     do {

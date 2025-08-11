@@ -26,8 +26,8 @@ export default function TrackItem({
 
   const isItemPlaying =
     isPlaying &&
-    (track?._id === currentPlaylistItemId ||
-      track?.songId._id === currentSong?._id);
+    track?._id === currentPlaylistItemId &&
+    track?.songId._id === currentSong?._id;
   const Icon = isItemPlaying ? Pause : Play;
 
   const handlePlayItem = () => {

@@ -117,7 +117,7 @@ export default function SongPage() {
           <div className="p-4">
             <div className="flex items-center gap-4">
               <TogglePlayBackAudio
-                onPlayAudio={() => handlePlaySong(song)}
+                onPlayAudio={() => handlePlaySong(song, true)}
                 isPlaying={isPlaying && currentSong?._id === song._id}
                 hasTooltip={false}
                 variant="primary"

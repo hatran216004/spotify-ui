@@ -114,6 +114,8 @@ export const useSong = create<SongStore>()(
 
         if (isSameSong && isPlayingExternalPlaylist) {
           audioElement!.currentTime = 0;
+          playSong(song);
+          return;
         }
 
         if (isSameSong) {
