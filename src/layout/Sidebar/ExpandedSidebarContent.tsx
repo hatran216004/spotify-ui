@@ -4,10 +4,11 @@ import {
   TooltipTrigger
 } from '@/components/ui/tooltip';
 import SidebarSearch from '@/components/SidebarSearch';
-import { AlignJustify, PanelRightOpen, Plus } from 'lucide-react';
+import { AlignJustify, PanelRightOpen } from 'lucide-react';
 import { useSidebar } from '@/store/ui.store';
 import TagButton from '@/components/TagButton';
 import MyPlaylists from '@/components/MyPlaylists';
+import CreateNewPlaylistButton from '@/components/CreateNewPlaylistButton';
 
 export default function ExpandedSidebarContent() {
   const { onExpanded } = useSidebar();
@@ -29,15 +30,7 @@ export default function ExpandedSidebarContent() {
           </Tooltip>
           <h4 className="font-semibold">Your Library</h4>
         </div>
-        <Tooltip>
-          <TooltipTrigger className="py-2 px-4 ml-auto flex items-center rounded-full gap-2 cursor-pointer bg-[#1f1f1f] hover:bg-[#2a2a2a]">
-            <Plus />
-            <span>Create</span>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Create a playlist</p>
-          </TooltipContent>
-        </Tooltip>
+        <CreateNewPlaylistButton />
       </header>
 
       <div className="mt-5 px-3 flex items-center gap-3">

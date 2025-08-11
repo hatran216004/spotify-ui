@@ -27,6 +27,7 @@ import { useSong } from '@/store/song.store';
 import { Song } from '@/types/song.type';
 import InfoFooter from '@/layout/InfoFooter';
 import usePlaylistById from '@/hooks/usePlaylistById';
+import { FaMusic } from 'react-icons/fa';
 
 export default function PlaylistPage() {
   const { playlistId } = useParams();
@@ -82,6 +83,7 @@ export default function PlaylistPage() {
   );
 
   const hasItemPlaying = isPlaying && itemPlaying;
+  const playlistTrackLength = playlist?.songs?.length || 0;
 
   return (
     <div className="h-full overflow-auto rounded-[10px]">
@@ -95,13 +97,19 @@ export default function PlaylistPage() {
             <div className="grid grid-cols-12 gap-5 items-end">
               <div className="col-span-3">
                 <div className="pt-[100%] relative rounded-sm overflow-hidden">
-                  <img
-                    ref={imgRef}
-                    crossOrigin="anonymous"
-                    src={playlist.coverImage}
-                    className="absolute w-full h-full top-0 left-0 object-cover"
-                    alt={playlist.name}
-                  />
+                  {playlist.coverImage ? (
+                    <img
+                      ref={imgRef}
+                      crossOrigin="anonymous"
+                      src={playlist.coverImage}
+                      className="absolute w-full h-full top-0 left-0 object-cover"
+                      alt={playlist.name}
+                    />
+                  ) : (
+                    <div className="absolute w-full h-full top-0 left-0 bg-[#282828] flex items-center justify-center">
+                      <FaMusic color="#929092" size={72} />
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="col-span-9">
@@ -132,93 +140,94 @@ export default function PlaylistPage() {
             </div>
           </div>
           {/* Actions */}
-          <div className="p-4">
-            <div className="flex items-center gap-4">
-              <TogglePlayBackAudio
-                isPlaying={isPlaying && hasItemPlaying}
-                onPlayAudio={() => {
-                  if (itemPlaying) {
-                    togglePlayBack();
-                  } else {
-                    handlePlaySong(playlist.songs?.[0].songId as Song);
-                    setCurrentPlaylistItemId(playlist.songs![0]?._id);
-                  }
-                }}
-                hasTooltip={false}
-                variant="primary"
-                size="lg"
-                iconClassname="size-6"
-                className="hover:opacity-100 hover:scale-[1.02]"
-              />
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button className="group p-1 cursor-pointer">
-                    <Ellipsis
-                      size={32}
-                      className="text-[#929092] group-hover:text-white group-hover:scale-[1.05]"
-                    />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>More options for {playlist.name}</p>
-                </TooltipContent>
-              </Tooltip>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <button className="font-semibold flex items-center gap-2 text-sm text-[#929092] hover:text-white cursor-pointer ml-auto">
-                    List <TfiMenuAlt />
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent align="end">
-                  <span className="block p-2 text-xs">View as</span>
-                  <MenuItem
-                    icon={<HiMenu />}
-                    iconSide="start"
-                    onClick={handleChangeViewMode}
-                    className={`${
-                      playlistViewMode === 'compact' ? 'text-green-500' : ''
-                    }`}
-                  >
-                    Compact
-                    {playlistViewMode === 'compact' && (
-                      <Check className="ml-auto" size={18} />
+          {playlistTrackLength > 0 && (
+            <>
+              <div className="p-4">
+                <div className="flex items-center gap-4">
+                  <TogglePlayBackAudio
+                    isPlaying={isPlaying && hasItemPlaying}
+                    onPlayAudio={() => {
+                      if (itemPlaying) {
+                        togglePlayBack();
+                      } else {
+                        handlePlaySong(playlist.songs?.[0].songId as Song);
+                        setCurrentPlaylistItemId(playlist.songs![0]?._id);
+                      }
+                    }}
+                    hasTooltip={false}
+                    variant="primary"
+                    size="lg"
+                    iconClassname="size-6"
+                    className="hover:opacity-100 hover:scale-[1.02]"
+                  />
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button className="group p-1 cursor-pointer">
+                        <Ellipsis
+                          size={32}
+                          className="text-[#929092] group-hover:text-white group-hover:scale-[1.05]"
+                        />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>More options for {playlist.name}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button className="font-semibold flex items-center gap-2 text-sm text-[#929092] hover:text-white cursor-pointer ml-auto">
+                        List <TfiMenuAlt />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent align="end">
+                      <span className="block p-2 text-xs">View as</span>
+                      <MenuItem
+                        icon={<HiMenu />}
+                        iconSide="start"
+                        onClick={handleChangeViewMode}
+                        className={`${
+                          playlistViewMode === 'compact' ? 'text-green-500' : ''
+                        }`}
+                      >
+                        Compact
+                        {playlistViewMode === 'compact' && (
+                          <Check className="ml-auto" size={18} />
+                        )}
+                      </MenuItem>
+                      <MenuItem
+                        icon={<TfiMenuAlt />}
+                        iconSide="start"
+                        onClick={handleChangeViewMode}
+                        className={`${
+                          playlistViewMode === 'list' ? 'text-green-500' : ''
+                        }`}
+                      >
+                        List
+                        {playlistViewMode === 'list' && (
+                          <Check className="ml-auto" size={18} />
+                        )}
+                      </MenuItem>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </div>
+              <TrackList>
+                <TrackListHeader />
+                <TrackListContent>
+                  <RenderList
+                    data={playlist.songs || []}
+                    render={(track) => (
+                      <TrackItem
+                        playlistId={playlist._id}
+                        track={track}
+                        order={track.order}
+                        key={track._id}
+                      />
                     )}
-                  </MenuItem>
-                  <MenuItem
-                    icon={<TfiMenuAlt />}
-                    iconSide="start"
-                    onClick={handleChangeViewMode}
-                    className={`${
-                      playlistViewMode === 'list' ? 'text-green-500' : ''
-                    }`}
-                  >
-                    List
-                    {playlistViewMode === 'list' && (
-                      <Check className="ml-auto" size={18} />
-                    )}
-                  </MenuItem>
-                </PopoverContent>
-              </Popover>
-            </div>
-          </div>
-          {/* Tracks list */}
-          {playlist.songs!.length > 0 && (
-            <TrackList>
-              <TrackListHeader />
-              <TrackListContent>
-                <RenderList
-                  data={playlist.songs || []}
-                  render={(track) => (
-                    <TrackItem
-                      playlistId={playlist._id}
-                      track={track}
-                      order={track.order}
-                      key={track._id}
-                    />
-                  )}
-                />
-              </TrackListContent>
-            </TrackList>
+                  />
+                </TrackListContent>
+              </TrackList>
+            </>
           )}
         </div>
       )}

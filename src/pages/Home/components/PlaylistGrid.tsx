@@ -1,3 +1,4 @@
+import PlaylistPlaceholder from '@/components/PlaylistPlaceholder';
 import TogglePlayBackAudio from '@/components/TogglePlayBackAudio';
 import { playlistServices } from '@/services/playlist';
 import { useQuery } from '@tanstack/react-query';
@@ -19,11 +20,16 @@ export default function PlaylistGrid() {
             key={playlist._id}
             className="group flex items-center col-span-6 relative rounded-sm bg-[#ffffff1a] hover:bg-[#FAFAFA33] overflow-hidden cursor-pointer"
           >
-            <img
-              className="w-12 h-12 object-cover"
-              src={playlist.coverImage}
-              alt={playlist.name}
-            />
+            {playlist.coverImage ? (
+              <img
+                className="w-12 h-12 object-cover"
+                src={playlist.coverImage}
+                alt={playlist.name}
+              />
+            ) : (
+              <PlaylistPlaceholder />
+            )}
+
             <h2 className="mx-2 text-sm font-semibold text-white">
               {playlist.name}
             </h2>

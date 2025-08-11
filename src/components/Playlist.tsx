@@ -5,6 +5,7 @@ import { Play, Volume2 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { Playlist as PlaylistType } from '@/types/playlist.type';
 import { useSong } from '@/store/song.store';
+import PlaylistPlaceholder from './PlaylistPlaceholder';
 
 export default function Playlist({ playlist }: { playlist: PlaylistType }) {
   const navigate = useNavigate();
@@ -49,9 +50,14 @@ export default function Playlist({ playlist }: { playlist: PlaylistType }) {
         </TooltipContent>
       </Tooltip>
 
-      <Avatar className="w-[48px] h-[48px] rounded-[4px] group-hover/playlist:opacity-60">
-        <AvatarImage src={playlist.coverImage} className="object-cover" />
-      </Avatar>
+      {playlist.coverImage ? (
+        <Avatar className="w-[48px] h-[48px] rounded-[4px] group-hover/playlist:opacity-60">
+          <AvatarImage src={playlist.coverImage} className="object-cover" />
+        </Avatar>
+      ) : (
+        <PlaylistPlaceholder />
+      )}
+
       <div>
         <h4
           className={clsx(

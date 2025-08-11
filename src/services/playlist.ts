@@ -20,5 +20,6 @@ export const playlistServices = {
       { songId }
     ),
   removeTrackFromPlaylist: ({ songId, playlistId }: Data) =>
-    http.delete(`me/playlists/${playlistId}/songs/${songId}`)
+    http.delete(`me/playlists/${playlistId}/songs/${songId}`),
+  createNewPlaylist: () => http.post('/me/playlists')
 };
