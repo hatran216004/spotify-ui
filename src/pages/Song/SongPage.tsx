@@ -11,9 +11,12 @@ import {
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip';
-import { CirclePlus, Ellipsis } from 'lucide-react';
+import { CirclePlus } from 'lucide-react';
 import { useSong } from '@/store/song.store';
 import TogglePlayBackAudio from '@/components/TogglePlayBackAudio';
+
+import InfoFooter from '@/layout/InfoFooter';
+import MenuOtps from '@/components/menu/MenuOtps';
 
 export default function SongPage() {
   const { songId } = useParams();
@@ -29,20 +32,18 @@ export default function SongPage() {
 
   // Set song data from api
   useEffect(() => {
-    if (currentSong && isPlaying) return;
+    if (currentSong) return;
 
     const songData = data?.data.data?.song;
     if (songData) {
       setCurrentSong(songData);
     }
-  }, [data, currentSong, isPlaying, setCurrentSong]);
+  }, [data, currentSong, setCurrentSong]);
 
   // Set background with main color of song image
   useEffect(() => {
-    if (!currentSong && !data?.data.data.song.imageUrl) return;
-
     const imgElement = imgRef.current;
-    if (!imgElement) return;
+    if ((!currentSong && !data?.data.data.song.imageUrl) || !imgElement) return;
 
     const colorThief = new ColorThief();
 
@@ -67,9 +68,8 @@ export default function SongPage() {
     );
 
   const song = data?.data.data.song || currentSong;
-
   return (
-    <>
+    <div className="h-full overflow-auto rounded-[10px]">
       {song && (
         <div
           style={{
@@ -92,7 +92,7 @@ export default function SongPage() {
               <div className="col-span-9">
                 <div className="space-y-5">
                   <span className="text-sm text-white font-medium">Song</span>
-                  <h1 className="text-7xl text-white font-bold truncate uppercase">
+                  <h1 className="text-6xl text-white font-bold truncate uppercase">
                     {song.title}
                   </h1>
                   <div className="flex items-center gap-2 text-white font-semibold text-sm">
@@ -127,7 +127,7 @@ export default function SongPage() {
               />
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button className="group p-1 cursor-pointer">
+                  <button className="group p-1 cursor-pointer outline-none">
                     <CirclePlus
                       size={32}
                       className="text-[#929092] group-hover:text-white group-hover:scale-[1.05]"
@@ -138,23 +138,13 @@ export default function SongPage() {
                   <p>Save to your library</p>
                 </TooltipContent>
               </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button className="group p-1 cursor-pointer">
-                    <Ellipsis
-                      size={32}
-                      className="text-[#929092] group-hover:text-white group-hover:scale-[1.05]"
-                    />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>More options for {song.title}</p>
-                </TooltipContent>
-              </Tooltip>
+
+              <MenuOtps tooltipText={song.title} />
             </div>
           </div>
         </div>
       )}
-    </>
+      <InfoFooter />
+    </div>
   );
 }

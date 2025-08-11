@@ -43,7 +43,7 @@ export default function TogglePlayBackAudio({
     <button
       onClick={handleClick}
       className={clsx(
-        'focus:none rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition-all duration-200',
+        'outline-none rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition-all duration-200',
         className,
         buttonCss[variant],
         buttonCss[size]

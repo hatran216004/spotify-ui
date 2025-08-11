@@ -8,10 +8,7 @@ export type Playlist = {
     username?: string;
   };
   isPublic?: boolean;
-  songs?: {
-    songId: Song;
-    order: number;
-  }[];
+  songs?: PlaylistItem[];
   totalDuration?: number;
   coverImage?: string;
   description?: string;
@@ -25,4 +22,10 @@ export type PlaylistList = {
     playCount: number;
     currentPage: number;
   };
+};
+
+export type PlaylistItem = {
+  songId: Song;
+  _id: string;
+  order: number;
 };

@@ -3,6 +3,19 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@theme {
+  --animate-playing-bars: playing-bars 1s infinite ease-in-out;
+  @keyframes playing-bars {
+    0%,
+    100% {
+      height: 4px;
+    }
+    50% {
+      height: 20px;
+    }
+  }
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -42,6 +55,7 @@
 }
 
 :root {
+  --spotify: #1db954;
   --now-playing-bar-height: 88px;
   --public-footer-height: 88px;
   --top-bar-height: 64px;

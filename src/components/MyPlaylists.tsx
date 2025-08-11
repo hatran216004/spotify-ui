@@ -1,24 +1,18 @@
-import { playlistServices } from '@/services/playlist';
-import { useQuery } from '@tanstack/react-query';
 import RenderList from './RenderList';
 import Playlist from './Playlist';
 import { Playlist as PlaylistType } from '@/types/playlist.type';
+import useMyPlaylists from '@/hooks/useMyPlaylists';
 
 export default function MyPlaylists() {
-  const { data, isLoading } = useQuery({
-    queryKey: ['my-playlists'],
-    queryFn: playlistServices.getMyPlaylists
-  });
+  const { myPlaylists, isLoading } = useMyPlaylists();
 
   if (isLoading) return null;
 
-  const playlists = data?.data.data.playlists;
-
   return (
     <div className="mt-5 mx-[6px] px-[6px] overflow-y-auto">
-      {!!playlists && (
+      {!!myPlaylists && (
         <RenderList
-          data={playlists}
+          data={myPlaylists}
           render={(playlist: PlaylistType) => (
             <Playlist key={playlist._id} playlist={playlist} />
           )}

@@ -6,17 +6,11 @@ export default function AudioPlayer({
 }: {
   audioRef: RefObject<HTMLAudioElement | null>;
 }) {
-  const {
-    currentSong,
-    audioElement,
-    currentTime,
-    isMute,
-    volume,
-    isLoop,
-    setIsPlayling
-  } = useSong();
+  const { currentSong, audioElement, isMute, volume, isLoop, setIsPlayling } =
+    useSong();
 
   useEffect(() => {
+    const currentTime = Number(localStorage.getItem('currentTime') || 0);
     if (currentTime && audioElement) {
       audioElement.currentTime = currentTime;
 
@@ -25,7 +19,6 @@ export default function AudioPlayer({
       } else {
         audioElement.volume = 0;
       }
-
       audioElement.loop = isLoop;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

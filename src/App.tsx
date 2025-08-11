@@ -18,7 +18,6 @@ import { useSong } from './store/song.store';
 import { useEffect, useRef } from 'react';
 import AdminPage from './pages/Auth/Admin/AdminPage';
 import AdminLayout from './layout/AdminLayout';
-import HomeLayout from './layout/HomeLayout';
 import PlaylistPage from './pages/PlaylistPage';
 
 function ProtecedRoute() {
@@ -62,30 +61,12 @@ export default function App() {
         <BrowserRouter>
           <Routes>
             <Route element={<MainLayout />}>
-              <Route
-                path="/"
-                element={
-                  <HomeLayout>
-                    <HomePage />
-                  </HomeLayout>
-                }
-              />
+              <Route path="/" element={<HomePage />} />
               <Route element={<ProtecedRoute />}>
-                <Route
-                  path="/songs/:songId"
-                  element={
-                    <HomeLayout>
-                      <SongPage />
-                    </HomeLayout>
-                  }
-                />
+                <Route path="/songs/:songId" element={<SongPage />} />
                 <Route
                   path="/playlists/:playlistId"
-                  element={
-                    <HomeLayout>
-                      <PlaylistPage />
-                    </HomeLayout>
-                  }
+                  element={<PlaylistPage />}
                 />
               </Route>
             </Route>

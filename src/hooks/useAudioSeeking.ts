@@ -5,7 +5,11 @@ function useAudioSeeking(
   progressRef: RefObject<HTMLDivElement | null>,
   type: 'volume' | 'playback' = 'playback'
 ) {
-  const { audioElement, setCurrentTime, setVolume } = useSong();
+  const [currentTime, setCurrentTime] = useState(() => {
+    const valeFromLocalStorage = localStorage.getItem('currentTime');
+    return valeFromLocalStorage ? Number(valeFromLocalStorage) : 0;
+  });
+  const { audioElement, setVolume } = useSong();
   const [isSeeking, setIsSeeking] = useState(false);
   const [progressValue, setProgressValue] = useState(0);
 
@@ -40,6 +44,10 @@ function useAudioSeeking(
     setIsSeeking(false);
     setProgressValue(value);
   };
+
+  useEffect(() => {
+    localStorage.setItem('currentTime', currentTime.toString());
+  }, [currentTime]);
 
   useEffect(() => {
     if (!isSeeking) return;
@@ -77,7 +85,7 @@ function useAudioSeeking(
     isSeeking,
     audioElement,
     progressValue,
-    setCurrentTime,
+    currentTime,
     calculateProgress,
     setVolume
   ]);
@@ -88,7 +96,8 @@ function useAudioSeeking(
     setProgressValue,
     calculateProgress,
     handleSeeking,
-    setIsSeeking
+    setIsSeeking,
+    setCurrentTime
   };
 }
 

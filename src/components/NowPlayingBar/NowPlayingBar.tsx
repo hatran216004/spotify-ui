@@ -6,18 +6,20 @@ import TrackInfo from './TrackInfo';
 import { useSong } from '@/store/song.store';
 import useAudioSeeking from '@/hooks/useAudioSeeking';
 import { trackTimeFormat } from '@/utils/datetime';
+import useControlsPlaylist from '@/hooks/useControlsPlaylist';
 
 export default function NowPlayingBar() {
   const progressRef = useRef<HTMLDivElement | null>(null);
-  const { audioElement, currentSong, setCurrentTime, setIsPlayling } =
-    useSong();
+  const { audioElement, currentSong, isShuffle, setIsPlayling } = useSong();
   const {
     isSeeking,
     progressValue,
     setProgressValue,
     handleSeeking,
-    setIsSeeking
+    setIsSeeking,
+    setCurrentTime
   } = useAudioSeeking(progressRef);
+  const { handleShuffle } = useControlsPlaylist();
 
   useEffect(() => {
     if (!audioElement) return;
@@ -35,6 +37,8 @@ export default function NowPlayingBar() {
       setIsPlayling(false);
       setCurrentTime(0);
       setProgressValue(0);
+
+      if (isShuffle) handleShuffle();
     };
 
     audioElement.addEventListener('timeupdate', handleTimeupdate);
@@ -49,9 +53,11 @@ export default function NowPlayingBar() {
     audioElement,
     isSeeking,
     currentSong,
+    isShuffle,
     setCurrentTime,
     setIsPlayling,
-    setProgressValue
+    setProgressValue,
+    handleShuffle
   ]);
 
   return (
@@ -62,8 +68,8 @@ export default function NowPlayingBar() {
         </div>
         <div className="space-y-2 w-[40%] max-w-full">
           <PlaybackControls />
-          <div className="flex items-center gap-2 cursor-pointer w-full">
-            <span className="text-xs text-[#929092]">
+          <div className="flex items-center gap-2 cursor-pointer w-full text-center">
+            <span className="text-xs text-[#929092] min-w-[30px]">
               {trackTimeFormat(audioElement?.currentTime || 0)}
             </span>
             <ProgressBar
@@ -73,7 +79,7 @@ export default function NowPlayingBar() {
               onSeeking={handleSeeking}
               onStartSeeking={() => setIsSeeking(true)}
             />
-            <span className="text-xs text-[#929092]">
+            <span className="text-xs text-[#929092] min-w-[30px] text-center">
               {trackTimeFormat(audioElement?.duration || 0)}
             </span>
           </div>

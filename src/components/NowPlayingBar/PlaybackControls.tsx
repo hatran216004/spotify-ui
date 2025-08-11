@@ -2,17 +2,29 @@ import { Repeat, Shuffle, SkipBack, SkipForward } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import TogglePlayBackAudio from '../TogglePlayBackAudio';
 import { useSong } from '@/store/song.store';
+import useControlsPlaylist from '@/hooks/useControlsPlaylist';
 
 export default function PlaybackControls() {
-  const { isPlaying, isLoop, togglePlayBack, toggleLoop } = useSong();
+  const {
+    isShuffle,
+    isPlaying,
+    isLoop,
+    togglePlayBack,
+    toggleLoop,
+    toggleShuffle
+  } = useSong();
+  const { handleSkipTrack } = useControlsPlaylist();
 
   return (
     <div className="flex items-center justify-center gap-4">
       <div className="flex items-center gap-2">
         <Tooltip>
           <TooltipTrigger asChild>
-            <button className="p-2 cursor-pointer hover:opacity-80">
-              <Shuffle size={18} color="#eee" />
+            <button
+              className="p-2 cursor-pointer hover:opacity-80"
+              onClick={toggleShuffle}
+            >
+              <Shuffle size={18} color={isShuffle ? '#1db954' : '#eee'} />
             </button>
           </TooltipTrigger>
           <TooltipContent>
@@ -22,7 +34,10 @@ export default function PlaybackControls() {
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <button className="p-2 cursor-pointer hover:opacity-80">
+            <button
+              className="p-2 cursor-pointer hover:opacity-80"
+              onClick={() => handleSkipTrack('prev')}
+            >
               <SkipBack size={18} fill="#eee" />
             </button>
           </TooltipTrigger>
@@ -41,7 +56,10 @@ export default function PlaybackControls() {
       <div className="flex items-center gap-2">
         <Tooltip>
           <TooltipTrigger asChild>
-            <button className="p-2 cursor-pointer hover:opacity-80">
+            <button
+              className="p-2 cursor-pointer hover:opacity-80"
+              onClick={() => handleSkipTrack('next')}
+            >
               <SkipForward size={18} fill="#eee" />
             </button>
           </TooltipTrigger>

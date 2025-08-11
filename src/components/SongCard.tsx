@@ -11,17 +11,13 @@ type SongCardType = {
   className?: string;
 } & HTMLAttributes<HTMLDivElement>;
 
-export default function SongCard({
-  song,
-  className = '',
-  ...rest
-}: SongCardType) {
+export default function SongCard({ song, className = '' }: SongCardType) {
   const navigate = useNavigate();
   const { isPlaying, currentSong, handlePlaySong } = useSong();
   const { isLogin } = useUserStore();
 
   return (
-    <div onClick={() => navigate(`/songs/${song?._id}`)} {...rest}>
+    <div onClick={() => navigate(`/songs/${song?._id}`)}>
       <div
         className={clsx(
           'group space-y-2 p-3 hover:bg-[#ffffff1a] transition-all duration-200 rounded-[6px] relative cursor-pointer',

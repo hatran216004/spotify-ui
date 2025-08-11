@@ -5,26 +5,30 @@ import { persist } from 'zustand/middleware';
 type SongState = {
   currentSong: Song | null;
   audioElement: HTMLAudioElement | null;
-  currentTime: number;
   volume: number;
+  currentPlaylistItemId: string | null;
+  currentPlaylistId: string | null;
 
   isPlaying: boolean;
   isMute: boolean;
   isLoop: boolean;
+  isShuffle: boolean;
 };
 
 type SongAction = {
   setCurrentSong: (song: Song | null) => void;
   setIsPlayling: (audioPlayState: boolean) => void;
   setAudioElement: (audio: HTMLAudioElement) => void;
-  setCurrentTime: (curretTime: number) => void;
   setVolume: (volume: number) => void;
+  setCurrentPlaylistItemId: (id: string) => void;
+  setCurrentPlaylistId: (id: string) => void;
 
   togglePlayBack: () => void;
   toggleMute: () => void;
   toggleLoop: () => void;
+  toggleShuffle: () => void;
   playSong: (song: Song) => void;
-  handlePlaySong: (song: Song) => void;
+  handlePlaySong: (song: Song, isPlayingExternalPlaylist?: boolean) => void;
 };
 
 type SongStore = SongState & SongAction;
@@ -34,19 +38,23 @@ export const useSong = create<SongStore>()(
     (set, get) => ({
       currentSong: null,
       audioElement: null,
-      currentTime: 0,
       volume: 0,
+      currentPlaylistItemId: null,
+      currentPlaylistId: null,
 
       isPlaying: false,
       isMute: false,
       isLoop: false,
+      isShuffle: false,
 
       setAudioElement: (audio) => set({ audioElement: audio }),
       setCurrentSong: (song) => set({ currentSong: song }),
-      setCurrentTime: (currentTime) => set({ currentTime }),
       setVolume: (volume) => set({ volume, isMute: volume <= 0 }),
       setIsPlayling: (audioPlayState) =>
         set(() => ({ isPlaying: audioPlayState })),
+      setCurrentPlaylistItemId: (currentPlaylistItemId) =>
+        set({ currentPlaylistItemId }),
+      setCurrentPlaylistId: (currentPlaylistId) => set({ currentPlaylistId }),
 
       togglePlayBack: () => {
         const { audioElement, isPlaying, currentSong } = get();
@@ -81,6 +89,11 @@ export const useSong = create<SongStore>()(
         }
         set({ isLoop: !isLoop });
       },
+      toggleShuffle: () => {
+        const { audioElement, isShuffle } = get();
+        if (!audioElement) return;
+        set({ isShuffle: !isShuffle });
+      },
       playSong: (song) => {
         const { audioElement } = get();
         if (!audioElement) return;
@@ -92,11 +105,17 @@ export const useSong = create<SongStore>()(
           set({ isPlaying: true });
         };
       },
-      handlePlaySong: (song: Song) => {
+      handlePlaySong: (song, isPlayingExternalPlaylist = false) => {
         if (!song) return;
-        const { currentSong, togglePlayBack, playSong } = get();
+
+        const { currentSong, audioElement, togglePlayBack, playSong } = get();
 
         const isSameSong = currentSong?._id === song?._id;
+
+        if (isSameSong && isPlayingExternalPlaylist) {
+          audioElement!.currentTime = 0;
+        }
+
         if (isSameSong) {
           togglePlayBack();
         } else {
@@ -106,12 +125,20 @@ export const useSong = create<SongStore>()(
     }),
     {
       name: 'track-storage',
-      partialize: ({ isMute, currentSong, currentTime, volume, isLoop }) => ({
+      partialize: ({
         isMute,
         currentSong,
-        currentTime,
+        volume,
         isLoop,
-        volume
+        isShuffle,
+        currentPlaylistId
+      }) => ({
+        isMute,
+        currentSong,
+        isLoop,
+        isShuffle,
+        volume,
+        currentPlaylistId
       })
     }
   )

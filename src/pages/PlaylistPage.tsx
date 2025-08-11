@@ -9,9 +9,7 @@ import {
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip';
-import { playlistServices } from '@/services/playlist';
 import { trackTimeFormat } from '@/utils/datetime';
-import { useQuery } from '@tanstack/react-query';
 import ColorThief from 'colorthief';
 import { Check, Ellipsis } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -27,6 +25,8 @@ import RenderList from '@/components/RenderList';
 import TrackItem from '@/components/TrackItem';
 import { useSong } from '@/store/song.store';
 import { Song } from '@/types/song.type';
+import InfoFooter from '@/layout/InfoFooter';
+import usePlaylistById from '@/hooks/usePlaylistById';
 
 export default function PlaylistPage() {
   const { playlistId } = useParams();
@@ -40,13 +40,15 @@ export default function PlaylistPage() {
       return viewMode ? viewMode : 'list';
     });
 
-  const { isPlaying, handlePlaySong } = useSong();
+  const {
+    isPlaying,
+    currentPlaylistItemId,
+    handlePlaySong,
+    togglePlayBack,
+    setCurrentPlaylistItemId
+  } = useSong();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['playlist', playlistId],
-    queryFn: () => playlistServices.getPlaylist(playlistId!),
-    enabled: !!playlistId
-  });
+  const { playlist, isLoading } = usePlaylistById(playlistId!);
 
   const handleChangeViewMode = () => {
     setPlaylistViewMode((prevMode) =>
@@ -55,7 +57,9 @@ export default function PlaylistPage() {
   };
 
   useEffect(() => {
-    const firstTrack = data?.data.data.playlist!.songs?.[0];
+    if (!playlist) return;
+
+    const firstTrack = playlist.songs?.[0];
     const imgElement = imgRef.current;
     if (!firstTrack || !imgElement) return;
 
@@ -70,13 +74,17 @@ export default function PlaylistPage() {
     return () => {
       imgElement.removeEventListener('load', handleLoad);
     };
-  }, [data]);
+  }, [playlist]);
 
   if (isLoading) return null;
-  const playlist = data?.data.data.playlist;
+  const itemPlaying = playlist!.songs?.some(
+    (entry) => entry._id === currentPlaylistItemId
+  );
+
+  const hasItemPlaying = isPlaying && itemPlaying;
 
   return (
-    <>
+    <div className="h-full overflow-auto rounded-[10px]">
       {playlist && (
         <div
           style={{
@@ -127,10 +135,15 @@ export default function PlaylistPage() {
           <div className="p-4">
             <div className="flex items-center gap-4">
               <TogglePlayBackAudio
-                isPlaying={isPlaying}
-                onPlayAudio={() =>
-                  handlePlaySong(playlist.songs?.[0].songId as Song)
-                }
+                isPlaying={isPlaying && hasItemPlaying}
+                onPlayAudio={() => {
+                  if (itemPlaying) {
+                    togglePlayBack();
+                  } else {
+                    handlePlaySong(playlist.songs?.[0].songId as Song);
+                    setCurrentPlaylistItemId(playlist.songs![0]?._id);
+                  }
+                }}
                 hasTooltip={false}
                 variant="primary"
                 size="lg"
@@ -197,6 +210,7 @@ export default function PlaylistPage() {
                   data={playlist.songs || []}
                   render={(track) => (
                     <TrackItem
+                      playlistId={playlist._id}
                       track={track}
                       order={track.order}
                       key={track._id}
@@ -208,6 +222,7 @@ export default function PlaylistPage() {
           )}
         </div>
       )}
-    </>
+      <InfoFooter />
+    </div>
   );
 }
