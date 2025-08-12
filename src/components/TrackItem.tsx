@@ -31,7 +31,7 @@ export default function TrackItem({
   const Icon = isItemPlaying ? Pause : Play;
 
   const handlePlayItem = () => {
-    // TODO: Nếu bài hát đang phát là bài hát click và ở 1 playlist khác thì phát lại từ đầu, ngược lại toggle
+    // Nếu bài hát đang phát là bài hát click và ở 1 playlist khác thì phát lại từ đầu, ngược lại toggle
     if (!currentPlaylistItemId) {
       handlePlaySong(track!.songId);
       setCurrentPlaylistItemId(track!._id);
@@ -45,18 +45,6 @@ export default function TrackItem({
       handlePlaySong(track!.songId, true);
     }
     setCurrentPlaylistItemId(track!._id);
-  };
-
-  const handleDragStart = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
-    console.log('start drag');
-  };
-
-  const handleDragging = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
-    console.log('dragging');
-  };
-
-  const handleDragEnd = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
-    console.log('end drag');
   };
 
   return (

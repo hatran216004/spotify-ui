@@ -21,8 +21,6 @@ import { PlaylistViewMode as PlaylistViewModeType } from '@/types/utils.type';
 import TrackListHeader from '@/components/TrackListHeader';
 import TrackList from '@/components/TrackList';
 import TrackListContent from '@/components/TrackListContent';
-import RenderList from '@/components/RenderList';
-import TrackItem from '@/components/TrackItem';
 import { useSong } from '@/store/song.store';
 import { Song } from '@/types/song.type';
 import InfoFooter from '@/layout/InfoFooter';
@@ -219,19 +217,10 @@ export default function PlaylistPage() {
               </div>
               <TrackList>
                 <TrackListHeader />
-                <TrackListContent>
-                  <RenderList
-                    data={playlist.songs || []}
-                    render={(track) => (
-                      <TrackItem
-                        playlistId={playlist._id}
-                        track={track}
-                        order={track.order}
-                        key={track._id}
-                      />
-                    )}
-                  />
-                </TrackListContent>
+                <TrackListContent
+                  playlistTracks={playlist.songs}
+                  playlistId={playlist._id}
+                />
               </TrackList>
             </>
           )}

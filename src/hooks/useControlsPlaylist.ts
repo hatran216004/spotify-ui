@@ -5,6 +5,7 @@ function useControlsPlaylist() {
   const {
     currentSong,
     currentPlaylistId,
+    isShuffle,
     handlePlaySong,
     setCurrentPlaylistItemId
   } = useSong();
@@ -44,6 +45,11 @@ function useControlsPlaylist() {
   };
 
   const handleSkipTrack = (direction: 'next' | 'prev') => {
+    if (isShuffle) {
+      handleShuffle();
+      return;
+    }
+
     const playlistTrackLength = getCurrentPlaylistLength();
     let currIndex = getCurrentTrackIndex();
 

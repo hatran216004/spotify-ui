@@ -1,7 +1,23 @@
+import { PlaylistItem } from '@/types/playlist.type';
+import TrackItem from './TrackItem';
+
 export default function TrackListContent({
-  children
+  playlistTracks,
+  playlistId
 }: {
-  children?: React.ReactNode;
+  playlistTracks?: PlaylistItem[];
+  playlistId?: string;
 }) {
-  return <ul className="py-2">{children}</ul>;
+  return (
+    <ul className="py-2">
+      {playlistTracks?.map((track) => (
+        <TrackItem
+          playlistId={playlistId}
+          track={track}
+          order={track.order}
+          key={track._id}
+        />
+      ))}
+    </ul>
+  );
 }
