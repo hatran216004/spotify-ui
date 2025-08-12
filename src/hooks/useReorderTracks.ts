@@ -1,5 +1,6 @@
-import { ParamsStartDragType, Tracks } from '@/components/TrackListContent';
+import { ParamsStartDragType } from '@/components/TrackListContent';
 import { initalDragState } from '@/config/init';
+import { PlaylistItem } from '@/types/playlist.type';
 import { DragState } from '@/types/utils.type';
 import { RefObject, useCallback, useEffect, useState } from 'react';
 
@@ -7,7 +8,7 @@ function useReorderTracks({
   playlistTracks,
   containerRef
 }: {
-  playlistTracks: Tracks;
+  playlistTracks: PlaylistItem[];
   containerRef: RefObject<HTMLElement | null>;
 }) {
   const [tracks, setTracks] = useState(playlistTracks);
@@ -39,7 +40,7 @@ function useReorderTracks({
         const elemntRelativeY = rect!.top - containerRect.top - 4; // -4 for padding top
         const elementMiddle = elemntRelativeY + rect.height / 2;
 
-        if (relativeY + rect.height / 2 < elementMiddle) {
+        if (relativeY < elementMiddle) {
           return i;
         }
       }

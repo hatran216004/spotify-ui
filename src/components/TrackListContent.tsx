@@ -11,13 +11,11 @@ export type ParamsStartDragType = {
   trackIndex: number;
 };
 
-export type Tracks = PlaylistItem[];
-
 export default function TrackListContent({
   playlistTracks,
   playlistId
 }: {
-  playlistTracks: Tracks;
+  playlistTracks: PlaylistItem[];
   playlistId: string;
 }) {
   const { mutate: reorder, isPending } = useMutation({
@@ -28,10 +26,10 @@ export default function TrackListContent({
   const {
     fromIndex,
     toIndex,
+    reorderTrackId,
     tracks,
     dragState,
     dropIndicatorIndex,
-    reorderTrackId,
     handleMouseDown,
     setFromIndex,
     setToIndex,

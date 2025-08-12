@@ -218,8 +218,8 @@ export default function PlaylistPage() {
               <TrackList>
                 <TrackListHeader />
                 <TrackListContent
-                  playlistTracks={playlist.songs}
-                  playlistId={playlist._id}
+                  playlistTracks={playlist.songs!}
+                  playlistId={playlist._id as string}
                 />
               </TrackList>
             </>

@@ -133,14 +133,16 @@ export const useSong = create<SongStore>()(
         volume,
         isLoop,
         isShuffle,
-        currentPlaylistId
+        currentPlaylistId,
+        currentPlaylistItemId
       }) => ({
         isMute,
         currentSong,
         isLoop,
         isShuffle,
         volume,
-        currentPlaylistId
+        currentPlaylistId,
+        currentPlaylistItemId
       })
     }
   )
