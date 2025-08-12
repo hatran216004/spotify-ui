@@ -8,7 +8,13 @@ function usePlaylistById(playlistId: string) {
     enabled: !!playlistId
   });
 
-  return { playlist: data?.data.data.playlist, isLoading, isError };
+  const tracks = data?.data.data.playlist.songs?.map((entry) => ({
+    ...entry.songId,
+    order: entry.order,
+    entryId: entry._id
+  }));
+
+  return { playlist: data?.data.data.playlist, isLoading, isError, tracks };
 }
 
 export default usePlaylistById;

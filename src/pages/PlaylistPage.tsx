@@ -28,9 +28,13 @@ import { Song } from '@/types/song.type';
 import InfoFooter from '@/layout/InfoFooter';
 import usePlaylistById from '@/hooks/usePlaylistById';
 import { FaMusic } from 'react-icons/fa';
+import { useUserStore } from '@/store/ui.store';
+import { useUser } from '@clerk/clerk-react';
 
 export default function PlaylistPage() {
   const { playlistId } = useParams();
+  const { user } = useUserStore();
+  const { user: clerkUser } = useUser();
   const imgRef = useRef<HTMLImageElement | null>(null);
   const [bgColor, setBgColor] = useState<[number, number, number]>();
   const [playlistViewMode, setPlaylistViewMode] =
@@ -122,7 +126,9 @@ export default function PlaylistPage() {
                   </h1>
                   <div className="flex items-center gap-2 text-white font-semibold text-sm">
                     <img
-                      src="https://i.pinimg.com/736x/5a/8b/4a/5a8b4ad79109e1c3d21d29cbd0a23ac8.jpg"
+                      src={
+                        user?.avatarUrl ? user.avatarUrl : clerkUser?.imageUrl
+                      }
                       alt=""
                       className="w-6 h-6 rounded-full object-cover"
                     />

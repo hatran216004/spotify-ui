@@ -1,13 +1,16 @@
 import TagButton from '@/components/TagButton';
-import clsx from 'clsx';
 
-export default function HomeHeader({ scrollValue }: { scrollValue?: number }) {
+export default function HomeHeader({
+  scrolling,
+  bgColor
+}: {
+  scrolling?: boolean;
+  bgColor?: string;
+}) {
   return (
     <header
-      className={clsx(
-        'h-[var(--home-header-height)] sticky z-1 top-0 left-0 right-0 transition-[background-color] duration-300',
-        scrollValue ? 'bg-[#432323]' : 'bg-transparent'
-      )}
+      style={{ background: scrolling ? bgColor : 'transparent' }}
+      className="h-[var(--home-header-height)] sticky z-1 top-0 left-0 right-0 transition-[background-color] duration-300"
     >
       <div className="px-10 h-full flex items-center gap-2">
         <TagButton className="bg-white text-black hover:opacity-90 hover:bg-white">

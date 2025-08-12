@@ -19,5 +19,6 @@ export const getRandomRGB = () => {
   const o = Math.round,
     r = Math.random,
     s = 255;
-  return 'rgb(' + o(r() * s) + ',' + o(r() * s) + ',' + o(r() * s) + ')';
+
+  return [o(r() * s), o(r() * s), o(r() * s), +r().toFixed(1)];
 };
