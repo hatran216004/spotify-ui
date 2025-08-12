@@ -28,7 +28,7 @@ export default function TopBarUser() {
 
   async function handleSignOut() {
     try {
-      await signOut({ redirectUrl: '/login' });
+      await signOut();
       setUser(null);
       setCurrentSong(null);
       naviage('/');

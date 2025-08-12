@@ -18,10 +18,12 @@ function useAudioSeeking(
       const progressElement = progressRef.current;
       if (!progressElement || !audioElement) return 0;
 
-      const { offsetWidth, offsetLeft } = progressElement;
+      const rectLeft = progressElement.getBoundingClientRect().left;
 
-      const coordinateXInProgress = clientX - offsetLeft;
-      const value = (coordinateXInProgress / offsetWidth) * 100;
+      const { offsetWidth } = progressElement;
+
+      const relativeXInProgress = clientX - rectLeft;
+      const value = (relativeXInProgress / offsetWidth) * 100;
 
       return Math.max(0, Math.min(100, value));
     },

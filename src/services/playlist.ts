@@ -21,5 +21,13 @@ export const playlistServices = {
     ),
   removeTrackFromPlaylist: ({ songId, playlistId }: Data) =>
     http.delete(`me/playlists/${playlistId}/songs/${songId}`),
-  createNewPlaylist: () => http.post('/me/playlists')
+  createNewPlaylist: () => http.post('/me/playlists'),
+  deletePlaylist: (id: string) => http.delete(`/me/playlists/${id}`),
+  reorderPlaylist: ({
+    id,
+    body
+  }: {
+    id: string;
+    body: { fromIndex: number; toIndex: number; songId: string };
+  }) => http.patch(`/me/playlists/${id}/reorder`, body)
 };

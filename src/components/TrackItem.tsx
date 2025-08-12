@@ -1,20 +1,26 @@
 import { trackTimeFormat } from '@/utils/datetime';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
-import { Grip, Pause, Play } from 'lucide-react';
+import { Pause, Play } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSong } from '@/store/song.store';
 import PlayingBarIcon from './PlayingBarIcon';
 import TrackItemMenu from './menu/TrackItemMenu';
 import { PlaylistItem } from '@/types/playlist.type';
+import { ParamsStartDragType } from './TrackListContent';
+
+type TrackItemType = {
+  track: PlaylistItem;
+  order: number;
+  ref?: (ele: HTMLLIElement | null) => void;
+  onMouseDown: ({ e, trackId, trackIndex }: ParamsStartDragType) => void;
+};
 
 export default function TrackItem({
   track,
-  order = 0
-}: {
-  playlistId?: string;
-  track?: PlaylistItem;
-  order?: number;
-}) {
+  order,
+  ref,
+  onMouseDown
+}: TrackItemType) {
   const {
     currentPlaylistItemId,
     isPlaying,
@@ -48,7 +54,18 @@ export default function TrackItem({
   };
 
   return (
-    <li className="group p-1 grid grid-cols-12 items-center hover:bg-[#2b2b2b] rounded-sm">
+    <li
+      data-track-row
+      onMouseDown={(e) =>
+        onMouseDown({
+          e,
+          trackId: track.songId._id!,
+          trackIndex: order
+        })
+      }
+      ref={ref}
+      className="group p-1 grid grid-cols-12 items-center hover:bg-[#2b2b2b] rounded-sm select-none"
+    >
       <div className="col-span-1 text-sm text-[#b3b3b3] flex justify-center">
         <div className="group-hover:hidden">
           {isItemPlaying ? <PlayingBarIcon /> : order + 1}
@@ -102,12 +119,6 @@ export default function TrackItem({
             tooltipText={track?.songId.title}
             songId={track?.songId._id}
           />
-          <button className="opacity-0 invisible group-hover:opacity-100 group-hover:visible">
-            <Grip
-              size={18}
-              className="text-[#929092] group-hover:text-white cursor-pointer"
-            />
-          </button>
         </div>
       </div>
     </li>
