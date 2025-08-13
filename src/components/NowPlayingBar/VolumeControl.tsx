@@ -1,19 +1,19 @@
 import { useSong } from '@/store/song.store';
 import { TooltipTrigger, Tooltip, TooltipContent } from '../ui/tooltip';
-import ProgressBar from './ProgressBar';
 import { useEffect, useRef } from 'react';
 import useAudioSeeking from '@/hooks/useAudioSeeking';
 import { Volume2, VolumeX } from 'lucide-react';
+import clsx from 'clsx';
 
 export default function VolumeControl() {
   const { isMute, volume, toggleMute } = useSong();
   const volumeProgressRef = useRef<HTMLDivElement | null>(null);
   const {
     isSeeking,
-    setIsSeeking,
-    handleSeeking,
+    progressValue,
     setProgressValue,
-    progressValue
+    handleSeeking,
+    setIsSeeking
   } = useAudioSeeking(volumeProgressRef, 'volume');
 
   const Icon = !isMute ? Volume2 : VolumeX;
@@ -45,14 +45,31 @@ export default function VolumeControl() {
         </TooltipTrigger>
         <TooltipContent>{!isMute ? <p>Mute</p> : <p>Unmute</p>}</TooltipContent>
       </Tooltip>
-      <ProgressBar
-        type="volume"
-        isSeeking={isSeeking}
-        progressValue={progressValue}
-        progressRef={volumeProgressRef}
-        onSeeking={handleSeeking}
-        onStartSeeking={() => setIsSeeking(true)}
-      />
+      <div
+        className="group py-1 flex-1"
+        onMouseDown={() => setIsSeeking(true)}
+        onMouseUp={(e) => handleSeeking(e.clientX)}
+      >
+        <div
+          ref={volumeProgressRef}
+          className="h-1 rounded-full bg-gray-500 w-[94px]"
+        >
+          <div
+            className={clsx(
+              'h-1 relative rounded-full group-hover:bg-[#1db954]',
+              isSeeking ? 'bg-[#1db954]' : 'bg-white'
+            )}
+            style={{ width: `${progressValue}%` }}
+          >
+            <span
+              className={clsx(
+                'absolute w-3 h-3 bg-transparent rounded-full group-hover:bg-white translate-x-1/2 -translate-y-1/2 top-1/2 right-0 shadow-2xl',
+                isSeeking && 'bg-white'
+              )}
+            ></span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -17,7 +17,7 @@ import { useParams } from 'react-router-dom';
 import { TfiMenuAlt } from 'react-icons/tfi';
 import { HiMenu } from 'react-icons/hi';
 import MenuItem from '@/components/MenuItem';
-import { PlaylistViewMode as PlaylistViewModeType } from '@/types/utils.type';
+import { type ViewMode } from '@/types/utils.type';
 import TrackListHeader from '@/components/TrackListHeader';
 import TrackList from '@/components/TrackList';
 import TrackListContent from '@/components/TrackListContent';
@@ -35,36 +35,54 @@ export default function PlaylistPage() {
   const { user: clerkUser } = useUser();
   const imgRef = useRef<HTMLImageElement | null>(null);
   const [bgColor, setBgColor] = useState<[number, number, number]>();
-  const [playlistViewMode, setPlaylistViewMode] =
-    useState<PlaylistViewModeType>(() => {
-      const viewMode = JSON.parse(
-        localStorage.getItem('playlist_view-mode') as PlaylistViewModeType
-      );
-      return viewMode ? viewMode : 'list';
-    });
+
+  const [viewMode, setViewMode] = useState<ViewMode>(() => {
+    const value = localStorage.getItem('playlist_view_mode') as ViewMode;
+    return value ? value : 'list';
+  });
 
   const {
     isPlaying,
     currentPlaylistItemId,
     handlePlaySong,
     togglePlayBack,
-    setCurrentPlaylistItemId
+    setCurrentPlaylistItemId,
+    setCurrentPlaylistId,
+    setContext
   } = useSong();
 
   const { playlist, isLoading } = usePlaylistById(playlistId!);
 
   const handleChangeViewMode = () => {
-    setPlaylistViewMode((prevMode) =>
-      prevMode === 'list' ? 'compact' : 'list'
-    );
+    setViewMode((prev) => {
+      const value = prev === 'list' ? 'compact' : 'list';
+      localStorage.setItem('playlist_view_mode', value);
+      return value;
+    });
+  };
+
+  const handlePlay = () => {
+    if (!playlist) return;
+
+    if (itemPlaying) {
+      togglePlayBack();
+    } else {
+      handlePlaySong(playlist.songs?.[0].songId as Song, false);
+      setCurrentPlaylistItemId(playlist.songs![0]?._id);
+      setCurrentPlaylistId(playlistId!);
+    }
   };
 
   useEffect(() => {
     if (!playlist) return;
+    setContext({ type: 'playlist', id: playlist._id! });
+  }, [playlist, setContext]);
 
-    const firstTrack = playlist.songs?.[0];
+  useEffect(() => {
+    if (!playlist) return;
+
     const imgElement = imgRef.current;
-    if (!firstTrack || !imgElement) return;
+    if (!imgElement) return;
 
     const colorThief = new ColorThief();
 
@@ -86,6 +104,8 @@ export default function PlaylistPage() {
 
   const hasItemPlaying = isPlaying && itemPlaying;
   const playlistTrackLength = playlist?.songs?.length || 0;
+  const viewList = viewMode === 'list';
+  const viewCompact = viewMode === 'compact';
 
   return (
     <div className="h-full overflow-auto rounded-[10px]">
@@ -150,14 +170,7 @@ export default function PlaylistPage() {
                 <div className="flex items-center gap-4">
                   <TogglePlayBackAudio
                     isPlaying={isPlaying && hasItemPlaying}
-                    onPlayAudio={() => {
-                      if (itemPlaying) {
-                        togglePlayBack();
-                      } else {
-                        handlePlaySong(playlist.songs?.[0].songId as Song);
-                        setCurrentPlaylistItemId(playlist.songs![0]?._id);
-                      }
-                    }}
+                    onPlayAudio={handlePlay}
                     hasTooltip={false}
                     variant="primary"
                     size="lg"
@@ -180,7 +193,8 @@ export default function PlaylistPage() {
                   <Popover>
                     <PopoverTrigger asChild>
                       <button className="font-semibold flex items-center gap-2 text-sm text-[#929092] hover:text-white cursor-pointer ml-auto">
-                        List <TfiMenuAlt />
+                        {viewMode === 'list' ? 'List' : 'Compact'}{' '}
+                        <TfiMenuAlt />
                       </button>
                     </PopoverTrigger>
                     <PopoverContent align="end">
@@ -189,27 +203,19 @@ export default function PlaylistPage() {
                         icon={<HiMenu />}
                         iconSide="start"
                         onClick={handleChangeViewMode}
-                        className={`${
-                          playlistViewMode === 'compact' ? 'text-green-500' : ''
-                        }`}
+                        className={`${viewCompact ? 'text-green-500' : ''}`}
                       >
                         Compact
-                        {playlistViewMode === 'compact' && (
-                          <Check className="ml-auto" size={18} />
-                        )}
+                        {viewCompact && <Check className="ml-auto" size={18} />}
                       </MenuItem>
                       <MenuItem
                         icon={<TfiMenuAlt />}
                         iconSide="start"
                         onClick={handleChangeViewMode}
-                        className={`${
-                          playlistViewMode === 'list' ? 'text-green-500' : ''
-                        }`}
+                        className={`${viewList ? 'text-green-500' : ''}`}
                       >
                         List
-                        {playlistViewMode === 'list' && (
-                          <Check className="ml-auto" size={18} />
-                        )}
+                        {viewList && <Check className="ml-auto" size={18} />}
                       </MenuItem>
                     </PopoverContent>
                   </Popover>

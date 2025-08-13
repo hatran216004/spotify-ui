@@ -11,7 +11,7 @@ import { songServices } from '@/services/song';
 import { useUserStore } from '@/store/ui.store';
 import { useQuery } from '@tanstack/react-query';
 
-export default function RecommendedCarouselList() {
+export default function RecommendedList() {
   const { isLogin } = useUserStore();
 
   const { data, isLoading } = useQuery({

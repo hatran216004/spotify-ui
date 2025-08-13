@@ -107,7 +107,7 @@ export default function TrackListContent({
 
             return (
               <div className="p-1 flex items-center gap-2 text-sm text-nowrap">
-                <h3>{track.songId.title}</h3>
+                <h3>{track.songId.title}</h3> •
                 <h3>{track.songId.artists![0].name}</h3>
               </div>
             );

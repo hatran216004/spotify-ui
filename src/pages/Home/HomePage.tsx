@@ -1,19 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import HomeHeader from './components/HomeHeader';
 import PlaylistGrid from './components/PlaylistGrid';
-import RecommendedCarouselList from './components/RecommendedCarouselList';
+import RecommendedList from './components/RecommendedList';
 import clsx from 'clsx';
 import TopTrending from './components/TopTrending';
 import InfoFooter from '@/layout/InfoFooter';
-import { getRandomRGB } from '@/utils/helpers';
+import { getRandomColor } from '@/utils/helpers';
+import PopularArtists from './components/PopularArtists';
 
 const THERESHOLD = 50;
 
 export default function HomePage() {
-  const [bgColor, setBgColor] = useState([0, 0, 0, 0]);
   const [scrolling, setScrolling] = useState(false);
   const [hasScrollbar, setHasScrollbar] = useState(false);
   const mainRef = useRef<HTMLElement | null>(null);
+  const bgColor = useRef(getRandomColor());
 
   useEffect(() => {
     const el = mainRef.current;
@@ -21,10 +22,6 @@ export default function HomePage() {
 
     const { scrollHeight, clientHeight } = el;
     setHasScrollbar(scrollHeight > clientHeight);
-  }, []);
-
-  useEffect(() => {
-    setBgColor(getRandomRGB());
   }, []);
 
   return (
@@ -39,19 +36,15 @@ export default function HomePage() {
           hasScrollbar ? 'to-30%' : 'to-40%'
         )}
         style={{
-          backgroundImage: `linear-gradient(to bottom, rgba(${bgColor.join(
-            ','
-          )}) 0%, #121212 60%)`
+          backgroundImage: `linear-gradient(to bottom, ${bgColor.current} 0%, #121212 60%)`
         }}
       >
-        <HomeHeader
-          scrolling={scrolling}
-          bgColor={`rgb(${[bgColor[0], bgColor[1], bgColor[2]].join(',')})`}
-        />
+        <HomeHeader scrolling={scrolling} bgColor={bgColor.current} />
         <div className="px-10">
           <PlaylistGrid />
-          <RecommendedCarouselList />
+          <RecommendedList />
           <TopTrending />
+          <PopularArtists />
         </div>
       </section>
       <InfoFooter />

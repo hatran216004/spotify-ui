@@ -10,12 +10,7 @@ import PlaylistPlaceholder from './PlaylistPlaceholder';
 export default function Playlist({ playlist }: { playlist: PlaylistType }) {
   const navigate = useNavigate();
   const { playlistId } = useParams();
-  const {
-    isPlaying,
-    currentPlaylistItemId,
-    currentSong,
-    setCurrentPlaylistId
-  } = useSong();
+  const { isPlaying, currentPlaylistItemId, currentSong } = useSong();
 
   const isActive = playlistId === playlist._id;
   const x = playlist.songs?.some(
@@ -28,7 +23,6 @@ export default function Playlist({ playlist }: { playlist: PlaylistType }) {
 
   const handleClick = () => {
     navigate(`/playlists/${playlist._id}`);
-    setCurrentPlaylistId(playlist._id!);
   };
 
   return (

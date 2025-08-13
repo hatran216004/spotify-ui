@@ -19,6 +19,7 @@ import { useEffect, useRef } from 'react';
 import AdminPage from './pages/Auth/Admin/AdminPage';
 import AdminLayout from './layout/AdminLayout';
 import PlaylistPage from './pages/PlaylistPage';
+import ArtistPage from './pages/ArtistPage';
 
 function ProtecedRoute() {
   const { user } = useUserStore();
@@ -68,6 +69,7 @@ export default function App() {
                   path="/playlists/:playlistId"
                   element={<PlaylistPage />}
                 />
+                <Route path="/artists/:artistId" element={<ArtistPage />} />
               </Route>
             </Route>
 

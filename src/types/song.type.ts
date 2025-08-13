@@ -27,6 +27,8 @@ export type Song = {
   updatedAt?: string;
 };
 
+export type CurrentTracks = { song: Song; _id: string }[];
+
 export type ListSongs = {
   songs: Song[];
 };

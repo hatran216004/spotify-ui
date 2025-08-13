@@ -12,3 +12,7 @@ export type Artist = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type ArtistList = {
+  artists: Artist[];
+};

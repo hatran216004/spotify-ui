@@ -1,25 +1,17 @@
 import { useSong } from '@/store/song.store';
-import usePlaylistById from './usePlaylistById';
+import { type CurrentTracks } from '@/types/song.type';
 
-function useControlsPlaylist() {
-  const {
-    currentSong,
-    currentPlaylistId,
-    isShuffle,
-    handlePlaySong,
-    setCurrentPlaylistItemId
-  } = useSong();
-  const { playlist, isError } = usePlaylistById(currentPlaylistId!);
+function useControlsPlayer(currentTracks: CurrentTracks = []) {
+  const { currentSong, isShuffle, handlePlaySong, setCurrentPlaylistItemId } =
+    useSong();
 
-  const getCurrentPlaylistLength = () => playlist?.songs!.length || 0;
+  const getCurrentPlaylistLength = () => currentTracks?.length || 0;
 
   const getCurrentTrackIndex = () => {
-    if (!playlist || isError) return -1;
-    const currIndex = playlist?.songs?.findIndex(
-      (s) => s.songId._id === currentSong?._id
+    if (!currentTracks) return -1;
+    const currIndex = currentTracks?.findIndex(
+      (s) => s.song._id === currentSong?._id
     );
-
-    if (currIndex === -1) return -1;
     return currIndex;
   };
 
@@ -27,7 +19,7 @@ function useControlsPlaylist() {
     const currIndex = getCurrentTrackIndex();
     const playlistTrackLength = getCurrentPlaylistLength();
 
-    if (playlistTrackLength === 1) return 0;
+    if (playlistTrackLength <= 1 || currIndex === -1) return 0;
 
     let randomIndex = null;
 
@@ -39,8 +31,8 @@ function useControlsPlaylist() {
 
   const handleShuffle = () => {
     const randomIndex = getRandomIndex();
-    const nextTrackPlay = playlist!.songs![randomIndex];
-    handlePlaySong(nextTrackPlay.songId);
+    const nextTrackPlay = currentTracks![randomIndex];
+    handlePlaySong(nextTrackPlay.song);
     setCurrentPlaylistItemId(nextTrackPlay._id);
   };
 
@@ -55,18 +47,14 @@ function useControlsPlaylist() {
 
     if (currIndex === -1) return;
 
-    if (direction === 'next') {
-      currIndex! += 1;
-    } else {
-      currIndex! -= 1;
-    }
+    currIndex += direction === 'next' ? 1 : -1;
     const newIndex = (currIndex! + playlistTrackLength) % playlistTrackLength;
-    const nextTrackPlay = playlist!.songs![newIndex];
-    handlePlaySong(nextTrackPlay.songId);
+    const nextTrackPlay = currentTracks![newIndex];
+    handlePlaySong(nextTrackPlay.song);
     setCurrentPlaylistItemId(nextTrackPlay._id);
   };
 
   return { handleShuffle, handleSkipTrack };
 }
 
-export default useControlsPlaylist;
+export default useControlsPlayer;

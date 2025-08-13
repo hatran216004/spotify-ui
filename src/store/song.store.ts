@@ -2,12 +2,18 @@ import { Song } from '@/types/song.type';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+type Context = {
+  type: 'album' | 'playlist' | 'tracks' | 'none';
+  id: string | null;
+};
+
 type SongState = {
   currentSong: Song | null;
   audioElement: HTMLAudioElement | null;
   volume: number;
   currentPlaylistItemId: string | null;
   currentPlaylistId: string | null;
+  context: Context;
 
   isPlaying: boolean;
   isMute: boolean;
@@ -22,6 +28,7 @@ type SongAction = {
   setVolume: (volume: number) => void;
   setCurrentPlaylistItemId: (id: string) => void;
   setCurrentPlaylistId: (id: string) => void;
+  setContext: (context: Context) => void;
 
   togglePlayBack: () => void;
   toggleMute: () => void;
@@ -41,6 +48,7 @@ export const useSong = create<SongStore>()(
       volume: 0,
       currentPlaylistItemId: null,
       currentPlaylistId: null,
+      context: { type: 'none', id: null },
 
       isPlaying: false,
       isMute: false,
@@ -55,6 +63,7 @@ export const useSong = create<SongStore>()(
       setCurrentPlaylistItemId: (currentPlaylistItemId) =>
         set({ currentPlaylistItemId }),
       setCurrentPlaylistId: (currentPlaylistId) => set({ currentPlaylistId }),
+      setContext: (context) => set({ context }),
 
       togglePlayBack: () => {
         const { audioElement, isPlaying, currentSong } = get();
@@ -134,7 +143,8 @@ export const useSong = create<SongStore>()(
         isLoop,
         isShuffle,
         currentPlaylistId,
-        currentPlaylistItemId
+        currentPlaylistItemId,
+        context
       }) => ({
         isMute,
         currentSong,
@@ -142,7 +152,8 @@ export const useSong = create<SongStore>()(
         isShuffle,
         volume,
         currentPlaylistId,
-        currentPlaylistItemId
+        currentPlaylistItemId,
+        context
       })
     }
   )

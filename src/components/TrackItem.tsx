@@ -1,7 +1,7 @@
 import { trackTimeFormat } from '@/utils/datetime';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { Pause, Play } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useSong } from '@/store/song.store';
 import PlayingBarIcon from './PlayingBarIcon';
 import TrackItemMenu from './menu/TrackItemMenu';
@@ -21,13 +21,18 @@ export default function TrackItem({
   ref,
   onMouseDown
 }: TrackItemType) {
+  const viewMode = localStorage.getItem('playlist_view_mode') || 'list';
+  const isViewCompact = viewMode === 'compact';
+  const { playlistId } = useParams();
+
   const {
     currentPlaylistItemId,
     isPlaying,
     currentSong,
     setCurrentPlaylistItemId,
     togglePlayBack,
-    handlePlaySong
+    handlePlaySong,
+    setCurrentPlaylistId
   } = useSong();
 
   const isItemPlaying =
@@ -51,6 +56,7 @@ export default function TrackItem({
       handlePlaySong(track!.songId, true);
     }
     setCurrentPlaylistItemId(track!._id);
+    setCurrentPlaylistId(playlistId!);
   };
 
   return (
@@ -86,11 +92,14 @@ export default function TrackItem({
       </div>
       <div className="col-span-5">
         <div className="flex items-center gap-4">
-          <img
-            className="w-10 h-10 object-cover rounded-sm flex-shrink-0"
-            src={track?.songId.imageUrl}
-            alt={track?.songId.title}
-          />
+          {!isViewCompact && (
+            <img
+              className="w-10 h-10 object-cover rounded-sm flex-shrink-0"
+              src={track?.songId.imageUrl}
+              alt={track?.songId.title}
+            />
+          )}
+
           <div className="flex flex-col text-[1rem] capitalize">
             <Link
               to={`/songs/${track?.songId._id}`}
@@ -98,9 +107,11 @@ export default function TrackItem({
             >
               {track?.songId.title}
             </Link>
-            <h3 className="text-[#b3b3b3] text-sm">
-              {track?.songId.artists?.[0].name}
-            </h3>
+            {!isViewCompact && (
+              <h3 className="text-[#b3b3b3] text-sm">
+                {track?.songId.artists?.[0].name}
+              </h3>
+            )}
           </div>
         </div>
       </div>

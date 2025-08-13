@@ -2,18 +2,33 @@ import { Repeat, Shuffle, SkipBack, SkipForward } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import TogglePlayBackAudio from '../TogglePlayBackAudio';
 import { useSong } from '@/store/song.store';
-import useControlsPlaylist from '@/hooks/useControlsPlaylist';
+import useControlsPlayer from '@/hooks/useControlsPlayer';
+import { useQuery } from '@tanstack/react-query';
+import { playlistServices } from '@/services/playlist';
 
 export default function PlaybackControls() {
   const {
     isShuffle,
     isPlaying,
     isLoop,
+    context,
     togglePlayBack,
     toggleLoop,
     toggleShuffle
   } = useSong();
-  const { handleSkipTrack } = useControlsPlaylist();
+
+  const { data } = useQuery({
+    queryKey: ['playlist', context.id],
+    queryFn: () => playlistServices.getPlaylist(context.id!),
+    enabled: context.type === 'playlist' && !!context.id
+  });
+
+  const currentTracks = data?.data.data.playlist?.songs?.map((s) => ({
+    song: s.songId,
+    _id: s._id
+  }));
+
+  const { handleSkipTrack } = useControlsPlayer(currentTracks);
 
   return (
     <div className="flex items-center justify-center gap-4">

@@ -148,6 +148,10 @@ function useReorderTracks({
   );
 
   useEffect(() => {
+    setTracks(playlistTracks);
+  }, [playlistTracks]);
+
+  useEffect(() => {
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
