@@ -1,5 +1,5 @@
 import RenderList from '@/components/RenderList';
-import SongCard from '@/components/SongCard';
+import TrackCard from '@/components/TrackCard';
 import {
   Carousel,
   CarouselContent,
@@ -7,7 +7,7 @@ import {
   CarouselPrevious,
   CarouselItem
 } from '@/components/ui/carousel';
-import { songServices } from '@/services/song';
+import { trackServices } from '@/services/track';
 import { useUserStore } from '@/store/ui.store';
 import { useQuery } from '@tanstack/react-query';
 
@@ -15,13 +15,13 @@ export default function RecommendedList() {
   const { isLogin } = useUserStore();
 
   const { data, isLoading } = useQuery({
-    queryKey: ['recommended-songs'],
-    queryFn: songServices.getRecommendedSongs,
+    queryKey: ['recommended-tracks'],
+    queryFn: trackServices.getRecommendedTracks,
     enabled: !!isLogin
   });
 
   if (isLoading || !isLogin) return null;
-  const songs = data?.data.data.songs;
+  const tracks = data?.data.data.tracks;
 
   return (
     <section>
@@ -37,13 +37,13 @@ export default function RecommendedList() {
       >
         <CarouselContent>
           <RenderList
-            data={songs}
-            render={(song) => (
+            data={tracks}
+            render={(track) => (
               <CarouselItem
-                key={song._id}
+                key={track._id}
                 className="sm:basis-1/2 md:basis-1/3 xl:basis-1/4"
               >
-                <SongCard song={song} />
+                <TrackCard track={track} />
               </CarouselItem>
             )}
           />

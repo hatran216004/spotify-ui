@@ -1,19 +1,19 @@
-import { Song } from './song.type';
+import { Track } from './track.type';
 
 export type Playlist = {
-  _id?: string;
-  name?: string;
-  userId?: {
-    _id?: string;
-    username?: string;
+  _id: string;
+  name: string;
+  user: {
+    _id: string;
+    username: string;
   };
-  isPublic?: boolean;
-  songs?: PlaylistItem[];
-  totalDuration?: number;
-  coverImage?: string;
-  description?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  isPublic: boolean;
+  tracks: PlaylistTrack[];
+  totalDuration: number;
+  coverImage: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type PlaylistList = {
@@ -24,8 +24,7 @@ export type PlaylistList = {
   };
 };
 
-export type PlaylistItem = {
-  songId: Song;
-  _id: string;
+export type PlaylistTrack = {
+  track: Track;
   order: number;
 };

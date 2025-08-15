@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useSignIn } from '@clerk/clerk-react';
+import { useAuth, useSignIn } from '@clerk/clerk-react';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { isAxiosError } from 'axios';
@@ -24,6 +24,7 @@ import { Button } from '@/components/ui/button';
 type FormData = LoginSchema;
 
 export default function Login() {
+  const { signOut } = useAuth();
   const {
     formState: { errors },
     register,
@@ -76,7 +77,7 @@ export default function Login() {
               toast.success('Login successfully');
             }
           },
-          onError: (error: unknown) => {
+          onError: async (error: unknown) => {
             console.log(error);
             if (isAxiosError(error)) {
               const errorMessage = (error.response?.data as ErrorResponseApi)
@@ -85,6 +86,7 @@ export default function Login() {
                 errorMessage || 'Fail to login. Please try again later 😟'
               );
             }
+            await signOut();
           }
         });
       }

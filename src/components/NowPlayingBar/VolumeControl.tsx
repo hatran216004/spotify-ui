@@ -1,54 +1,36 @@
-import { useSong } from '@/store/song.store';
 import { TooltipTrigger, Tooltip, TooltipContent } from '../ui/tooltip';
-import { useEffect, useRef } from 'react';
-import useAudioSeeking from '@/hooks/useAudioSeeking';
+import { useRef } from 'react';
+import useAudioProgressAndVolume from '@/hooks/useAudioProgressAndVolume';
 import { Volume2, VolumeX } from 'lucide-react';
 import clsx from 'clsx';
 
 export default function VolumeControl() {
-  const { isMute, volume, toggleMute } = useSong();
   const volumeProgressRef = useRef<HTMLDivElement | null>(null);
   const {
     isSeeking,
-    progressValue,
-    setProgressValue,
-    handleSeeking,
-    setIsSeeking
-  } = useAudioSeeking(volumeProgressRef, 'volume');
+    volume,
+    handleControlMouseUp,
+    setIsSeeking,
+    toggleVolume
+  } = useAudioProgressAndVolume(volumeProgressRef, 'volume');
 
-  const Icon = !isMute ? Volume2 : VolumeX;
+  const isMute = volume === 0;
+  const Icon = isMute ? VolumeX : Volume2;
 
-  useEffect(() => {
-    if (isMute) {
-      setProgressValue(0);
-    } else {
-      setProgressValue(volume * 100);
-    }
-  }, [volume, isMute, setProgressValue]);
   return (
     <div className="flex items-center cursor-pointer">
       <Tooltip>
         <TooltipTrigger asChild>
-          <button
-            className="p-2 hover:opacity-80"
-            onClick={() => {
-              toggleMute();
-              if (!isMute) {
-                setProgressValue(0);
-              } else {
-                setProgressValue(volume * 100);
-              }
-            }}
-          >
+          <button className="p-2 hover:opacity-80" onClick={toggleVolume}>
             <Icon size={18} color="#eee" />
           </button>
         </TooltipTrigger>
-        <TooltipContent>{!isMute ? <p>Mute</p> : <p>Unmute</p>}</TooltipContent>
+        <TooltipContent>{isMute ? <p>Mute</p> : <p>Unmute</p>}</TooltipContent>
       </Tooltip>
       <div
         className="group py-1 flex-1"
         onMouseDown={() => setIsSeeking(true)}
-        onMouseUp={(e) => handleSeeking(e.clientX)}
+        onMouseUp={(e) => handleControlMouseUp(e.clientX)}
       >
         <div
           ref={volumeProgressRef}
@@ -59,7 +41,7 @@ export default function VolumeControl() {
               'h-1 relative rounded-full group-hover:bg-[#1db954]',
               isSeeking ? 'bg-[#1db954]' : 'bg-white'
             )}
-            style={{ width: `${progressValue}%` }}
+            style={{ width: `${isMute ? 0 : volume}%` }}
           >
             <span
               className={clsx(

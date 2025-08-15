@@ -8,8 +8,8 @@ function usePlaylistById(playlistId: string) {
     enabled: !!playlistId
   });
 
-  const tracks = data?.data.data.playlist.songs?.map((entry) => ({
-    ...entry.songId,
+  const tracks = data?.data.data.playlist.tracks?.map((entry) => ({
+    ...entry.trackId,
     order: entry.order,
     entryId: entry._id
   }));

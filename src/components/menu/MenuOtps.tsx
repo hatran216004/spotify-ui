@@ -20,7 +20,7 @@ import { useParams } from 'react-router-dom';
 
 export default function MenuOtps({ tooltipText }: { tooltipText?: string }) {
   const { myPlaylists } = useMyPlaylists();
-  const { songId } = useParams();
+  const { trackId } = useParams();
   const { handleAddToPlaylist } = useAddTrackToPlaylist();
 
   return (
@@ -63,7 +63,7 @@ export default function MenuOtps({ tooltipText }: { tooltipText?: string }) {
                   <DropdownMenuItem
                     key={item._id}
                     onClick={() =>
-                      handleAddToPlaylist({ playlistId: item._id, songId })
+                      handleAddToPlaylist({ playlistId: item._id, trackId })
                     }
                   >
                     {item.name}

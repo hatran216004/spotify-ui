@@ -1,3 +1,3 @@
-export default function SongSkeleton() {
-  return <div>SongSkeleton</div>;
+export default function TrackSkeleton() {
+  return <div>TrackSkeleton</div>;
 }

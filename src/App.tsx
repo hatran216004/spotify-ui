@@ -12,14 +12,17 @@ import { Toaster } from 'react-hot-toast';
 import { useUserStore } from './store/ui.store';
 import { TooltipProvider } from './components/ui/tooltip';
 import AudioPlayer from './components/AudioPlayer';
-import SongPage from './pages/Song/SongPage';
+import TrackPage from './pages/Track/TrackPage';
 import HomePage from './pages/Home/HomePage';
-import { useSong } from './store/song.store';
-import { useEffect, useRef } from 'react';
+import { useTrack } from './store/track.store';
+import { useEffect } from 'react';
 import AdminPage from './pages/Auth/Admin/AdminPage';
 import AdminLayout from './layout/AdminLayout';
 import PlaylistPage from './pages/PlaylistPage';
-import ArtistPage from './pages/ArtistPage';
+import ArtistPage from './pages/Artist/ArtistPage';
+import { playerServices } from './services/player';
+import { useQuery } from '@tanstack/react-query';
+import { useCurrentPlayback } from './store/playback.store';
 
 function ProtecedRoute() {
   const { user } = useUserStore();
@@ -32,15 +35,21 @@ function RejectedRoute() {
 }
 
 export default function App() {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const { setAudioElement, togglePlayBack } = useSong();
+  const { togglePlayBack } = useTrack();
+  const userId = useUserStore().user?._id;
+  const { setCurrentPlayback } = useCurrentPlayback();
+
+  const { data } = useQuery({
+    queryKey: ['current-playback', userId],
+    queryFn: playerServices.getCurrentPlayback
+  });
 
   useEffect(() => {
-    const audioEle = audioRef.current;
-    if (audioEle) {
-      setAudioElement(audioEle);
+    const currentPlayback = data?.data?.data?.currentPlayback;
+    if (currentPlayback) {
+      setCurrentPlayback(currentPlayback);
     }
-  }, [setAudioElement]);
+  }, [data, setCurrentPlayback]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -48,7 +57,6 @@ export default function App() {
         togglePlayBack();
       }
     };
-
     document.addEventListener('keydown', handler);
     return () => {
       document.removeEventListener('keydown', handler);
@@ -57,14 +65,14 @@ export default function App() {
 
   return (
     <>
-      <AudioPlayer audioRef={audioRef} />
+      <AudioPlayer />
       <TooltipProvider>
         <BrowserRouter>
           <Routes>
             <Route element={<MainLayout />}>
               <Route path="/" element={<HomePage />} />
               <Route element={<ProtecedRoute />}>
-                <Route path="/songs/:songId" element={<SongPage />} />
+                <Route path="/tracks/:trackId" element={<TrackPage />} />
                 <Route
                   path="/playlists/:playlistId"
                   element={<PlaylistPage />}

@@ -8,13 +8,13 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 import { SocialKey } from '@/types/utils.type';
-import { useSong } from '@/store/song.store';
+import { useTrack } from '@/store/track.store';
 import { Link } from 'react-router-dom';
 
 export default function ArtistDetailInfo() {
-  const { currentSong } = useSong();
+  const { currentTrack } = useTrack();
 
-  const mainArtist = currentSong?.artists?.[0];
+  const mainArtist = currentTrack?.artists?.[0];
 
   return (
     <Dialog>

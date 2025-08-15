@@ -1,5 +1,5 @@
 import RenderList from '@/components/RenderList';
-import SongCard from '@/components/SongCard';
+import TrackCard from '@/components/TrackCard';
 import {
   Carousel,
   CarouselContent,
@@ -7,13 +7,13 @@ import {
   CarouselPrevious,
   CarouselItem
 } from '@/components/ui/carousel';
-import { songServices } from '@/services/song';
+import { trackServices } from '@/services/track';
 import { useQuery } from '@tanstack/react-query';
 
 export default function TopTrending() {
   const { data, isLoading } = useQuery({
     queryKey: ['top-trending'],
-    queryFn: songServices.getTopTrendingSongs
+    queryFn: trackServices.getTopTrendingTracks
   });
 
   if (isLoading) return null;
@@ -32,13 +32,13 @@ export default function TopTrending() {
       >
         <CarouselContent>
           <RenderList
-            data={data?.data.data?.songs || []}
-            render={(song) => (
+            data={data?.data.data?.tracks || []}
+            render={(track) => (
               <CarouselItem
-                key={song._id}
+                key={track._id}
                 className="sm:basis-1/2 md:basis-1/3 xl:basis-1/4"
               >
-                <SongCard song={song} />
+                <TrackCard track={track} />
               </CarouselItem>
             )}
           />

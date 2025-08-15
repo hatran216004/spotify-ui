@@ -3,20 +3,20 @@ import { TooltipTrigger, TooltipContent, Tooltip } from '../ui/tooltip';
 import { Check, ChevronDown, ChevronUp } from 'lucide-react';
 import { Avatar, AvatarImage } from '@radix-ui/react-avatar';
 import { useSidebar } from '@/store/ui.store';
-import { useSong } from '@/store/song.store';
+import { useTrack } from '@/store/track.store';
 
 export default function TrackInfo() {
   const { isSidebarRightExpanded, onExpandedRightSidebar } = useSidebar();
-  const { currentSong } = useSong();
+  const { currentTrack } = useTrack();
 
   const Icon = isSidebarRightExpanded ? ChevronDown : ChevronUp;
 
   return (
     <>
-      {currentSong && (
+      {currentTrack && (
         <div className="flex items-center gap-3 p-2 rounded-lg relative">
           <Avatar className="group w-[48px] h-[48px] rounded-[4px] relative">
-            <AvatarImage src={currentSong.imageUrl} className="object-cover" />
+            <AvatarImage src={currentTrack.imageUrl} className="object-cover" />
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
@@ -34,11 +34,11 @@ export default function TrackInfo() {
           <div>
             <Link to="#">
               <h4 className="font-medium text-[#eee] hover:underline">
-                {currentSong.title}
+                {currentTrack.title}
               </h4>
             </Link>
             <div className="flex truncate">
-              {currentSong.artists!.map((artist, _, array) => {
+              {currentTrack.artists!.map((artist, _, array) => {
                 const isLastArtist = artist._id === array[array.length - 1]._id;
                 return (
                   <Link to="#" key={artist._id}>

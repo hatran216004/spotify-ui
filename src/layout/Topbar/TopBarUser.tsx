@@ -10,7 +10,7 @@ import {
   TooltipTrigger
 } from '@/components/ui/tooltip';
 import useAdmin from '@/hooks/useAdmin';
-import { useSong } from '@/store/song.store';
+import { useTrack } from '@/store/track.store';
 import { useUserStore } from '@/store/ui.store';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import { Bell, LayoutDashboard, LogOut } from 'lucide-react';
@@ -24,13 +24,13 @@ export default function TopBarUser() {
   const { signOut } = useAuth();
   const { user: userStore, setUser } = useUserStore();
   const { user } = useUser();
-  const { setCurrentSong } = useSong();
+  const { setCurrentTrack } = useTrack();
 
   async function handleSignOut() {
     try {
       await signOut();
       setUser(null);
-      setCurrentSong(null);
+      setCurrentTrack(null);
       naviage('/');
       toast.success('Logout successfully');
     } catch (error: unknown) {

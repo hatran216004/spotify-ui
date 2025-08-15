@@ -1,5 +1,5 @@
-import { PlaylistItem } from '@/types/playlist.type';
-import TrackItem from './TrackItem';
+import { PlaylistTrack } from '@/types/playlist.type';
+import PlaylistTrackItem from './PlaylistTrackItem';
 import { useEffect, useRef } from 'react';
 import useReorderTracks from '@/hooks/useReorderTracks';
 import { useMutation } from '@tanstack/react-query';
@@ -11,11 +11,11 @@ export type ParamsStartDragType = {
   trackIndex: number;
 };
 
-export default function TrackListContent({
+export default function PlaylistTracksContent({
   playlistTracks,
   playlistId
 }: {
-  playlistTracks: PlaylistItem[];
+  playlistTracks: PlaylistTrack[];
   playlistId: string;
 }) {
   const { mutate: reorder, isPending } = useMutation({
@@ -27,7 +27,7 @@ export default function TrackListContent({
     fromIndex,
     toIndex,
     reorderTrackId,
-    tracks,
+    playlistTracks: playlistTracksState,
     dragState,
     dropIndicatorIndex,
     handleMouseDown,
@@ -35,7 +35,7 @@ export default function TrackListContent({
     setToIndex,
     setReorderTrackId
   } = useReorderTracks({
-    playlistTracks,
+    data: playlistTracks,
     containerRef
   });
 
@@ -49,7 +49,7 @@ export default function TrackListContent({
           id: playlistId,
           body: {
             fromIndex: fromIndex!,
-            songId: reorderTrackId!,
+            trackId: reorderTrackId!,
             toIndex: toIndex!
           }
         },
@@ -77,7 +77,6 @@ export default function TrackListContent({
 
   const getDragGhostStyle = () => {
     if (!dragState.isDragging || !containerRef.current) return {};
-
     // const containerRect = containerRef.current.getBoundingClientRect();
 
     return {
@@ -99,30 +98,30 @@ export default function TrackListContent({
           className="bg-[#2b2b2b] rounded-sm border outline-gray-600"
         >
           {(() => {
-            const track = tracks?.find(
-              (entry) => entry.songId._id === dragState.draggedTrackId
+            const findEntry = playlistTracksState.find(
+              (entry) => entry.track._id === dragState.draggedTrackId
             );
 
-            if (!track) return null;
+            if (!findEntry) return null;
 
             return (
               <div className="p-1 flex items-center gap-2 text-sm text-nowrap">
-                <h3>{track.songId.title}</h3> •
-                <h3>{track.songId.artists![0].name}</h3>
+                <h3>{findEntry.track.title}</h3> •
+                <h3>{findEntry.track.artists![0].name}</h3>
               </div>
             );
           })()}
         </div>
       )}
-      {tracks?.map((track, index) => {
+      {playlistTracksState?.map((ele, index) => {
         return (
-          <div key={track._id}>
+          <div key={ele.track._id}>
             {dropIndicatorIndex === index && (
               <div className="h-0.5 bg-green-500 rounded-full mx-4 transition-all duration-200" />
             )}
 
-            <TrackItem
-              track={track}
+            <PlaylistTrackItem
+              track={ele.track}
               order={index}
               onMouseDown={isPending ? () => {} : handleMouseDown}
             />
@@ -130,7 +129,7 @@ export default function TrackListContent({
         );
       })}
       {/* Final drop indicator */}
-      {dropIndicatorIndex === tracks.length && (
+      {dropIndicatorIndex === playlistTracksState.length && (
         <div className="h-0.5 bg-green-500 rounded-full mx-4 transition-all duration-200" />
       )}
     </ul>

@@ -9,16 +9,16 @@ function useRemoveTrackFromPlaylist() {
   const queryClient = useQueryClient();
 
   const handleRemoveFromPlaylist = ({
-    songId,
+    trackId,
     playlistId
   }: {
-    songId?: string;
+    trackId?: string;
     playlistId?: string;
   }) => {
-    if (!playlistId || !songId) return;
+    if (!playlistId || !trackId) return;
 
     mutate(
-      { songId, playlistId },
+      { trackId, playlistId },
       {
         onSuccess: (data) => {
           const playlistName = data.data.data.playlist.name;

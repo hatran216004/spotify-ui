@@ -1,17 +1,17 @@
-import { ParamsStartDragType } from '@/components/TrackListContent';
+import { ParamsStartDragType } from '@/components/PlaylistTracksContent';
 import { initalDragState } from '@/config/init';
-import { PlaylistItem } from '@/types/playlist.type';
+import { type PlaylistTrack } from '@/types/playlist.type';
 import { DragState } from '@/types/utils.type';
 import { RefObject, useCallback, useEffect, useState } from 'react';
 
 function useReorderTracks({
-  playlistTracks,
+  data,
   containerRef
 }: {
-  playlistTracks: PlaylistItem[];
+  data: PlaylistTrack[];
   containerRef: RefObject<HTMLElement | null>;
 }) {
-  const [tracks, setTracks] = useState(playlistTracks);
+  const [playlistTracks, setPlaylistTracks] = useState(data);
   const [dragState, setDragState] = useState<DragState>(initalDragState);
   const [dropIndicatorIndex, setDropIndicatorIndex] = useState<number | null>(
     null
@@ -111,7 +111,7 @@ function useReorderTracks({
           dropIndex !== prev.draggedIndex &&
           dropIndex !== prev.draggedIndex + 1
         ) {
-          const newTracks = [...tracks!];
+          const newTracks = [...playlistTracks];
           const draggedTrack = newTracks[prev.draggedIndex];
 
           newTracks.splice(prev.draggedIndex, 1);
@@ -120,7 +120,7 @@ function useReorderTracks({
             dropIndex > prev.draggedIndex ? dropIndex - 1 : dropIndex;
 
           newTracks.splice(insertIndex, 0, draggedTrack);
-          setTracks(newTracks);
+          setPlaylistTracks(newTracks);
           setFromIndex(prev.draggedIndex);
           setToIndex(insertIndex);
         }
@@ -144,12 +144,12 @@ function useReorderTracks({
       document.documentElement.style.userSelect = '';
       document.documentElement.style.cursor = '';
     },
-    [tracks, handleMouseMove, getDropIndex]
+    [playlistTracks, handleMouseMove, getDropIndex]
   );
 
   useEffect(() => {
-    setTracks(playlistTracks);
-  }, [playlistTracks]);
+    setPlaylistTracks(data);
+  }, [data]);
 
   useEffect(() => {
     return () => {
@@ -159,7 +159,7 @@ function useReorderTracks({
   }, [handleMouseMove, handleMouseUp]);
 
   return {
-    tracks,
+    playlistTracks,
     dragState,
     dropIndicatorIndex,
     fromIndex,

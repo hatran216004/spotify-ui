@@ -1,52 +1,57 @@
-import { useSong } from '@/store/song.store';
-import { RefObject, useEffect } from 'react';
+import { useCurrentPlayback } from '@/store/playback.store';
+import { useTrack } from '@/store/track.store';
+import { useEffect, useRef } from 'react';
 
-export default function AudioPlayer({
-  audioRef
-}: {
-  audioRef: RefObject<HTMLAudioElement | null>;
-}) {
-  const { currentSong, audioElement, isMute, volume, isLoop, setIsPlayling } =
-    useSong();
+export default function AudioPlayer() {
+  const { currentTrack, audioElement, setIsPlayling, setAudioElement } =
+    useTrack();
+  const { currentPlayback } = useCurrentPlayback();
+
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioUrl = currentTrack?.audioUrl || currentPlayback?.track.audioUrl;
 
   useEffect(() => {
-    const currentTime = Number(localStorage.getItem('currentTime') || 0);
-    if (currentTime && audioElement) {
-      audioElement.currentTime = currentTime;
-
-      if (!isMute) {
-        audioElement.volume = volume;
-      } else {
-        audioElement.volume = 0;
-      }
-      audioElement.loop = isLoop;
+    const audioEle = audioRef.current;
+    if (audioEle) {
+      setAudioElement(audioEle);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [audioElement]);
+  }, [setAudioElement]);
 
   useEffect(() => {
-    const handlePlaying = () => {
-      setIsPlayling(true);
-    };
+    if (!audioElement) return;
 
-    const handlePause = () => {
-      setIsPlayling(false);
-    };
-    audioElement?.addEventListener('play', handlePlaying);
-    audioElement?.addEventListener('pause', handlePause);
+    const positionMs =
+      localStorage.getItem('positionMs') ??
+      (currentPlayback?.progress as number);
+    const volume =
+      localStorage.getItem('volume') ?? (currentPlayback?.volume as number);
+
+    if (positionMs) {
+      audioElement.currentTime =
+        (+positionMs / 100) * audioElement.duration || 0;
+    }
+    if (volume) {
+      audioElement.volume = +volume / 100;
+    }
+  }, [audioElement, currentPlayback]);
+
+  useEffect(() => {
+    if (!audioElement) return;
+
+    const handlePlaying = () => setIsPlayling(true);
+    const handlePause = () => setIsPlayling(false);
+
+    audioElement.addEventListener('play', handlePlaying);
+    audioElement.addEventListener('pause', handlePause);
     return () => {
       if (audioElement) {
-        audioElement?.removeEventListener('play', handlePlaying);
-        audioElement?.removeEventListener('pause', handlePause);
+        audioElement.removeEventListener('play', handlePlaying);
+        audioElement.removeEventListener('pause', handlePause);
       }
     };
   }, [audioElement, setIsPlayling]);
 
   return (
-    <audio
-      src={currentSong?.audioUrl ? currentSong?.audioUrl : 'none'}
-      ref={audioRef}
-      hidden
-    ></audio>
+    <audio src={audioUrl ? audioUrl : 'none'} ref={audioRef} hidden></audio>
   );
 }

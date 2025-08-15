@@ -1,6 +1,6 @@
 import { Clock3 } from 'lucide-react';
 
-export default function TrackListHeader() {
+export default function PlaylistTracksHeading() {
   return (
     <div className="group p-2 grid grid-cols-12 items-center border-b border-[#444] text-[#b3b3b3]">
       <div className="col-span-1 text-sm text-center">#</div>

@@ -18,11 +18,11 @@ import { TfiMenuAlt } from 'react-icons/tfi';
 import { HiMenu } from 'react-icons/hi';
 import MenuItem from '@/components/MenuItem';
 import { type ViewMode } from '@/types/utils.type';
-import TrackListHeader from '@/components/TrackListHeader';
-import TrackList from '@/components/TrackList';
-import TrackListContent from '@/components/TrackListContent';
-import { useSong } from '@/store/song.store';
-import { Song } from '@/types/song.type';
+import PlaylistTracksHeading from '@/components/PlaylistTracksHeading';
+import PlaylistTracks from '@/components/PlaylistTracks';
+import PlaylistTracksContent from '@/components/PlaylistTracksContent';
+// import { useTrack } from '@/store/track.store';
+// import { Track } from '@/types/track.type';
 import InfoFooter from '@/layout/InfoFooter';
 import usePlaylistById from '@/hooks/usePlaylistById';
 import { FaMusic } from 'react-icons/fa';
@@ -41,15 +41,11 @@ export default function PlaylistPage() {
     return value ? value : 'list';
   });
 
-  const {
-    isPlaying,
-    currentPlaylistItemId,
-    handlePlaySong,
-    togglePlayBack,
-    setCurrentPlaylistItemId,
-    setCurrentPlaylistId,
-    setContext
-  } = useSong();
+  // const {
+  //   handlePlayTrack,
+  //   togglePlayBack,
+  //   setCurrentPlaylistItemId,
+  // } = useTrack();
 
   const { playlist, isLoading } = usePlaylistById(playlistId!);
 
@@ -63,20 +59,7 @@ export default function PlaylistPage() {
 
   const handlePlay = () => {
     if (!playlist) return;
-
-    if (itemPlaying) {
-      togglePlayBack();
-    } else {
-      handlePlaySong(playlist.songs?.[0].songId as Song, false);
-      setCurrentPlaylistItemId(playlist.songs![0]?._id);
-      setCurrentPlaylistId(playlistId!);
-    }
   };
-
-  useEffect(() => {
-    if (!playlist) return;
-    setContext({ type: 'playlist', id: playlist._id! });
-  }, [playlist, setContext]);
 
   useEffect(() => {
     if (!playlist) return;
@@ -98,12 +81,8 @@ export default function PlaylistPage() {
   }, [playlist]);
 
   if (isLoading) return null;
-  const itemPlaying = playlist!.songs?.some(
-    (entry) => entry._id === currentPlaylistItemId
-  );
 
-  const hasItemPlaying = isPlaying && itemPlaying;
-  const playlistTrackLength = playlist?.songs?.length || 0;
+  const playlistTrackLength = playlist?.tracks.length || 0;
   const viewList = viewMode === 'list';
   const viewCompact = viewMode === 'compact';
 
@@ -151,11 +130,11 @@ export default function PlaylistPage() {
                       className="w-6 h-6 rounded-full object-cover"
                     />
                     <h1 className="hover:underline">
-                      {playlist.userId?.username}
+                      {playlist.user.username}
                     </h1>
                     <span>
-                      • {playlist.songs!.length} song
-                      {playlist.songs!.length > 1 && 's'}
+                      • {playlist.tracks!.length} track
+                      {playlist.tracks!.length > 1 && 's'}
                     </span>
                     <span>• {trackTimeFormat(playlist.totalDuration!)}</span>
                   </div>
@@ -169,7 +148,7 @@ export default function PlaylistPage() {
               <div className="p-4">
                 <div className="flex items-center gap-4">
                   <TogglePlayBackAudio
-                    isPlaying={isPlaying && hasItemPlaying}
+                    isPlaying={false}
                     onPlayAudio={handlePlay}
                     hasTooltip={false}
                     variant="primary"
@@ -221,13 +200,13 @@ export default function PlaylistPage() {
                   </Popover>
                 </div>
               </div>
-              <TrackList>
-                <TrackListHeader />
-                <TrackListContent
-                  playlistTracks={playlist.songs!}
+              <PlaylistTracks>
+                <PlaylistTracksHeading />
+                <PlaylistTracksContent
+                  playlistTracks={playlist.tracks}
                   playlistId={playlist._id as string}
                 />
-              </TrackList>
+              </PlaylistTracks>
             </>
           )}
         </div>

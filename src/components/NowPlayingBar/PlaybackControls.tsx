@@ -1,34 +1,17 @@
 import { Repeat, Shuffle, SkipBack, SkipForward } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import TogglePlayBackAudio from '../TogglePlayBackAudio';
-import { useSong } from '@/store/song.store';
-import useControlsPlayer from '@/hooks/useControlsPlayer';
-import { useQuery } from '@tanstack/react-query';
-import { playlistServices } from '@/services/playlist';
+import { useTrack } from '@/store/track.store';
 
 export default function PlaybackControls() {
   const {
     isShuffle,
     isPlaying,
     isLoop,
-    context,
     togglePlayBack,
     toggleLoop,
     toggleShuffle
-  } = useSong();
-
-  const { data } = useQuery({
-    queryKey: ['playlist', context.id],
-    queryFn: () => playlistServices.getPlaylist(context.id!),
-    enabled: context.type === 'playlist' && !!context.id
-  });
-
-  const currentTracks = data?.data.data.playlist?.songs?.map((s) => ({
-    song: s.songId,
-    _id: s._id
-  }));
-
-  const { handleSkipTrack } = useControlsPlayer(currentTracks);
+  } = useTrack();
 
   return (
     <div className="flex items-center justify-center gap-4">
@@ -51,7 +34,7 @@ export default function PlaybackControls() {
           <TooltipTrigger asChild>
             <button
               className="p-2 cursor-pointer hover:opacity-80"
-              onClick={() => handleSkipTrack('prev')}
+              // onClick={() => handleSkipTrack('prev')}
             >
               <SkipBack size={18} fill="#eee" />
             </button>
@@ -73,7 +56,7 @@ export default function PlaybackControls() {
           <TooltipTrigger asChild>
             <button
               className="p-2 cursor-pointer hover:opacity-80"
-              onClick={() => handleSkipTrack('next')}
+              // onClick={() => handleSkipTrack('next')}
             >
               <SkipForward size={18} fill="#eee" />
             </button>

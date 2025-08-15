@@ -1,23 +1,23 @@
-import { Song } from '@/types/song.type';
+import { Track } from '@/types/track.type';
 import clsx from 'clsx';
 import { useNavigate } from 'react-router-dom';
 import TogglePlayBackAudio from './TogglePlayBackAudio';
-import { useSong } from '@/store/song.store';
+import { useTrack } from '@/store/track.store';
 import { HTMLAttributes } from 'react';
 import { useUserStore } from '@/store/ui.store';
 
-type SongCardType = {
-  song?: Song;
+type TrackCardType = {
+  track?: Track;
   className?: string;
 } & HTMLAttributes<HTMLDivElement>;
 
-export default function SongCard({ song, className = '' }: SongCardType) {
+export default function TrackCard({ track, className = '' }: TrackCardType) {
   const navigate = useNavigate();
-  const { isPlaying, currentSong, handlePlaySong } = useSong();
+  const { isPlaying, currentTrack, handlePlayTrack } = useTrack();
   const { isLogin } = useUserStore();
 
   return (
-    <div onClick={() => navigate(`/songs/${song?._id}`)}>
+    <div onClick={() => navigate(`/tracks/${track?._id}`)}>
       <div
         className={clsx(
           'group space-y-2 p-3 hover:bg-[#ffffff1a] transition-all duration-200 rounded-[6px] relative cursor-pointer',
@@ -27,8 +27,8 @@ export default function SongCard({ song, className = '' }: SongCardType) {
         <div className="pt-[100%] relative rounded-[6px]">
           <img
             className="absolute top-0 left-0 h-full w-full object-cover rounded-[6px]"
-            src={song?.imageUrl}
-            alt={song?.title}
+            src={track?.imageUrl}
+            alt={track?.title}
           />
           <TogglePlayBackAudio
             onPlayAudio={() => {
@@ -36,9 +36,9 @@ export default function SongCard({ song, className = '' }: SongCardType) {
                 navigate('/register');
                 return;
               }
-              handlePlaySong(song!);
+              handlePlayTrack(track!);
             }}
-            isPlaying={isPlaying && song?._id === currentSong?._id}
+            isPlaying={isPlaying && track?._id === currentTrack?._id}
             hasTooltip={false}
             size="md"
             variant="primary"
@@ -46,17 +46,17 @@ export default function SongCard({ song, className = '' }: SongCardType) {
           />
         </div>
         <h1 className="text-sm font-semibold text-white capitalize truncate">
-          {song?.title}
+          {track?.title}
         </h1>
         <div className="truncate">
-          {song?.artists &&
-            song?.artists.map((artist, index) => (
+          {track?.artists &&
+            track?.artists.map((artist, index) => (
               <span
                 className="text-[#b3b3b3] text-sm capitalize"
                 key={artist._id}
               >
                 {artist.name}
-                {song?.artists![index + 1]?.name ? ', ' : ''}
+                {track?.artists![index + 1]?.name ? ', ' : ''}
               </span>
             ))}
         </div>

@@ -2,14 +2,16 @@ import { trackTimeFormat } from '@/utils/datetime';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { Pause, Play } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
-import { useSong } from '@/store/song.store';
+import { useTrack } from '@/store/track.store';
 import PlayingBarIcon from './PlayingBarIcon';
 import TrackItemMenu from './menu/TrackItemMenu';
-import { PlaylistItem } from '@/types/playlist.type';
-import { ParamsStartDragType } from './TrackListContent';
+import { ParamsStartDragType } from './PlaylistTracksContent';
+import { Track } from '@/types/track.type';
+import { useMutation } from '@tanstack/react-query';
+import { playerServices } from '@/services/player';
 
 type TrackItemType = {
-  track: PlaylistItem;
+  track: Track;
   order: number;
   ref?: (ele: HTMLLIElement | null) => void;
   onMouseDown: ({ e, trackId, trackIndex }: ParamsStartDragType) => void;
@@ -21,43 +23,30 @@ export default function TrackItem({
   ref,
   onMouseDown
 }: TrackItemType) {
+  const { playlistId } = useParams();
+  const { mutate: playTrack, isPending } = useMutation({
+    mutationFn: playerServices.startPlayTrack
+  });
+  const { handlePlayTrack } = useTrack();
+
+  const handlePlayTrackItem = () => {
+    handlePlayTrack(track);
+    playTrack(
+      {
+        contextId: playlistId!,
+        contextType: 'playlist',
+        trackId: track._id
+      },
+      {
+        onError: (error) => {
+          console.log(error);
+        }
+      }
+    );
+  };
+
   const viewMode = localStorage.getItem('playlist_view_mode') || 'list';
   const isViewCompact = viewMode === 'compact';
-  const { playlistId } = useParams();
-
-  const {
-    currentPlaylistItemId,
-    isPlaying,
-    currentSong,
-    setCurrentPlaylistItemId,
-    togglePlayBack,
-    handlePlaySong,
-    setCurrentPlaylistId
-  } = useSong();
-
-  const isItemPlaying =
-    isPlaying &&
-    track?._id === currentPlaylistItemId &&
-    track?.songId._id === currentSong?._id;
-  const Icon = isItemPlaying ? Pause : Play;
-
-  const handlePlayItem = () => {
-    // Nếu bài hát đang phát là bài hát click và ở 1 playlist khác thì phát lại từ đầu, ngược lại toggle
-    if (!currentPlaylistItemId) {
-      handlePlaySong(track!.songId);
-      setCurrentPlaylistItemId(track!._id);
-      return;
-    }
-
-    const isSamePlaylistItem = track?._id === currentPlaylistItemId;
-    if (isSamePlaylistItem) {
-      togglePlayBack();
-    } else {
-      handlePlaySong(track!.songId, true);
-    }
-    setCurrentPlaylistItemId(track!._id);
-    setCurrentPlaylistId(playlistId!);
-  };
 
   return (
     <li
@@ -65,7 +54,7 @@ export default function TrackItem({
       onMouseDown={(e) =>
         onMouseDown({
           e,
-          trackId: track.songId._id!,
+          trackId: track._id,
           trackIndex: order
         })
       }
@@ -74,19 +63,21 @@ export default function TrackItem({
     >
       <div className="col-span-1 text-sm text-[#b3b3b3] flex justify-center">
         <div className="group-hover:hidden">
-          {isItemPlaying ? <PlayingBarIcon /> : order + 1}
+          {/* {isItemPlaying ? <PlayingBarIcon /> : order + 1} */}
+          {order + 1}
         </div>
         <Tooltip>
           <TooltipTrigger asChild>
             <button
+              disabled={isPending}
               className="hidden group-hover:block p-1"
-              onClick={handlePlayItem}
+              onClick={handlePlayTrackItem}
             >
-              <Icon size={16} fill="#fff" stroke="#fff" />
+              <Play size={16} fill="#fff" stroke="#fff" />
             </button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Play {track?.songId.title}</p>
+            <p>Play {track.title}</p>
           </TooltipContent>
         </Tooltip>
       </div>
@@ -95,21 +86,21 @@ export default function TrackItem({
           {!isViewCompact && (
             <img
               className="w-10 h-10 object-cover rounded-sm flex-shrink-0"
-              src={track?.songId.imageUrl}
-              alt={track?.songId.title}
+              src={track.imageUrl}
+              alt={track.title}
             />
           )}
 
           <div className="flex flex-col text-[1rem] capitalize">
             <Link
-              to={`/songs/${track?.songId._id}`}
+              to={`/tracks/${track._id}`}
               className="hover:underline font-medium text-[1rem]"
             >
-              {track?.songId.title}
+              {track.title}
             </Link>
             {!isViewCompact && (
               <h3 className="text-[#b3b3b3] text-sm">
-                {track?.songId.artists?.[0].name}
+                {track.artists?.[0].name}
               </h3>
             )}
           </div>
@@ -118,18 +109,15 @@ export default function TrackItem({
       <div className="col-span-3">
         {/* Placeholder for album name */}
         <h3 className="px-4 text-[#b3b3b3] text-sm">
-          {track?.songId.artists?.[0].name}
+          {track.artists?.[0].name}
         </h3>
       </div>
       <div className="col-span-3">
         <div className="flex items-center gap-2 justify-end">
           <span className="text-[#b3b3b3] text-sm">
-            {trackTimeFormat(track?.songId.duration || 0)}
+            {trackTimeFormat(track.duration || 0)}
           </span>
-          <TrackItemMenu
-            tooltipText={track?.songId.title}
-            songId={track?.songId._id}
-          />
+          <TrackItemMenu tooltipText={track.title} trackId={track._id} />
         </div>
       </div>
     </li>

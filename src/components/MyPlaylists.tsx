@@ -1,5 +1,5 @@
 import RenderList from './RenderList';
-import Playlist from './Playlist';
+import Playlist from './PlaylistItem';
 import { Playlist as PlaylistType } from '@/types/playlist.type';
 import useMyPlaylists from '@/hooks/useMyPlaylists';
 

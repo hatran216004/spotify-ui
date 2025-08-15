@@ -6,16 +6,16 @@ import {
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip';
-import { useSong } from '@/store/song.store';
+import { useTrack } from '@/store/track.store';
 import { useSidebar } from '@/store/ui.store';
 import { CirclePlus, PanelLeftOpen, Share } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function RightSidebar() {
   const { onExpandedRightSidebar } = useSidebar();
-  const { currentSong } = useSong();
+  const { currentTrack } = useTrack();
 
-  if (!currentSong || !currentSong?.artists) return null;
+  if (!currentTrack || !currentTrack?.artists) return null;
 
   return (
     <div className="group p-2 h-[calc(100vh-var(--now-playing-bar-height)-var(--top-bar-height))] space-y-4 overflow-auto">
@@ -34,29 +34,29 @@ export default function RightSidebar() {
           </TooltipContent>
         </Tooltip>
         <Link
-          to={`songs/${currentSong?._id}`}
+          to={`tracks/${currentTrack?._id}`}
           className="hover:underline font-bold"
         >
-          {currentSong?.title}
+          {currentTrack?.title}
         </Link>
       </div>
       <div className="pt-[100%] relative rounded-[10px] overflow-hidden">
         <img
-          src={currentSong?.imageUrl}
-          alt={currentSong?.title}
+          src={currentTrack?.imageUrl}
+          alt={currentTrack?.title}
           className="absolute top-0 left-0 w-full h-full object-cover"
         />
       </div>
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <div className="flex-1 text-nowrap">
           <Link
-            to={`/songs/${currentSong?._id}`}
+            to={`/tracks/${currentTrack?._id}`}
             className="font-semibold text-3xl hover:underline"
           >
-            {currentSong?.title}
+            {currentTrack?.title}
           </Link>
           <div className="truncate flex">
-            {currentSong?.artists?.map((artist, _, array) => {
+            {currentTrack?.artists?.map((artist, _, array) => {
               const isLast = artist._id === array[array.length - 1]._id;
               return (
                 <h4 className="font-medium text-[#b3b3b3]" key={artist._id}>
@@ -86,7 +86,7 @@ export default function RightSidebar() {
               </button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Add to liked songs</p>
+              <p>Add to liked tracks</p>
             </TooltipContent>
           </Tooltip>
         </div>

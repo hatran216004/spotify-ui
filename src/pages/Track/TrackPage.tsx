@@ -1,5 +1,5 @@
 import DotIndicator from '@/components/DotIndicator';
-import { songServices } from '@/services/song';
+import { trackServices } from '@/services/track';
 import { formatDate } from '@/utils/datetime';
 import { formatPlayCount } from '@/utils/number';
 import { useQuery } from '@tanstack/react-query';
@@ -12,38 +12,40 @@ import {
   TooltipTrigger
 } from '@/components/ui/tooltip';
 import { CirclePlus } from 'lucide-react';
-import { useSong } from '@/store/song.store';
+import { useTrack } from '@/store/track.store';
 import TogglePlayBackAudio from '@/components/TogglePlayBackAudio';
 
 import InfoFooter from '@/layout/InfoFooter';
 import MenuOtps from '@/components/menu/MenuOtps';
 
-export default function SongPage() {
-  const { songId } = useParams();
+export default function TrackPage() {
+  const { trackId } = useParams();
   const imgRef = useRef<HTMLImageElement | null>(null);
 
-  const { isPlaying, currentSong, setCurrentSong, handlePlaySong } = useSong();
+  const { isPlaying, currentTrack, setCurrentTrack, handlePlayTrack } =
+    useTrack();
   const [bgColor, setBgColor] = useState<[number, number, number]>();
 
   const { data, isLoading } = useQuery({
-    queryKey: ['track', songId],
-    queryFn: () => songServices.getSong(songId!)
+    queryKey: ['track', trackId],
+    queryFn: () => trackServices.getTrack(trackId!)
   });
 
-  // Set song data from api
+  // Set track data from api
   useEffect(() => {
-    if (currentSong) return;
+    if (currentTrack) return;
 
-    const songData = data?.data.data?.song;
-    if (songData) {
-      setCurrentSong(songData);
+    const trackData = data?.data.data?.track;
+    if (trackData) {
+      setCurrentTrack(trackData);
     }
-  }, [data, currentSong, setCurrentSong]);
+  }, [data, currentTrack, setCurrentTrack]);
 
-  // Set background with main color of song image
+  // Set background with main color of track image
   useEffect(() => {
     const imgElement = imgRef.current;
-    if ((!currentSong && !data?.data.data.song.imageUrl) || !imgElement) return;
+    if ((!currentTrack && !data?.data.data.track.imageUrl) || !imgElement)
+      return;
 
     const colorThief = new ColorThief();
 
@@ -58,7 +60,7 @@ export default function SongPage() {
       imgElement.addEventListener('load', handleLoad);
     }
     return () => imgElement.removeEventListener('load', handleLoad);
-  }, [data, currentSong]);
+  }, [data, currentTrack]);
 
   if (isLoading)
     return (
@@ -67,10 +69,10 @@ export default function SongPage() {
       </div>
     );
 
-  const song = data?.data.data.song || currentSong;
+  const track = data?.data.data.track || currentTrack;
   return (
     <div className="h-full overflow-auto rounded-[10px]">
-      {song && (
+      {track && (
         <div
           style={{
             background: `linear-gradient(to bottom, rgba(${bgColor?.[0]},${bgColor?.[1]},${bgColor?.[2]},0.6), rgba(${bgColor?.[0]},${bgColor?.[1]},${bgColor?.[2]},0))`
@@ -83,17 +85,17 @@ export default function SongPage() {
                   <img
                     crossOrigin="anonymous"
                     ref={imgRef}
-                    src={song.imageUrl}
+                    src={track.imageUrl}
                     className="absolute w-full h-full top-0 left-0 object-cover"
-                    alt={song.title}
+                    alt={track.title}
                   />
                 </div>
               </div>
               <div className="col-span-9">
                 <div className="space-y-5">
-                  <span className="text-sm text-white font-medium">Song</span>
+                  <span className="text-sm text-white font-medium">Track</span>
                   <h1 className="text-6xl text-white font-bold truncate uppercase">
-                    {song.title}
+                    {track.title}
                   </h1>
                   <div className="flex items-center gap-2 text-white font-semibold text-sm">
                     <img
@@ -101,13 +103,13 @@ export default function SongPage() {
                       alt=""
                       className="w-6 h-6 rounded-full object-cover"
                     />
-                    {song.artists?.map((artist) => (
+                    {track.artists?.map((artist) => (
                       <Link to="#" className="hover:underline" key={artist._id}>
                         {artist.name}
                       </Link>
                     ))}
-                    <span>• {formatDate(song.releaseDate!)}</span>
-                    <span>• {formatPlayCount(song.playCount!)}</span>
+                    <span>• {formatDate(track.releaseDate!)}</span>
+                    <span>• {formatPlayCount(track.playCount!)}</span>
                   </div>
                 </div>
               </div>
@@ -117,8 +119,8 @@ export default function SongPage() {
           <div className="p-4">
             <div className="flex items-center gap-4">
               <TogglePlayBackAudio
-                onPlayAudio={() => handlePlaySong(song, true)}
-                isPlaying={isPlaying && currentSong?._id === song._id}
+                onPlayAudio={() => handlePlayTrack(track, true)}
+                isPlaying={isPlaying && currentTrack?._id === track._id}
                 hasTooltip={false}
                 variant="primary"
                 size="lg"
@@ -139,7 +141,7 @@ export default function SongPage() {
                 </TooltipContent>
               </Tooltip>
 
-              <MenuOtps tooltipText={song.title} />
+              <MenuOtps tooltipText={track.title} />
             </div>
           </div>
         </div>

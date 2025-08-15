@@ -1,22 +1,21 @@
-import useAudioSeeking from '@/hooks/useAudioSeeking';
+import useAudioProgressAndVolume from '@/hooks/useAudioProgressAndVolume';
 import useControlsPlayer from '@/hooks/useControlsPlayer';
-import { useSong } from '@/store/song.store';
+import { useTrack } from '@/store/track.store';
 import { trackTimeFormat } from '@/utils/datetime';
 import clsx from 'clsx';
 import { useEffect, useRef } from 'react';
 
 export default function ProgressBar() {
   const progressRef = useRef<HTMLDivElement | null>(null);
-  const { audioElement, currentSong, isShuffle, setIsPlayling } = useSong();
+  const { audioElement, currentTrack, isShuffle, setIsPlayling } = useTrack();
 
   const {
     isSeeking,
-    progressValue,
-    setProgressValue,
-    handleSeeking,
+    positionMs,
+    handleControlMouseUp,
     setIsSeeking,
-    setCurrentTime
-  } = useAudioSeeking(progressRef, 'playback');
+    setPositionMs
+  } = useAudioProgressAndVolume(progressRef, 'position_ms');
 
   const { handleShuffle } = useControlsPlayer();
 
@@ -28,15 +27,11 @@ export default function ProgressBar() {
 
       const value =
         (audioElement.currentTime / audioElement.duration) * 100 || 0;
-      setProgressValue(value);
-      setCurrentTime(audioElement.currentTime);
+      setPositionMs(value);
     };
 
     const handleAudioEnded = () => {
       setIsPlayling(false);
-      setCurrentTime(0);
-      setProgressValue(0);
-
       if (isShuffle) handleShuffle();
     };
 
@@ -51,11 +46,10 @@ export default function ProgressBar() {
   }, [
     audioElement,
     isSeeking,
-    currentSong,
+    currentTrack,
     isShuffle,
-    setCurrentTime,
     setIsPlayling,
-    setProgressValue,
+    setPositionMs,
     handleShuffle
   ]);
 
@@ -67,7 +61,7 @@ export default function ProgressBar() {
       <div
         className="group py-1 flex-1"
         onMouseDown={() => setIsSeeking(true)}
-        onMouseUp={(e) => handleSeeking(e.clientX)}
+        onMouseUp={(e) => handleControlMouseUp(e.clientX)}
       >
         <div ref={progressRef} className="h-1 rounded-full bg-gray-500">
           <div
@@ -75,7 +69,7 @@ export default function ProgressBar() {
               'h-1 relative rounded-full group-hover:bg-[#1db954]',
               isSeeking ? 'bg-[#1db954]' : 'bg-white'
             )}
-            style={{ width: `${progressValue}%` }}
+            style={{ width: `${positionMs}%` }}
           >
             <span
               className={clsx(

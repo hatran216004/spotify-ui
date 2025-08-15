@@ -1,4 +1,4 @@
-export default function TrackList({
+export default function PlaylistTracks({
   children
 }: {
   children?: React.ReactNode;

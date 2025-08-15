@@ -10,7 +10,7 @@ export default function PublicFooter() {
         <div className="text-white">
           <p className="font-bold text-sm">Preview of Spotify</p>
           <p className="font-semibold text-md">
-            Sign up to get unlimited songs with occasional ads. No credit card
+            Sign up to get unlimited tracks with occasional ads. No credit card
             needed.
           </p>
         </div>

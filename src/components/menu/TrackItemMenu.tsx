@@ -15,10 +15,10 @@ import { useParams } from 'react-router-dom';
 
 export default function TrackItemMenu({
   tooltipText,
-  songId
+  trackId
 }: {
   tooltipText?: string;
-  songId?: string;
+  trackId?: string;
 }) {
   const { playlistId } = useParams();
   const { handleRemoveFromPlaylist } = useRemoveTrackFromPlaylist();
@@ -50,7 +50,7 @@ export default function TrackItemMenu({
           Add to queue
         </DropdownMenuItem>
         <DropdownMenuItem
-          onClick={() => handleRemoveFromPlaylist({ songId, playlistId })}
+          onClick={() => handleRemoveFromPlaylist({ trackId, playlistId })}
         >
           <Trash /> Remove from this playlist
         </DropdownMenuItem>
