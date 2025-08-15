@@ -35,7 +35,7 @@ function RejectedRoute() {
 }
 
 export default function App() {
-  const { togglePlayBack } = useTrack();
+  const { setIsPlayling } = useTrack();
   const userId = useUserStore().user?._id;
   const { setCurrentPlayback } = useCurrentPlayback();
 
@@ -48,20 +48,21 @@ export default function App() {
     const currentPlayback = data?.data?.data?.currentPlayback;
     if (currentPlayback) {
       setCurrentPlayback(currentPlayback);
+      setIsPlayling(currentPlayback.isPlaying);
     }
-  }, [data, setCurrentPlayback]);
+  }, [data, setCurrentPlayback, setIsPlayling]);
 
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.code === 'Space') {
-        togglePlayBack();
-      }
-    };
-    document.addEventListener('keydown', handler);
-    return () => {
-      document.removeEventListener('keydown', handler);
-    };
-  }, [togglePlayBack]);
+  // useEffect(() => {
+  //   const handler = (e: KeyboardEvent) => {
+  //     if (e.code === 'Space') {
+  //       togglePlayBack();
+  //     }
+  //   };
+  //   document.addEventListener('keydown', handler);
+  //   return () => {
+  //     document.removeEventListener('keydown', handler);
+  //   };
+  // }, [togglePlayBack]);
 
   return (
     <>

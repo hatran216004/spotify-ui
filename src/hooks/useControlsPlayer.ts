@@ -1,16 +1,15 @@
 import { useTrack } from '@/store/track.store';
-import { type CurrentTracks } from '@/types/track.type';
+import { Track } from '@/types/track.type';
 
-function useControlsPlayer(currentTracks: CurrentTracks = []) {
-  const { currentTrack, isShuffle, handlePlayTrack, setCurrentPlaylistItemId } =
-    useTrack();
+function useControlsPlayer(currentTracks: Track[] = []) {
+  const { currentTrack, isShuffle, handlePlayTrack } = useTrack();
 
-  const getCurrentPlaylistLength = () => currentTracks?.length || 0;
+  const getCurrentPlaylistLength = () => currentTracks?.length ?? 0;
 
   const getCurrentTrackIndex = () => {
     if (!currentTracks) return -1;
     const currIndex = currentTracks?.findIndex(
-      (s) => s.track._id === currentTrack?._id
+      (track) => track._id === currentTrack?._id
     );
     return currIndex;
   };
@@ -32,8 +31,7 @@ function useControlsPlayer(currentTracks: CurrentTracks = []) {
   const handleShuffle = () => {
     const randomIndex = getRandomIndex();
     const nextTrackPlay = currentTracks![randomIndex];
-    handlePlayTrack(nextTrackPlay.track);
-    setCurrentPlaylistItemId(nextTrackPlay._id);
+    handlePlayTrack(nextTrackPlay);
   };
 
   const handleSkipTrack = (direction: 'next' | 'prev') => {
@@ -50,8 +48,7 @@ function useControlsPlayer(currentTracks: CurrentTracks = []) {
     currIndex += direction === 'next' ? 1 : -1;
     const newIndex = (currIndex! + playlistTrackLength) % playlistTrackLength;
     const nextTrackPlay = currentTracks![newIndex];
-    handlePlayTrack(nextTrackPlay.track);
-    setCurrentPlaylistItemId(nextTrackPlay._id);
+    handlePlayTrack(nextTrackPlay);
   };
 
   return { handleShuffle, handleSkipTrack };

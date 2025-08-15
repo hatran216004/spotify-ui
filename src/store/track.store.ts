@@ -17,8 +17,6 @@ type TrackAction = {
   setCurrentTrack: (track: Track | null) => void;
   setIsPlayling: (audioPlayState: boolean) => void;
   setAudioElement: (audio: HTMLAudioElement) => void;
-  // setPositionMs: (value: number) => void;
-  // setVolume: (value: number) => void;
 
   togglePlayBack: () => void;
   toggleLoop: () => void;
@@ -34,46 +32,35 @@ export const useTrack = create<TrackStore>()(
     (set, get) => ({
       currentTrack: null,
       audioElement: null,
-      // positionMs: 0,
-      // volume: 0,
 
       isPlaying: false,
       isLoop: false,
       isShuffle: false,
 
-      // setPositionMs: (positionMs) => set({ positionMs }),
-      // setVolume: (volume) => set({ volume }),
       setAudioElement: (audio) => set({ audioElement: audio }),
       setCurrentTrack: (track) => set({ currentTrack: track }),
       setIsPlayling: (audioPlayState) =>
         set(() => ({ isPlaying: audioPlayState })),
 
-      togglePlayBack: () => {
-        const { audioElement, isPlaying, currentTrack } = get();
-        if (!currentTrack) return;
-
-        if (audioElement!.paused) {
-          audioElement!.play();
-        } else {
-          audioElement!.pause();
-        }
-        set({ isPlaying: !isPlaying });
-      },
       toggleLoop: () => {
         const { audioElement, isLoop } = get();
         if (!audioElement) return;
-
-        if (!isLoop) {
-          audioElement.loop = true;
-        } else {
-          audioElement.loop = false;
-        }
         set({ isLoop: !isLoop });
       },
       toggleShuffle: () => {
         const { audioElement, isShuffle } = get();
         if (!audioElement) return;
         set({ isShuffle: !isShuffle });
+      },
+      togglePlayBack: () => {
+        const { audioElement, currentTrack } = get();
+        if (!currentTrack || !audioElement) return;
+
+        if (audioElement.paused) {
+          audioElement.play();
+        } else {
+          audioElement.pause();
+        }
       },
       playTrack: (track) => {
         const { audioElement } = get();
@@ -83,19 +70,20 @@ export const useTrack = create<TrackStore>()(
 
         audioElement.oncanplay = () => {
           audioElement.play();
-          set({ isPlaying: true });
         };
       },
       handlePlayTrack: (track) => {
         if (!track) return;
 
-        const { currentTrack, togglePlayBack, playTrack } = get();
-        const isSameTrack = currentTrack?._id === track._id;
-        if (isSameTrack) {
-          togglePlayBack();
-        } else {
-          playTrack(track);
-        }
+        const { playTrack } = get();
+        playTrack(track);
+
+        // if (isSameContext && isSameTrack) {
+        //   togglePlayBack();
+        // } else {
+        //   audioElement!.currentTime = 0;
+        //   playTrack(track);
+        // }
       }
     }),
     {

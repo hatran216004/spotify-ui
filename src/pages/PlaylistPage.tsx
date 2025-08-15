@@ -10,9 +10,8 @@ import {
   TooltipTrigger
 } from '@/components/ui/tooltip';
 import { trackTimeFormat } from '@/utils/datetime';
-import ColorThief from 'colorthief';
 import { Check, Ellipsis } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { TfiMenuAlt } from 'react-icons/tfi';
 import { HiMenu } from 'react-icons/hi';
@@ -21,68 +20,44 @@ import { type ViewMode } from '@/types/utils.type';
 import PlaylistTracksHeading from '@/components/PlaylistTracksHeading';
 import PlaylistTracks from '@/components/PlaylistTracks';
 import PlaylistTracksContent from '@/components/PlaylistTracksContent';
-// import { useTrack } from '@/store/track.store';
-// import { Track } from '@/types/track.type';
 import InfoFooter from '@/layout/InfoFooter';
 import usePlaylistById from '@/hooks/usePlaylistById';
 import { FaMusic } from 'react-icons/fa';
 import { useUserStore } from '@/store/ui.store';
 import { useUser } from '@clerk/clerk-react';
+import { useDominantColor } from '@/hooks/useDominantColor';
+import usePlayContext from '@/hooks/usePlayContext';
+import { Track } from '@/types/track.type';
 
 export default function PlaylistPage() {
   const { playlistId } = useParams();
+  const { playlist, isLoading } = usePlaylistById(playlistId!);
+
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  const { color } = useDominantColor(imgRef, playlist);
+
   const { user } = useUserStore();
   const { user: clerkUser } = useUser();
-  const imgRef = useRef<HTMLImageElement | null>(null);
-  const [bgColor, setBgColor] = useState<[number, number, number]>();
 
   const [viewMode, setViewMode] = useState<ViewMode>(() => {
     const value = localStorage.getItem('playlist_view_mode') as ViewMode;
     return value ? value : 'list';
   });
 
-  // const {
-  //   handlePlayTrack,
-  //   togglePlayBack,
-  //   setCurrentPlaylistItemId,
-  // } = useTrack();
+  const { handleStartPlay, hasTrackPlaying } = usePlayContext({
+    id: playlistId!,
+    type: 'playlist',
+    data: playlist?.tracks?.map((entry) => entry.track) as Track[]
+  });
 
-  const { playlist, isLoading } = usePlaylistById(playlistId!);
-
-  const handleChangeViewMode = () => {
-    setViewMode((prev) => {
-      const value = prev === 'list' ? 'compact' : 'list';
-      localStorage.setItem('playlist_view_mode', value);
-      return value;
-    });
+  const handleChangeViewMode = (mode: ViewMode) => {
+    setViewMode(mode);
+    localStorage.setItem('playlist_view_mode', mode);
   };
-
-  const handlePlay = () => {
-    if (!playlist) return;
-  };
-
-  useEffect(() => {
-    if (!playlist) return;
-
-    const imgElement = imgRef.current;
-    if (!imgElement) return;
-
-    const colorThief = new ColorThief();
-
-    const handleLoad = () => {
-      const [r, g, b] = colorThief.getColor(imgElement);
-      setBgColor([r, g, b]);
-    };
-
-    imgElement.addEventListener('load', handleLoad);
-    return () => {
-      imgElement.removeEventListener('load', handleLoad);
-    };
-  }, [playlist]);
 
   if (isLoading) return null;
 
-  const playlistTrackLength = playlist?.tracks.length || 0;
+  const playlistTrackLength = playlist?.tracks.length ?? 0;
   const viewList = viewMode === 'list';
   const viewCompact = viewMode === 'compact';
 
@@ -91,7 +66,7 @@ export default function PlaylistPage() {
       {playlist && (
         <div
           style={{
-            background: `linear-gradient(to bottom, rgba(${bgColor?.[0]},${bgColor?.[1]},${bgColor?.[2]},0.6) 0%, rgba(${bgColor?.[0]},${bgColor?.[1]},${bgColor?.[2]},0) 70%)`
+            background: `linear-gradient(to bottom, rgba(${color?.[0]},${color?.[1]},${color?.[2]},0.6) 0%, rgba(${color?.[0]},${color?.[1]},${color?.[2]},0) 70%)`
           }}
         >
           <div className="px-4 shadow-2xl py-[18px] rounded-tl-[10px] rounded-tr-[10px]">
@@ -148,8 +123,8 @@ export default function PlaylistPage() {
               <div className="p-4">
                 <div className="flex items-center gap-4">
                   <TogglePlayBackAudio
-                    isPlaying={false}
-                    onPlayAudio={handlePlay}
+                    isPlaying={hasTrackPlaying}
+                    onPlayAudio={handleStartPlay}
                     hasTooltip={false}
                     variant="primary"
                     size="lg"
@@ -181,7 +156,7 @@ export default function PlaylistPage() {
                       <MenuItem
                         icon={<HiMenu />}
                         iconSide="start"
-                        onClick={handleChangeViewMode}
+                        onClick={() => handleChangeViewMode('compact')}
                         className={`${viewCompact ? 'text-green-500' : ''}`}
                       >
                         Compact
@@ -190,7 +165,7 @@ export default function PlaylistPage() {
                       <MenuItem
                         icon={<TfiMenuAlt />}
                         iconSide="start"
-                        onClick={handleChangeViewMode}
+                        onClick={() => handleChangeViewMode('list')}
                         className={`${viewList ? 'text-green-500' : ''}`}
                       >
                         List

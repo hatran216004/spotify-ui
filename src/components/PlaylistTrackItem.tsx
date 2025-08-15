@@ -2,13 +2,11 @@ import { trackTimeFormat } from '@/utils/datetime';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { Pause, Play } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
-import { useTrack } from '@/store/track.store';
 import PlayingBarIcon from './PlayingBarIcon';
 import TrackItemMenu from './menu/TrackItemMenu';
 import { ParamsStartDragType } from './PlaylistTracksContent';
 import { Track } from '@/types/track.type';
-import { useMutation } from '@tanstack/react-query';
-import { playerServices } from '@/services/player';
+import usePlayContext from '@/hooks/usePlayContext';
 
 type TrackItemType = {
   track: Track;
@@ -24,29 +22,17 @@ export default function TrackItem({
   onMouseDown
 }: TrackItemType) {
   const { playlistId } = useParams();
-  const { mutate: playTrack, isPending } = useMutation({
-    mutationFn: playerServices.startPlayTrack
-  });
-  const { handlePlayTrack } = useTrack();
-
-  const handlePlayTrackItem = () => {
-    handlePlayTrack(track);
-    playTrack(
-      {
-        contextId: playlistId!,
-        contextType: 'playlist',
-        trackId: track._id
-      },
-      {
-        onError: (error) => {
-          console.log(error);
-        }
-      }
-    );
-  };
 
   const viewMode = localStorage.getItem('playlist_view_mode') || 'list';
   const isViewCompact = viewMode === 'compact';
+
+  const { isSameTrack, hasTrackPlaying, handlePlayTrackItem } = usePlayContext({
+    id: playlistId!,
+    type: 'playlist',
+    data: track
+  });
+
+  const Icon = hasTrackPlaying && isSameTrack ? Pause : Play;
 
   return (
     <li
@@ -63,17 +49,16 @@ export default function TrackItem({
     >
       <div className="col-span-1 text-sm text-[#b3b3b3] flex justify-center">
         <div className="group-hover:hidden">
-          {/* {isItemPlaying ? <PlayingBarIcon /> : order + 1} */}
-          {order + 1}
+          {hasTrackPlaying && isSameTrack ? <PlayingBarIcon /> : order + 1}
         </div>
         <Tooltip>
           <TooltipTrigger asChild>
             <button
-              disabled={isPending}
+              onMouseDown={(e) => e.stopPropagation()}
               className="hidden group-hover:block p-1"
               onClick={handlePlayTrackItem}
             >
-              <Play size={16} fill="#fff" stroke="#fff" />
+              <Icon size={16} fill="#fff" stroke="#fff" />
             </button>
           </TooltipTrigger>
           <TooltipContent>

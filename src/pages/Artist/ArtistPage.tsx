@@ -2,15 +2,14 @@ import InfoFooter from '@/layout/InfoFooter';
 import { artistServices } from '@/services/artist';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import ColorThief from 'colorthief';
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import TogglePlayBackAudio from '@/components/TogglePlayBackAudio';
-import { useTrack } from '@/store/track.store';
-import Item from './Item';
+import ArtistTrackItem from './ArtistTrackItem';
+import { useDominantColor } from '@/hooks/useDominantColor';
+import usePlayContext from '@/hooks/usePlayContext';
+import { Track } from '@/types/track.type';
 
 export default function ArtistPage() {
-  const { isPlaying, currentTrack, handlePlayTrack, togglePlayBack } =
-    useTrack();
   const { artistId } = useParams();
   const { data, isLoading } = useQuery({
     queryKey: ['artist', artistId],
@@ -18,50 +17,25 @@ export default function ArtistPage() {
     enabled: !!artistId
   });
 
-  const { data: data2, isPending } = useQuery({
+  const { data: artistPopularTracks, isPending } = useQuery({
     queryKey: ['artist-popular-tracks', artistId],
     queryFn: () => artistServices.getPopularArtistTracks(artistId!)
   });
 
   const imgRef = useRef<HTMLImageElement | null>(null);
-  const [bgColor, setBgColor] = useState<[number, number, number]>();
+  const { color } = useDominantColor(imgRef, artistPopularTracks);
 
-  const handlePlay = () => {
-    if (hasTrackPlaying) {
-      togglePlayBack();
-    } else {
-      const firstTrack = popularTracks![0];
-      handlePlayTrack(firstTrack);
-    }
-  };
-
-  useEffect(() => {
-    if (!data2) return;
-
-    const imgElement = imgRef.current;
-    if (!imgElement) return;
-
-    const colorThief = new ColorThief();
-
-    const handleLoad = () => {
-      const [r, g, b] = colorThief.getColor(imgElement);
-      setBgColor([r, g, b]);
-    };
-
-    imgElement.addEventListener('load', handleLoad);
-    return () => {
-      imgElement.removeEventListener('load', handleLoad);
-    };
-  }, [data2]);
+  const artist = data?.data?.data?.artist;
+  const tracksList = artistPopularTracks?.data?.data?.tracks.map(
+    (track) => track
+  ) as Track[];
+  const { handleStartPlay, hasTrackPlaying } = usePlayContext({
+    id: artistId!,
+    type: 'artist',
+    data: tracksList
+  });
 
   if (isLoading || isPending) return null;
-  const artist = data?.data.data.artist;
-  const popularTracks = data2?.data.data.tracks.map((track) => ({
-    ...track,
-    artists: [artist!]
-  }));
-  const hasTrackPlaying =
-    isPlaying && popularTracks?.some((ele) => ele._id === currentTrack?._id);
 
   return (
     <div className="h-full overflow-auto rounded-[10px]">
@@ -90,18 +64,18 @@ export default function ArtistPage() {
             </div>
           </div>
           {/* Actions */}
-          {popularTracks!.length > 0 && (
+          {tracksList!.length > 0 && (
             <>
               <div
                 className="p-4"
                 style={{
-                  background: `linear-gradient(to bottom, rgba(${bgColor?.[0]},${bgColor?.[1]},${bgColor?.[2]},0.6) 0%, rgba(${bgColor?.[0]},${bgColor?.[1]},${bgColor?.[2]},0) 90%)`
+                  background: `linear-gradient(to bottom, rgba(${color?.[0]},${color?.[1]},${color?.[2]},0.6) 0%, rgba(${color?.[0]},${color?.[1]},${color?.[2]},0) 90%)`
                 }}
               >
                 <div className="flex items-center gap-4">
                   <TogglePlayBackAudio
                     isPlaying={hasTrackPlaying}
-                    onPlayAudio={handlePlay}
+                    onPlayAudio={handleStartPlay}
                     hasTooltip={false}
                     variant="primary"
                     size="lg"
@@ -114,10 +88,14 @@ export default function ArtistPage() {
                 Popular
               </h4>
               <div className="p-4">
-                {popularTracks!.length > 0 && (
+                {tracksList!.length > 0 && (
                   <>
-                    {popularTracks?.map((track, index) => (
-                      <Item index={index} key={track._id} track={track} />
+                    {tracksList?.map((track, index) => (
+                      <ArtistTrackItem
+                        index={index + 1}
+                        key={track._id}
+                        track={track}
+                      />
                     ))}
                   </>
                 )}

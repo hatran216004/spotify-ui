@@ -15,7 +15,7 @@ function useAudioProgressAndVolume(
   const [isSeeking, setIsSeeking] = useState(false);
   const [positionMs, setPositionMs] = useState(() => {
     return (
-      localStorage.getItem('positionMs') ??
+      localStorage.getItem('position_ms') ??
       (currentPlayback?.progress as number)
     );
   });
@@ -32,6 +32,10 @@ function useAudioProgressAndVolume(
   const { mutate: updateProgressApi } = useMutation({
     mutationFn: playerServices.controlProgress
   });
+
+  const saveToLocalStorage = (fieldName: string, value: string) => {
+    localStorage.setItem(fieldName, value);
+  };
 
   const calculateProgress = useCallback(
     (clientX: number) => {
@@ -60,11 +64,15 @@ function useAudioProgressAndVolume(
       // Mute
       audioElement.volume = 0;
       setVolume(0);
+      saveToLocalStorage('volume', `${0}`);
+
       updateVolumeApi(0);
     } else {
       const preVolume = +(localStorage.getItem('preVolume') || 50);
       audioElement.volume = preVolume / 100;
       setVolume(preVolume);
+      saveToLocalStorage('volume', `${preVolume}`);
+
       updateVolumeApi(preVolume);
     }
   };
@@ -76,6 +84,7 @@ function useAudioProgressAndVolume(
     if (type === 'position_ms') {
       audioElement.currentTime = (value / 100) * audioElement.duration;
       setPositionMs(value);
+      saveToLocalStorage('position_ms', `${value}`);
 
       // Call api to update progress
       debounceApiCall(updateProgressApi, value);
@@ -84,20 +93,13 @@ function useAudioProgressAndVolume(
     if (type === 'volume') {
       audioElement.volume = value / 100;
       setVolume(value);
+      saveToLocalStorage('volume', `${value}`);
 
       // Call api to update volume
       debounceApiCall(updateVolumeApi, value);
     }
     setIsSeeking(false);
   };
-
-  useEffect(() => {
-    if (positionMs) localStorage.setItem('positionMs', `${positionMs}`);
-  }, [positionMs]);
-
-  useEffect(() => {
-    if (volume) localStorage.setItem('volume', `${volume}`);
-  }, [volume]);
 
   useEffect(() => {
     if (!isSeeking) return;
@@ -118,6 +120,7 @@ function useAudioProgressAndVolume(
       if (type === 'position_ms') {
         audioElement.currentTime = (+positionMs / 100) * audioElement.duration;
         setPositionMs(positionMs);
+        saveToLocalStorage('position_ms', `${positionMs}`);
 
         // Call api to update progress
         debounceApiCall(updateProgressApi, +positionMs);
@@ -127,6 +130,7 @@ function useAudioProgressAndVolume(
         // volume of audio from 0 to 1
         audioElement.volume = +volume / 100;
         setVolume(volume);
+        saveToLocalStorage('volume', `${volume}`);
 
         // Call api to update volume
         debounceApiCall(updateVolumeApi, +volume);

@@ -1,5 +1,4 @@
 import useAudioProgressAndVolume from '@/hooks/useAudioProgressAndVolume';
-import useControlsPlayer from '@/hooks/useControlsPlayer';
 import { useTrack } from '@/store/track.store';
 import { trackTimeFormat } from '@/utils/datetime';
 import clsx from 'clsx';
@@ -7,7 +6,7 @@ import { useEffect, useRef } from 'react';
 
 export default function ProgressBar() {
   const progressRef = useRef<HTMLDivElement | null>(null);
-  const { audioElement, currentTrack, isShuffle, setIsPlayling } = useTrack();
+  const { audioElement } = useTrack();
 
   const {
     isSeeking,
@@ -16,8 +15,6 @@ export default function ProgressBar() {
     setIsSeeking,
     setPositionMs
   } = useAudioProgressAndVolume(progressRef, 'position_ms');
-
-  const { handleShuffle } = useControlsPlayer();
 
   useEffect(() => {
     if (!audioElement) return;
@@ -28,30 +25,16 @@ export default function ProgressBar() {
       const value =
         (audioElement.currentTime / audioElement.duration) * 100 || 0;
       setPositionMs(value);
-    };
-
-    const handleAudioEnded = () => {
-      setIsPlayling(false);
-      if (isShuffle) handleShuffle();
+      localStorage.setItem('position_ms', `${value}`);
     };
 
     audioElement.addEventListener('timeupdate', handleTimeupdate);
-    audioElement.addEventListener('ended', handleAudioEnded);
     return () => {
       if (audioElement) {
         audioElement.removeEventListener('timeupdate', handleTimeupdate);
-        audioElement.removeEventListener('ended', handleAudioEnded);
       }
     };
-  }, [
-    audioElement,
-    isSeeking,
-    currentTrack,
-    isShuffle,
-    setIsPlayling,
-    setPositionMs,
-    handleShuffle
-  ]);
+  }, [audioElement, isSeeking, setPositionMs]);
 
   return (
     <>

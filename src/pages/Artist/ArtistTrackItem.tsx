@@ -12,7 +12,7 @@ import { formatPlayCount } from '@/utils/number';
 import { Pause, Play } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-export default function Item({
+export default function ArtistTrackItem({
   track,
   index
 }: {

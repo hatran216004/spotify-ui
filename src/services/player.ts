@@ -2,8 +2,8 @@ import { CurrentPlayback } from '@/types/player.type';
 import { SuccessResponseApi } from '@/types/response.type';
 import { http } from '@/utils/http';
 
-type RepeatMode = 'off' | 'track' | 'playlist';
-type ContextType = 'artist' | 'playlist' | 'search' | 'album';
+export type RepeatMode = 'off' | 'track' | 'playlist';
+export type ContextType = 'artist' | 'playlist' | 'search' | 'album';
 
 type StartPlayTrack = {
   trackId: string;
@@ -20,12 +20,32 @@ export const playerServices = {
     http.get<SuccessResponseApi<{ currentPlayback: CurrentPlayback }>>(
       '/me/player'
     ),
-  startPlayTrack: (data: StartPlayTrack) => http.patch('me/player/play', data),
-  pauseTrack: () => http.patch('me/player/pause'),
-  controlVolume: (volume: number) => http.patch('me/player/volume', { volume }),
+  startPlayTrack: (data: StartPlayTrack) =>
+    http.patch<SuccessResponseApi<{ updatedPlayback: CurrentPlayback }>>(
+      'me/player/play',
+      data
+    ),
+  pauseTrack: () =>
+    http.patch<SuccessResponseApi<{ updatedPlayback: CurrentPlayback }>>(
+      'me/player/pause'
+    ),
+  controlVolume: (volume: number) =>
+    http.patch<SuccessResponseApi<{ updatedPlayback: CurrentPlayback }>>(
+      'me/player/volume',
+      { volume }
+    ),
   controlProgress: (progress: number) =>
-    http.patch('me/player/seek', { progress }),
-  controlShuffle: () => http.patch('me/player/shuffle'),
+    http.patch<SuccessResponseApi<{ updatedPlayback: CurrentPlayback }>>(
+      'me/player/seek',
+      { progress }
+    ),
+  controlShuffle: () =>
+    http.patch<SuccessResponseApi<{ updatedPlayback: CurrentPlayback }>>(
+      'me/player/shuffle'
+    ),
   controlRepeat: (repeatMode: RepeatMode) =>
-    http.patch('me/player/repeat', { repeatMode })
+    http.patch<SuccessResponseApi<{ updatedPlayback: CurrentPlayback }>>(
+      'me/player/repeat',
+      { repeatMode }
+    )
 };

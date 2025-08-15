@@ -5,12 +5,16 @@ import { Play, Volume2 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { Playlist as PlaylistType } from '@/types/playlist.type';
 import PlaylistPlaceholder from './PlaylistPlaceholder';
+import { useTrack } from '@/store/track.store';
+import { useCurrentContext } from '@/store/playback.store';
 
 export default function Playlist({ playlist }: { playlist: PlaylistType }) {
   const navigate = useNavigate();
   const { playlistId } = useParams();
-  // const { isPlaying, currentPlaylistItemId, currentTrack } = useTrack();
+  const { isPlaying } = useTrack();
+  const { contextId } = useCurrentContext();
 
+  const hasItemPlaying = isPlaying && contextId === playlist._id;
   const isActive = playlistId === playlist._id;
 
   return (
@@ -56,14 +60,14 @@ export default function Playlist({ playlist }: { playlist: PlaylistType }) {
         </span>
       </div>
 
-      {/* {hasItemPlaying && (
+      {hasItemPlaying && (
         <Volume2
           size={18}
           className="absolute right-2.5"
           fill="#1db954"
           stroke="#1db954"
         />
-      )} */}
+      )}
     </div>
   );
 }
