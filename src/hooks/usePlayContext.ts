@@ -9,7 +9,7 @@ function usePlayContext({
   data
 }: {
   type: ContextType;
-  id: string;
+  id: string | null;
   data?: Track[] | Track;
 }) {
   const {

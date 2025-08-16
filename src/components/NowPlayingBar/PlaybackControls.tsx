@@ -9,12 +9,14 @@ import { artistServices } from '@/services/artist';
 import useControlsPlayer from '@/hooks/useControlsPlayer';
 import { useEffect } from 'react';
 import { Track } from '@/types/track.type';
+import { useUserStore } from '@/store/ui.store';
 
 export default function PlaybackControls() {
   const {
     isShuffle,
     isLoop,
     isPlaying,
+    currentTrack,
     toggleLoop,
     toggleShuffle,
     togglePlayBack
@@ -22,41 +24,48 @@ export default function PlaybackControls() {
   const { contextId, contextType } = useCurrentContext();
   const { currentTracks, setCurrentTracks } = useCurrentTracks();
   const { handleSkipTrack } = useControlsPlayer(currentTracks);
+  const userId = useUserStore().user?._id;
 
-  const {
-    data: playlistTracks,
-    isLoading: isLoadingPlaylist,
-    isError: isErrorPlaylist
-  } = useQuery({
+  const { data: likedTracks, isLoading: isLoadingLikedTracks } = useQuery({
+    queryKey: ['liked-tracks', userId],
+    queryFn: playlistServices.getMeLikedTracks,
+    enabled: contextType === 'liked' && contextId === null
+  });
+
+  const { data: playlistTracks, isLoading: isLoadingPlaylist } = useQuery({
     queryKey: ['playlist', contextId],
     queryFn: () => playlistServices.getPlaylist(contextId!),
     enabled: contextType === 'playlist' && !!contextId
   });
 
-  const {
-    data: popularArtistTracks,
-    isLoading: isLoadingArtistTracks,
-    isError: isErrorArtistTracks
-  } = useQuery({
-    queryKey: ['artist-popular-tracks', contextId],
-    queryFn: () => artistServices.getPopularArtistTracks(contextId!),
-    enabled: contextType === 'artist' && !!contextId
-  });
+  const { data: popularArtistTracks, isLoading: isLoadingArtistTracks } =
+    useQuery({
+      queryKey: ['artist-popular-tracks', contextId],
+      queryFn: () => artistServices.getPopularArtistTracks(contextId!),
+      enabled: contextType === 'artist' && !!contextId
+    });
 
   useEffect(() => {
     let tracksList: Track[] = [];
     switch (contextType) {
       case 'playlist':
-        if (isLoadingPlaylist || isErrorPlaylist) return;
+        if (isLoadingPlaylist || !playlistTracks) return;
         tracksList = playlistTracks?.data.data?.playlist.tracks.map(
           (entry) => entry.track
         ) as Track[];
         break;
       case 'artist':
-        if (isLoadingArtistTracks || isErrorArtistTracks) return;
+        if (isLoadingArtistTracks || !popularArtistTracks) return;
         tracksList = popularArtistTracks?.data.data.tracks.map(
           (track) => track
         ) as Track[];
+        break;
+      case 'search':
+        tracksList = [currentTrack as Track];
+        break;
+      case 'liked':
+        if (isLoadingLikedTracks || !likedTracks) return;
+        tracksList = likedTracks?.data.data?.tracks.map((entry) => entry.track);
         break;
       default:
         break;
@@ -65,11 +74,12 @@ export default function PlaybackControls() {
   }, [
     playlistTracks,
     isLoadingPlaylist,
-    isErrorPlaylist,
     popularArtistTracks,
     isLoadingArtistTracks,
-    isErrorArtistTracks,
     contextType,
+    currentTrack,
+    likedTracks,
+    isLoadingLikedTracks,
     setCurrentTracks
   ]);
 

@@ -3,9 +3,8 @@ import { trackServices } from '@/services/track';
 import { formatDate } from '@/utils/datetime';
 import { formatPlayCount } from '@/utils/number';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import ColorThief from 'colorthief';
 import {
   Tooltip,
   TooltipContent,
@@ -17,50 +16,28 @@ import TogglePlayBackAudio from '@/components/TogglePlayBackAudio';
 
 import InfoFooter from '@/layout/InfoFooter';
 import MenuOtps from '@/components/menu/MenuOtps';
+import { useDominantColor } from '@/hooks/useDominantColor';
+import usePlayContext from '@/hooks/usePlayContext';
 
 export default function TrackPage() {
   const { trackId } = useParams();
-  const imgRef = useRef<HTMLImageElement | null>(null);
-
-  const { isPlaying, currentTrack, setCurrentTrack, handlePlayTrack } =
-    useTrack();
-  const [bgColor, setBgColor] = useState<[number, number, number]>();
 
   const { data, isLoading } = useQuery({
     queryKey: ['track', trackId],
     queryFn: () => trackServices.getTrack(trackId!)
   });
 
-  // Set track data from api
-  useEffect(() => {
-    if (currentTrack) return;
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  const { color } = useDominantColor(imgRef, data);
 
-    const trackData = data?.data.data?.track;
-    if (trackData) {
-      setCurrentTrack(trackData);
-    }
-  }, [data, currentTrack, setCurrentTrack]);
+  const { isPlaying } = useTrack();
 
-  // Set background with main color of track image
-  useEffect(() => {
-    const imgElement = imgRef.current;
-    if ((!currentTrack && !data?.data.data.track.imageUrl) || !imgElement)
-      return;
-
-    const colorThief = new ColorThief();
-
-    const handleLoad = () => {
-      const [r, g, b] = colorThief.getColor(imgElement);
-      setBgColor([r, g, b]);
-    };
-
-    if (imgElement.complete) {
-      handleLoad();
-    } else {
-      imgElement.addEventListener('load', handleLoad);
-    }
-    return () => imgElement.removeEventListener('load', handleLoad);
-  }, [data, currentTrack]);
+  const track = data?.data?.data?.track;
+  const { isSameTrack, handlePlayTrackItem } = usePlayContext({
+    type: 'search',
+    id: trackId || (track?._id as string),
+    data: track
+  });
 
   if (isLoading)
     return (
@@ -69,16 +46,15 @@ export default function TrackPage() {
       </div>
     );
 
-  const track = data?.data.data.track || currentTrack;
   return (
     <div className="h-full overflow-auto rounded-[10px]">
       {track && (
         <div
           style={{
-            background: `linear-gradient(to bottom, rgba(${bgColor?.[0]},${bgColor?.[1]},${bgColor?.[2]},0.6), rgba(${bgColor?.[0]},${bgColor?.[1]},${bgColor?.[2]},0))`
+            background: `linear-gradient(to bottom, rgba(${color?.[0]},${color?.[1]},${color?.[2]},0.6), rgba(${color?.[0]},${color?.[1]},${color?.[2]},0))`
           }}
         >
-          <div className="px-4 shadow-2xl py-[18px] rounded-tl-[10px] rounded-tr-[10px]">
+          <div className="px-4 shadow-2xl py-[28px] rounded-tl-[10px] rounded-tr-[10px]">
             <div className="grid grid-cols-12 gap-5 items-end">
               <div className="col-span-3">
                 <div className="pt-[100%] relative rounded-sm overflow-hidden">
@@ -119,8 +95,8 @@ export default function TrackPage() {
           <div className="p-4">
             <div className="flex items-center gap-4">
               <TogglePlayBackAudio
-                onPlayAudio={() => handlePlayTrack(track, true)}
-                isPlaying={isPlaying && currentTrack?._id === track._id}
+                onPlayAudio={handlePlayTrackItem}
+                isPlaying={isPlaying && isSameTrack}
                 hasTooltip={false}
                 variant="primary"
                 size="lg"

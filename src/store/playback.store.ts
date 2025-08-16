@@ -10,7 +10,7 @@ type CurrentContextStore = {
 
   setCurrentContext: (context: {
     contextType: ContextType;
-    contextId: string;
+    contextId: string | null;
   }) => void;
 };
 

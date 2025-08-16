@@ -5,6 +5,7 @@ import TogglePlayBackAudio from './TogglePlayBackAudio';
 import { useTrack } from '@/store/track.store';
 import { HTMLAttributes } from 'react';
 import { useUserStore } from '@/store/ui.store';
+import usePlayContext from '@/hooks/usePlayContext';
 
 type TrackCardType = {
   track?: Track;
@@ -13,8 +14,14 @@ type TrackCardType = {
 
 export default function TrackCard({ track, className = '' }: TrackCardType) {
   const navigate = useNavigate();
-  const { isPlaying, currentTrack, handlePlayTrack } = useTrack();
+  const { isPlaying } = useTrack();
   const { isLogin } = useUserStore();
+
+  const { isSameTrack, handlePlayTrackItem } = usePlayContext({
+    id: track?._id as string,
+    type: 'search',
+    data: track
+  });
 
   return (
     <div onClick={() => navigate(`/tracks/${track?._id}`)}>
@@ -33,12 +40,11 @@ export default function TrackCard({ track, className = '' }: TrackCardType) {
           <TogglePlayBackAudio
             onPlayAudio={() => {
               if (!isLogin) {
-                navigate('/register');
-                return;
+                return navigate('/register');
               }
-              handlePlayTrack(track!);
+              handlePlayTrackItem();
             }}
-            isPlaying={isPlaying && track?._id === currentTrack?._id}
+            isPlaying={isPlaying && isSameTrack}
             hasTooltip={false}
             size="md"
             variant="primary"

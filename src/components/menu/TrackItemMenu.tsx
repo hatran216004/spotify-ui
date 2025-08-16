@@ -9,8 +9,9 @@ import {
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip';
+import useAddTrackToLiked from '@/hooks/useAddTrackToLiked';
 import useRemoveTrackFromPlaylist from '@/hooks/useRemoveTrackFromPlaylist';
-import { Ellipsis, LibraryBig, ListEnd, Trash } from 'lucide-react';
+import { CirclePlus, Ellipsis, LibraryBig, ListEnd, Trash } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 
 export default function TrackItemMenu({
@@ -22,6 +23,7 @@ export default function TrackItemMenu({
 }) {
   const { playlistId } = useParams();
   const { handleRemoveFromPlaylist } = useRemoveTrackFromPlaylist();
+  const { handleAddTrackToLiked, isPending } = useAddTrackToLiked();
 
   return (
     <DropdownMenu>
@@ -44,6 +46,13 @@ export default function TrackItemMenu({
         <DropdownMenuItem>
           <LibraryBig />
           Add to Your Library
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => handleAddTrackToLiked(trackId as string)}
+          disabled={isPending}
+        >
+          <CirclePlus />
+          Save to your Liked Songs
         </DropdownMenuItem>
         <DropdownMenuItem>
           <ListEnd />

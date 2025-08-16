@@ -6,6 +6,7 @@ import {
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip';
+import useAddTrackToLiked from '@/hooks/useAddTrackToLiked';
 import { useTrack } from '@/store/track.store';
 import { useSidebar } from '@/store/ui.store';
 import { CirclePlus, PanelLeftOpen, Share } from 'lucide-react';
@@ -14,6 +15,7 @@ import { Link } from 'react-router-dom';
 export default function RightSidebar() {
   const { onExpandedRightSidebar } = useSidebar();
   const { currentTrack } = useTrack();
+  const { handleAddTrackToLiked, isPending } = useAddTrackToLiked();
 
   if (!currentTrack || !currentTrack?.artists) return null;
 
@@ -78,7 +80,11 @@ export default function RightSidebar() {
           </CopyLinkButton>
           <Tooltip>
             <TooltipTrigger asChild>
-              <button className="group/icon p-1 cursor-pointer">
+              <button
+                disabled={isPending}
+                className="group/icon p-1 cursor-pointer"
+                onClick={() => handleAddTrackToLiked(currentTrack._id)}
+              >
                 <CirclePlus
                   size={24}
                   className="text-[#929092] group-hover/icon:text-white group-hover/icon:scale-[1.05]"
@@ -86,7 +92,7 @@ export default function RightSidebar() {
               </button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Add to liked tracks</p>
+              <p>Add to liked songs</p>
             </TooltipContent>
           </Tooltip>
         </div>

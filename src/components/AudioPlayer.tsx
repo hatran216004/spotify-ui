@@ -68,7 +68,7 @@ export default function AudioPlayer() {
       setIsPlayling(false);
     };
 
-    const handleAudioEnded = () => {
+    const handleEnded = () => {
       if (isShuffle) {
         handleShuffle();
       } else {
@@ -78,12 +78,12 @@ export default function AudioPlayer() {
 
     audioElement.addEventListener('play', handlePlaying);
     audioElement.addEventListener('pause', handlePause);
-    audioElement.addEventListener('ended', handleAudioEnded);
+    audioElement.addEventListener('ended', handleEnded);
     return () => {
       if (audioElement) {
         audioElement.removeEventListener('play', handlePlaying);
         audioElement.removeEventListener('pause', handlePause);
-        audioElement.removeEventListener('ended', handleAudioEnded);
+        audioElement.removeEventListener('ended', handleEnded);
       }
     };
   }, [audioElement, isShuffle, setIsPlayling, handleShuffle, handleSkipTrack]);

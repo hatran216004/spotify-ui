@@ -29,6 +29,7 @@ export default function ArtistPage() {
   const tracksList = artistPopularTracks?.data?.data?.tracks.map(
     (track) => track
   ) as Track[];
+  
   const { handleStartPlay, hasTrackPlaying } = usePlayContext({
     id: artistId!,
     type: 'artist',

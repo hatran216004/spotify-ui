@@ -8,7 +8,9 @@ import PlaylistPlaceholder from './PlaylistPlaceholder';
 import { useTrack } from '@/store/track.store';
 import { useCurrentContext } from '@/store/playback.store';
 
-export default function Playlist({ playlist }: { playlist: PlaylistType }) {
+type ItemType = PlaylistType;
+
+export default function LibraryItem({ playlist }: { playlist: ItemType }) {
   const navigate = useNavigate();
   const { playlistId } = useParams();
   const { isPlaying } = useTrack();

@@ -1,5 +1,6 @@
 import { Playlist, PlaylistList } from '@/types/playlist.type';
 import { SuccessResponseApi } from '@/types/response.type';
+import { Track } from '@/types/track.type';
 import { http } from '@/utils/http';
 
 type Data = {
@@ -7,7 +8,18 @@ type Data = {
   playlistId: string;
 };
 
+export type LikedTrack = {
+  track: Track;
+  addedAt: string;
+};
+
 export const playlistServices = {
+  getMeLikedTracks: () =>
+    http.get<SuccessResponseApi<{ tracks: LikedTrack[] }>>('me/liked-tracks'),
+  addTrackToLiked: (trackId: string) =>
+    http.patch<SuccessResponseApi<{ track: Track }>>('me/liked-tracks', {
+      trackId
+    }),
   getAllPlaylists: () =>
     http.get<SuccessResponseApi<PlaylistList>>('/playlists'),
   getMyPlaylists: () =>

@@ -1,5 +1,7 @@
 import { playlistServices } from '@/services/playlist';
+import { ErrorResponseApi } from '@/types/response.type';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import toast from 'react-hot-toast';
 
 function useAddTrackToPlaylist() {
@@ -27,8 +29,12 @@ function useAddTrackToPlaylist() {
             queryKey: ['playlist', playlistId]
           });
         },
-        onError: () => {
-          toast.error('Failed to add the track. Please try again.');
+        onError: (error) => {
+          const errorMessage = (error as AxiosError<ErrorResponseApi>).response
+            ?.data.message;
+          toast.error(
+            errorMessage || 'Failed to add the track. Please try again.'
+          );
         }
       }
     );

@@ -1,4 +1,4 @@
-import { trackTimeFormat } from '@/utils/datetime';
+import { timeAgo, trackTimeFormat } from '@/utils/datetime';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { Pause, Play } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
@@ -7,17 +7,22 @@ import TrackItemMenu from './menu/TrackItemMenu';
 import { ParamsStartDragType } from './PlaylistTracksContent';
 import { Track } from '@/types/track.type';
 import usePlayContext from '@/hooks/usePlayContext';
+import { ContextType } from '@/services/player';
 
 type TrackItemType = {
+  addedAt?: string;
   track: Track;
+  type?: ContextType;
   order: number;
   ref?: (ele: HTMLLIElement | null) => void;
-  onMouseDown: ({ e, trackId, trackIndex }: ParamsStartDragType) => void;
+  onMouseDown?: ({ e, trackId, trackIndex }: ParamsStartDragType) => void;
 };
 
 export default function TrackItem({
+  addedAt,
   track,
   order,
+  type = 'playlist',
   ref,
   onMouseDown
 }: TrackItemType) {
@@ -27,8 +32,8 @@ export default function TrackItem({
   const isViewCompact = viewMode === 'compact';
 
   const { isSameTrack, hasTrackPlaying, handlePlayTrackItem } = usePlayContext({
-    id: playlistId!,
-    type: 'playlist',
+    id: type === 'playlist' ? playlistId! : null,
+    type,
     data: track
   });
 
@@ -38,7 +43,7 @@ export default function TrackItem({
     <li
       data-track-row
       onMouseDown={(e) =>
-        onMouseDown({
+        onMouseDown?.({
           e,
           trackId: track._id,
           trackIndex: order
@@ -66,7 +71,7 @@ export default function TrackItem({
           </TooltipContent>
         </Tooltip>
       </div>
-      <div className="col-span-5">
+      <div className="col-span-4">
         <div className="flex items-center gap-4">
           {!isViewCompact && (
             <img
@@ -79,7 +84,7 @@ export default function TrackItem({
           <div className="flex flex-col text-[1rem] capitalize">
             <Link
               to={`/tracks/${track._id}`}
-              className="hover:underline font-medium text-[1rem]"
+              className="hover:underline font-medium text-[1rem] truncate"
             >
               {track.title}
             </Link>
@@ -93,11 +98,16 @@ export default function TrackItem({
       </div>
       <div className="col-span-3">
         {/* Placeholder for album name */}
-        <h3 className="px-4 text-[#b3b3b3] text-sm">
+        <h3 className="px-4 text-[#b3b3b3] text-sm truncate">
           {track.artists?.[0].name}
         </h3>
       </div>
-      <div className="col-span-3">
+      <div className="col-span-2">
+        <div className="px-4 text-[#b3b3b3] text-sm text-nowrap">
+          {timeAgo(addedAt as string)}
+        </div>
+      </div>
+      <div className="col-span-2">
         <div className="flex items-center gap-2 justify-end">
           <span className="text-[#b3b3b3] text-sm">
             {trackTimeFormat(track.duration || 0)}

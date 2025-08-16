@@ -5,8 +5,6 @@ import { persist } from 'zustand/middleware';
 type TrackState = {
   currentTrack: Track | null;
   audioElement: HTMLAudioElement | null;
-  // positionMs: number;
-  // volume: number;
 
   isPlaying: boolean;
   isLoop: boolean;
@@ -74,16 +72,8 @@ export const useTrack = create<TrackStore>()(
       },
       handlePlayTrack: (track) => {
         if (!track) return;
-
         const { playTrack } = get();
         playTrack(track);
-
-        // if (isSameContext && isSameTrack) {
-        //   togglePlayBack();
-        // } else {
-        //   audioElement!.currentTime = 0;
-        //   playTrack(track);
-        // }
       }
     }),
     {

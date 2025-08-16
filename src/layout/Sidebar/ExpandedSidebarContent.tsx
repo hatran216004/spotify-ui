@@ -7,7 +7,7 @@ import SidebarSearch from '@/components/SidebarSearch';
 import { AlignJustify, PanelRightOpen } from 'lucide-react';
 import { useSidebar } from '@/store/ui.store';
 import TagButton from '@/components/TagButton';
-import MyPlaylists from '@/components/MyPlaylists';
+import MyLibrary from '@/components/MyLibrary';
 import CreateNewPlaylistButton from '@/components/CreateNewPlaylistButton';
 
 export default function ExpandedSidebarContent() {
@@ -46,7 +46,7 @@ export default function ExpandedSidebarContent() {
         </div>
       </div>
 
-      <MyPlaylists />
+      <MyLibrary />
     </div>
   );
 }

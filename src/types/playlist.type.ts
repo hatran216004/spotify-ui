@@ -27,4 +27,5 @@ export type PlaylistList = {
 export type PlaylistTrack = {
   track: Track;
   order: number;
+  addedAt: string;
 };

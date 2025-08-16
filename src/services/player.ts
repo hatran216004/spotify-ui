@@ -3,7 +3,7 @@ import { SuccessResponseApi } from '@/types/response.type';
 import { http } from '@/utils/http';
 
 export type RepeatMode = 'off' | 'track' | 'playlist';
-export type ContextType = 'artist' | 'playlist' | 'search' | 'album';
+export type ContextType = 'artist' | 'playlist' | 'search' | 'album' | 'liked';
 
 type StartPlayTrack = {
   trackId: string;

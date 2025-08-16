@@ -18,11 +18,12 @@ import { useTrack } from './store/track.store';
 import { useEffect } from 'react';
 import AdminPage from './pages/Auth/Admin/AdminPage';
 import AdminLayout from './layout/AdminLayout';
-import PlaylistPage from './pages/PlaylistPage';
+import PlaylistPage from './pages/Playlist/PlaylistPage';
 import ArtistPage from './pages/Artist/ArtistPage';
 import { playerServices } from './services/player';
 import { useQuery } from '@tanstack/react-query';
 import { useCurrentPlayback } from './store/playback.store';
+import CollectionPage from './pages/Collection/CollectionPage';
 
 function ProtecedRoute() {
   const { user } = useUserStore();
@@ -44,13 +45,13 @@ export default function App() {
     queryFn: playerServices.getCurrentPlayback
   });
 
-  useEffect(() => {
-    const currentPlayback = data?.data?.data?.currentPlayback;
-    if (currentPlayback) {
-      setCurrentPlayback(currentPlayback);
-      setIsPlayling(currentPlayback.isPlaying);
-    }
-  }, [data, setCurrentPlayback, setIsPlayling]);
+  // useEffect(() => {
+  //   const currentPlayback = data?.data?.data?.currentPlayback;
+  //   if (currentPlayback) {
+  //     setCurrentPlayback(currentPlayback);
+  //     // setIsPlayling(currentPlayback.isPlaying);
+  //   }
+  // }, [data, setCurrentPlayback, setIsPlayling]);
 
   // useEffect(() => {
   //   const handler = (e: KeyboardEvent) => {
@@ -79,6 +80,7 @@ export default function App() {
                   element={<PlaylistPage />}
                 />
                 <Route path="/artists/:artistId" element={<ArtistPage />} />
+                <Route path="/collection/tracks" element={<CollectionPage />} />
               </Route>
             </Route>
 
