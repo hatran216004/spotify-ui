@@ -3,7 +3,6 @@ export type User = {
   email: string;
   username: string;
   likedTracks: [];
-  following: [];
   avatarUrl: string;
   clerkId: string;
   createdAt: string;

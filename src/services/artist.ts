@@ -9,5 +9,5 @@ export const artistServices = {
   getArtist: (id: string) =>
     http.get<SuccessResponseApi<{ artist: Artist }>>(`/artists/${id}`),
   getPopularArtistTracks: (id: string) =>
-    http.get<SuccessResponseApi<ListTracks>>(`/artists/${id}/popular-tracks`)
+    http.get<SuccessResponseApi<ListTracks>>(`/artists/${id}/tracks/popular`)
 };

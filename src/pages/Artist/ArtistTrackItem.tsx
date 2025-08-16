@@ -5,23 +5,31 @@ import {
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip';
+import usePlayContext from '@/hooks/usePlayContext';
 import { useTrack } from '@/store/track.store';
 import { Track } from '@/types/track.type';
 import { trackTimeFormat } from '@/utils/datetime';
 import { formatPlayCount } from '@/utils/number';
 import { Pause, Play } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 export default function ArtistTrackItem({
   track,
-  index
+  order
 }: {
   track: Track;
-  index: number;
+  order: number;
 }) {
-  const { isPlaying, currentTrack, togglePlayBack, handlePlayTrack } =
-    useTrack();
-  const itemPlaying = isPlaying && currentTrack?._id === track._id;
+  const { artistId } = useParams();
+  const { isSameTrack, handlePlayTrackItem } = usePlayContext({
+    id: artistId!,
+    type: 'artist',
+    data: track
+  });
+
+  const { isPlaying } = useTrack();
+  const itemPlaying = isPlaying && isSameTrack;
+  const Icon = itemPlaying ? Pause : Play;
 
   return (
     <div
@@ -30,25 +38,15 @@ export default function ArtistTrackItem({
     >
       <div className="col-span-1 text-sm text-[#b3b3b3] flex justify-center">
         <div className="group-hover:hidden">
-          {itemPlaying ? <PlayingBarIcon /> : index}
+          {itemPlaying ? <PlayingBarIcon /> : order}
         </div>
         <Tooltip>
           <TooltipTrigger asChild>
             <button
               className="hidden group-hover:block p-1"
-              onClick={() => {
-                if (itemPlaying) {
-                  togglePlayBack();
-                } else {
-                  handlePlayTrack(track);
-                }
-              }}
+              onClick={handlePlayTrackItem}
             >
-              {itemPlaying ? (
-                <Pause size={16} fill="#fff" stroke="#fff" />
-              ) : (
-                <Play size={16} fill="#fff" stroke="#fff" />
-              )}
+              <Icon size={16} fill="#fff" stroke="#fff" />
             </button>
           </TooltipTrigger>
           <TooltipContent>

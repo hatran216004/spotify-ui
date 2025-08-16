@@ -57,7 +57,7 @@ export default function RightSidebar() {
           >
             {currentTrack?.title}
           </Link>
-          <div className="truncate flex">
+          <div className="truncate flex items-center justify-between mt-2">
             {currentTrack?.artists?.map((artist, _, array) => {
               const isLast = artist._id === array[array.length - 1]._id;
               return (
@@ -67,34 +67,34 @@ export default function RightSidebar() {
                 </h4>
               );
             })}
+            <div className="flex items-center gap-2">
+              <CopyLinkButton>
+                <button className="group/icon p-1 cursor-pointer">
+                  <Share
+                    size={24}
+                    className="text-[#929092] group-hover/icon:text-white group-hover/icon:scale-[1.05]"
+                  />
+                </button>
+              </CopyLinkButton>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    disabled={isPending}
+                    className="group/icon p-1 cursor-pointer"
+                    onClick={() => handleAddTrackToLiked(currentTrack._id)}
+                  >
+                    <CirclePlus
+                      size={24}
+                      className="text-[#929092] group-hover/icon:text-white group-hover/icon:scale-[1.05]"
+                    />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Add to liked songs</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <CopyLinkButton>
-            <button className="group/icon p-1 cursor-pointer">
-              <Share
-                size={24}
-                className="text-[#929092] group-hover/icon:text-white group-hover/icon:scale-[1.05]"
-              />
-            </button>
-          </CopyLinkButton>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                disabled={isPending}
-                className="group/icon p-1 cursor-pointer"
-                onClick={() => handleAddTrackToLiked(currentTrack._id)}
-              >
-                <CirclePlus
-                  size={24}
-                  className="text-[#929092] group-hover/icon:text-white group-hover/icon:scale-[1.05]"
-                />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Add to liked songs</p>
-            </TooltipContent>
-          </Tooltip>
         </div>
       </div>
       <ArtistDetailInfo />
