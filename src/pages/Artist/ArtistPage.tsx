@@ -60,6 +60,7 @@ export default function ArtistPage() {
                 <ArtistActions
                   handleStartPlay={handleStartPlay}
                   hasTrackPlaying={hasTrackPlaying}
+                  isFollowed={artist.isFollowed}
                 />
               </div>
               <h4 className="text-2xl text-white font-semibold px-4">
