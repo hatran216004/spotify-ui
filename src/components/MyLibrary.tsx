@@ -6,14 +6,19 @@ import CollectionTracks from './CollectionTracks';
 import useArtistFollows from '@/hooks/useArtistFollows';
 import LibraryArtistItem from './LibraryArtistItem';
 import { ArtistFollowItem } from '@/types/artist.type';
+import { useState } from 'react';
 
 export default function MyLibrary() {
   const { myPlaylists } = useMyPlaylists();
   const { artistFollows } = useArtistFollows();
+  const [isPin, setIsPin] = useState(
+    localStorage.getItem('pin-playlist') === 'true'
+  );
 
   return (
     <div className="mt-5 mx-[6px] px-[6px] overflow-y-auto">
-      <CollectionTracks />
+      {isPin && <CollectionTracks onPin={setIsPin} isPin={isPin} />}
+
       {myPlaylists && myPlaylists.length > 0 && (
         <RenderList
           data={myPlaylists}
@@ -30,6 +35,7 @@ export default function MyLibrary() {
           )}
         />
       )}
+      {!isPin && <CollectionTracks onPin={setIsPin} isPin={isPin} />}
     </div>
   );
 }
