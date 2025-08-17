@@ -2,8 +2,19 @@ import { Track } from '@/types/track.type';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+type CurrentTrackType = Pick<
+  Track,
+  | '_id'
+  | 'artists'
+  | 'audioUrl'
+  | 'duration'
+  | 'title'
+  | 'imageUrl'
+  | 'playCount'
+>;
+
 type TrackState = {
-  currentTrack: Track | null;
+  currentTrack: CurrentTrackType | null;
   audioElement: HTMLAudioElement | null;
 
   isPlaying: boolean;

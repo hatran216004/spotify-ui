@@ -10,11 +10,48 @@ import {
 import { SocialKey } from '@/types/utils.type';
 import { useTrack } from '@/store/track.store';
 import { Link } from 'react-router-dom';
+import useArtistFollows from '@/hooks/useArtistFollows';
+import useFollowArtist from '@/hooks/useFollowArtist';
+import useUnfollowArtist from '@/hooks/useUnfollowArtist';
+import { useQueryClient } from '@tanstack/react-query';
+import { useUserStore } from '@/store/ui.store';
 
 export default function ArtistDetailInfo() {
   const { currentTrack } = useTrack();
-
   const mainArtist = currentTrack?.artists?.[0];
+  const queryClient = useQueryClient();
+  const userId = useUserStore().user?._id;
+
+  const { artistFollows } = useArtistFollows();
+  const { follow, isFollowing } = useFollowArtist();
+  const { unfollow, isUnfollowing } = useUnfollowArtist();
+
+  const isFollowed = artistFollows?.some(
+    (artist) => artist._id === mainArtist?._id
+  );
+
+  const handleFollow = () => {
+    const artistId = mainArtist?._id;
+    if (!artistId) return;
+
+    if (isFollowed) {
+      unfollow(artistId, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: ['artists-followed', userId]
+          });
+        }
+      });
+    } else {
+      follow(artistId, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: ['artists-followed', userId]
+          });
+        }
+      });
+    }
+  };
 
   return (
     <Dialog>
@@ -34,13 +71,21 @@ export default function ArtistDetailInfo() {
           <div className="space-y-2 px-3 pt-2">
             <div className="flex items-center justify-between">
               <Link
-                to={`/artist/${mainArtist?._id}`}
+                to={`/artists/${mainArtist?._id}`}
                 className="hover:underline text-white font-semibold text-lg"
               >
                 {mainArtist?.name}
               </Link>
-              <Button variant="outline" className="rounded-full">
-                Follow
+              <Button
+                variant="outline"
+                className="rounded-full"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleFollow();
+                }}
+                disabled={isFollowing || isUnfollowing}
+              >
+                {isFollowed ? 'Unfollow' : 'Follow'}
               </Button>
             </div>
             <p className="text-sm text-[#b3b3b3] line-clamp-3 font-semibold">
