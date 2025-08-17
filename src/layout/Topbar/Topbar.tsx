@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import Logo from '@/components/Logo';
-import Search from '@/components/Search';
+import SearchBar from '@/components/SearchBar';
 import TopBarGuest from './TopBarGuest';
 import TopBarUser from './TopBarUser';
 import { useUserStore } from '@/store/ui.store';
@@ -34,7 +34,7 @@ export default function Topbar() {
               <path d="M13.5 1.515a3 3 0 0 0-3 0L3 5.845a2 2 0 0 0-1 1.732V21a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-6h4v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V7.577a2 2 0 0 0-1-1.732z"></path>
             </svg>
           </Link>
-          <Search />
+          <SearchBar />
         </div>
         {user?.clerkId ? <TopBarUser /> : <TopBarGuest />}
       </div>

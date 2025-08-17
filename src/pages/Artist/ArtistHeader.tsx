@@ -13,7 +13,7 @@ export default function ArtistHeader({
     <>
       <img src={coverUrl} alt="" hidden ref={imgRef} crossOrigin="anonymous" />
       <div
-        className="p-4 h-80 shadow-2xl flex rounded-t-[10px]"
+        className="p-4 h-80 shadow-2xl flex rounded-t-[10px] bg-center bg-cover"
         style={{
           background: `url(${coverUrl})`,
           backgroundPosition: 'center',

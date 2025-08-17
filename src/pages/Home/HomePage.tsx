@@ -7,6 +7,7 @@ import TopTrending from './components/TopTrending';
 import InfoFooter from '@/layout/InfoFooter';
 import { getRandomColor } from '@/utils/helpers';
 import PopularArtists from './components/PopularArtists';
+import PopularAlbums from './components/PopularAlbums';
 
 const THERESHOLD = 50;
 
@@ -45,6 +46,7 @@ export default function HomePage() {
           <RecommendedList />
           <TopTrending />
           <PopularArtists />
+          <PopularAlbums />
         </div>
       </section>
       <InfoFooter />

@@ -69,7 +69,7 @@ export default function TrackPage() {
               </div>
               <div className="col-span-9">
                 <div className="space-y-5">
-                  <span className="text-sm text-white font-medium">Track</span>
+                  <span className="text-sm text-white font-medium">Song</span>
                   <h1 className="text-6xl text-white font-bold truncate uppercase">
                     {track.title}
                   </h1>

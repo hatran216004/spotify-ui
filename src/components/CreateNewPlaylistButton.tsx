@@ -13,6 +13,7 @@ export default function CreateNewPlaylistButton() {
       queryClient.invalidateQueries({
         queryKey: ['my-playlists']
       });
+      toast.success('Added to Your Library');
     },
     onError: () => {
       toast.error('Failed to create new playlist. Please try again later!');

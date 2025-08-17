@@ -10,6 +10,7 @@ import useControlsPlayer from '@/hooks/useControlsPlayer';
 import { useEffect } from 'react';
 import { Track } from '@/types/track.type';
 import { useUserStore } from '@/store/ui.store';
+import { albumServices } from '@/services/album';
 
 export default function PlaybackControls() {
   const {
@@ -30,6 +31,12 @@ export default function PlaybackControls() {
     queryKey: ['liked-tracks', userId],
     queryFn: playlistServices.getMeLikedTracks,
     enabled: contextType === 'liked' && contextId === null
+  });
+
+  const { data: albumTracks, isLoading: isLoadingAlbum } = useQuery({
+    queryKey: ['album', contextId],
+    queryFn: () => albumServices.getAlbum(contextId!),
+    enabled: contextType === 'album' && !!contextId
   });
 
   const { data: playlistTracks, isLoading: isLoadingPlaylist } = useQuery({
@@ -60,6 +67,10 @@ export default function PlaybackControls() {
           (track) => track
         ) as Track[];
         break;
+      case 'album':
+        if (isLoadingAlbum || !albumTracks) return;
+        tracksList = albumTracks.data.data.album.tracks;
+        break;
       case 'search':
         tracksList = [currentTrack as Track];
         break;
@@ -72,6 +83,7 @@ export default function PlaybackControls() {
     }
     setCurrentTracks(tracksList);
   }, [
+    albumTracks,
     playlistTracks,
     isLoadingPlaylist,
     popularArtistTracks,
@@ -80,6 +92,7 @@ export default function PlaybackControls() {
     currentTrack,
     likedTracks,
     isLoadingLikedTracks,
+    isLoadingAlbum,
     setCurrentTracks
   ]);
 

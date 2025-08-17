@@ -14,9 +14,8 @@ import { useTrack } from '@/store/track.store';
 import { useUserStore } from '@/store/ui.store';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import { Bell, LayoutDashboard, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { PiUsersThreeBold } from 'react-icons/pi';
-import { Link, useNavigate } from 'react-router-dom';
 
 export default function TopBarUser() {
   const naviage = useNavigate();
@@ -44,13 +43,37 @@ export default function TopBarUser() {
     <div className="flex items-center gap-2">
       <div className="flex items-center gap-2 px-2">
         {isAdmin && (
-          <Link
-            to="/admin"
-            className="flex items-center gap-2 p-2 cursor-pointer rounded-md bg-[#1f1f1f] hover:opacity-90"
-          >
-            <LayoutDashboard size={18} color="#b3b3b3" />
-            <span className="text-sm">Dashboard</span>
-          </Link>
+          <Popover>
+            <PopoverTrigger>
+              <div
+                // to="/admin"
+                className="flex items-center gap-2 p-2 cursor-pointer rounded-md bg-[#1f1f1f] hover:opacity-90"
+              >
+                <LayoutDashboard size={18} color="#b3b3b3" />
+                <span className="text-sm">Dashboard</span>
+              </div>
+            </PopoverTrigger>
+
+            <PopoverContent className="bg-blue-50 border border-blue-300 shadow-md rounded-xl p-4">
+              <div className="flex items-center gap-2">
+                <svg
+                  className="w-5 h-5 text-blue-500 animate-spin shrink-0"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+                <span className="text-blue-600 font-medium text-center">
+                  Function is under development...
+                </span>
+              </div>
+            </PopoverContent>
+          </Popover>
         )}
 
         <Tooltip>
@@ -59,15 +82,6 @@ export default function TopBarUser() {
           </TooltipTrigger>
           <TooltipContent>
             <p>What's new</p>
-          </TooltipContent>
-        </Tooltip>
-
-        <Tooltip>
-          <TooltipTrigger className="p-2 cursor-pointer">
-            <PiUsersThreeBold size={18} color="#b3b3b3" />
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Friend activity</p>
           </TooltipContent>
         </Tooltip>
       </div>

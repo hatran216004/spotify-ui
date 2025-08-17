@@ -36,6 +36,7 @@ export default function ExpandedSidebarContent() {
       <div className="mt-5 px-3 flex items-center gap-3">
         <TagButton>Playlist</TagButton>
         <TagButton>Artists</TagButton>
+        <TagButton>Albums</TagButton>
       </div>
 
       <div className="mt-5 px-3 flex items-center justify-between">

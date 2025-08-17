@@ -84,7 +84,14 @@ export default function CollectionTracks({
         </div>
       </ContextMenuTrigger>
       <ContextMenuContent>
-        <ContextMenuItem onClick={() => onPin((prev) => !prev)}>
+        <ContextMenuItem
+          onClick={() =>
+            onPin((prev) => {
+              localStorage.setItem('pin-playlist', `${!prev}`);
+              return !prev;
+            })
+          }
+        >
           <MdPushPin
             className={`rotate-50 ${
               isPin ? 'text-green-500' : 'text-[#eee] size-5'

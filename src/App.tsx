@@ -14,16 +14,13 @@ import { TooltipProvider } from './components/ui/tooltip';
 import AudioPlayer from './components/AudioPlayer';
 import TrackPage from './pages/Track/TrackPage';
 import HomePage from './pages/Home/HomePage';
-import { useTrack } from './store/track.store';
-import { useEffect } from 'react';
 import AdminPage from './pages/Auth/Admin/AdminPage';
 import AdminLayout from './layout/AdminLayout';
 import PlaylistPage from './pages/Playlist/PlaylistPage';
 import ArtistPage from './pages/Artist/ArtistPage';
-import { playerServices } from './services/player';
-import { useQuery } from '@tanstack/react-query';
-import { useCurrentPlayback } from './store/playback.store';
 import CollectionPage from './pages/Collection/CollectionPage';
+import SearchPage from './pages/Search/SearchPage';
+import AlbumPage from './pages/Album/AlbumPage';
 
 function ProtecedRoute() {
   const { user } = useUserStore();
@@ -36,22 +33,10 @@ function RejectedRoute() {
 }
 
 export default function App() {
-  const { setIsPlayling } = useTrack();
-  const userId = useUserStore().user?._id;
-  const { setCurrentPlayback } = useCurrentPlayback();
-
-  const { data } = useQuery({
-    queryKey: ['current-playback', userId],
-    queryFn: playerServices.getCurrentPlayback
-  });
-
-  // useEffect(() => {
-  //   const currentPlayback = data?.data?.data?.currentPlayback;
-  //   if (currentPlayback) {
-  //     setCurrentPlayback(currentPlayback);
-  //     // setIsPlayling(currentPlayback.isPlaying);
-  //   }
-  // }, [data, setCurrentPlayback, setIsPlayling]);
+  // const { data } = useQuery({
+  //   queryKey: ['current-playback', userId],
+  //   queryFn: playerServices.getCurrentPlayback
+  // });
 
   // useEffect(() => {
   //   const handler = (e: KeyboardEvent) => {
@@ -73,6 +58,8 @@ export default function App() {
           <Routes>
             <Route element={<MainLayout />}>
               <Route path="/" element={<HomePage />} />
+              <Route path="/search" element={<SearchPage />} />
+
               <Route element={<ProtecedRoute />}>
                 <Route path="/tracks/:trackId" element={<TrackPage />} />
                 <Route
@@ -80,6 +67,8 @@ export default function App() {
                   element={<PlaylistPage />}
                 />
                 <Route path="/artists/:artistId" element={<ArtistPage />} />
+                <Route path="/albums/:albumId" element={<AlbumPage />} />
+
                 <Route path="/collection/tracks" element={<CollectionPage />} />
               </Route>
             </Route>

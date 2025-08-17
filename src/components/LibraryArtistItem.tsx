@@ -22,9 +22,9 @@ export default function LibraryArtistItem({
       <ContextMenuTrigger>
         <Link
           to={`/artists/${artist._id}`}
-          className="group flex items-center gap-3 p-2 rounded-lg hover:bg-[#2a2a2a] relative"
+          className="group/artist flex items-center gap-3 p-2 rounded-lg hover:bg-[#2a2a2a] relative"
         >
-          <Avatar className="w-[48px] h-[48px] rounded-full group-hover:opacity-70">
+          <Avatar className="w-[48px] h-[48px] rounded-full group-hover/artist:opacity-70">
             <AvatarImage src={artist.avatarUrl} className="object-cover" />
           </Avatar>
           <div>

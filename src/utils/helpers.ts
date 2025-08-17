@@ -30,3 +30,19 @@ export const getRandomColor = () => {
     SPOTIFY_COLORS[Math.floor(Math.random() * SPOTIFY_COLORS.length)];
   return randomColor;
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const debounce = <T extends (...args: any[]) => void>(
+  callback: T,
+  timeout: number = 300
+) => {
+  let timerId: ReturnType<typeof setTimeout>;
+
+  return (...args: Parameters<T>) => {
+    clearTimeout(timerId);
+
+    timerId = setTimeout(() => {
+      callback(...args);
+    }, timeout);
+  };
+};
