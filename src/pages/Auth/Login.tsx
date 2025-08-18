@@ -24,7 +24,7 @@ import { Button } from '@/components/ui/button';
 type FormData = LoginSchema;
 
 export default function Login() {
-  const { signOut } = useAuth();
+  const { signOut, getToken } = useAuth();
   const {
     formState: { errors },
     register,
@@ -64,15 +64,16 @@ export default function Login() {
       const signInSuccess = await handleSignIn(email_username, password);
       if (signInSuccess) {
         const payload = {
-          email: isEmail(email_username) ? email_username : null,
-          username: isUsername(email_username) ? email_username : null
+          email: isEmail(email_username) ? email_username.trim() : null,
+          username: isUsername(email_username) ? email_username.trim() : null
         };
 
         mutate(payload, {
-          onSuccess: (data) => {
+          onSuccess: async (data) => {
+            const token = await getToken();
             const user = data.data.data.user;
-            if (user) {
-              setUser(user);
+            if (user && token) {
+              setUser(user, token);
               navigate('/');
               toast.success('Login successfully');
             }

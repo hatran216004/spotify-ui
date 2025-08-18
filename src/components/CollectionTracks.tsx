@@ -69,18 +69,9 @@ export default function CollectionTracks({
                   isPin ? 'text-green-500' : 'text-[#eee]'
                 }`}
               />{' '}
-              Playlist . 2 songs
+              Playlist
             </div>
           </div>
-
-          {/* {hasItemPlaying && (
-            <Volume2
-              size={18}
-              className="absolute right-2.5"
-              fill="#1db954"
-              stroke="#1db954"
-            />
-          )} */}
         </div>
       </ContextMenuTrigger>
       <ContextMenuContent>

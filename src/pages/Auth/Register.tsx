@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useSignUp } from '@clerk/clerk-react';
+import { useAuth, useSignUp } from '@clerk/clerk-react';
 import {
   type SignUpResource,
   type SetActive as SetActiveType
@@ -40,6 +40,7 @@ export default function Register() {
   } = useForm<FormData>({
     resolver: yupResolver(registerSchema)
   });
+  const { getToken } = useAuth();
 
   const [verifying, setVerifying] = useState(false);
   const [isVerifyOTP, setIsVerifyOTP] = useState(false);
@@ -93,12 +94,14 @@ export default function Register() {
             clerkId: clerkId!
           },
           {
-            onSuccess: (data) => {
+            onSuccess: async (data) => {
+              const token = await getToken();
               const user = data.data.data.user;
-              setUser(user);
-
-              navigate('/');
-              toast.success('Sign up successfully');
+              if (user && token) {
+                setUser(user, token);
+                navigate('/');
+                toast.success('Sign up successfully');
+              }
             },
             onError: (error) => {
               console.log(error);

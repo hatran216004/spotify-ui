@@ -10,7 +10,7 @@ export default function PlaylistGrid() {
   });
 
   if (isLoading) return null;
-  const playlists = data?.data.data.playlists;
+  const playlists = data?.data?.data?.playlists;
 
   return (
     <section className="mt-2 grid grid-cols-12 gap-2">
