@@ -9,9 +9,8 @@ function usePlaylistById(playlistId: string) {
   });
 
   const tracks = data?.data.data.playlist.tracks?.map((entry) => ({
-    ...entry.trackId,
-    order: entry.order,
-    entryId: entry._id
+    ...entry.track,
+    order: entry.order
   }));
 
   return { playlist: data?.data.data.playlist, isLoading, isError, tracks };
