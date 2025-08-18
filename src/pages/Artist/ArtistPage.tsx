@@ -12,6 +12,7 @@ import ArtistTable from './ArtistTable';
 
 export default function ArtistPage() {
   const { artistId } = useParams();
+
   const { data, isLoading } = useQuery({
     queryKey: ['artist', artistId],
     queryFn: () => artistServices.getArtist(artistId!),

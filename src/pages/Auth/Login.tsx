@@ -72,8 +72,10 @@ export default function Login() {
           onSuccess: async (data) => {
             const token = await getToken();
             const user = data.data.data.user;
+
+            console.log({ token });
             if (user && token) {
-              setUser(user, token);
+              setUser(user);
               navigate('/');
               toast.success('Login successfully');
             }
@@ -114,6 +116,7 @@ export default function Login() {
             placeholder="Enter email or username"
             name="email_username"
             type="text"
+            defaultValue="hatm"
             label="Email or username"
             register={register}
             errorMessage={errors.email_username?.message}
@@ -123,6 +126,7 @@ export default function Login() {
             placeholder="Enter your password"
             name="password"
             type="password"
+            defaultValue="hatmuser1234"
             label="Password"
             register={register}
             errorMessage={errors.password?.message}

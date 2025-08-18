@@ -1,13 +1,13 @@
 import { playlistServices } from '@/services/playlist';
-import { useUserStore } from '@/store/ui.store';
+import { useAuth } from '@clerk/clerk-react';
 import { useQuery } from '@tanstack/react-query';
 
 function useMyPlaylists() {
-  const { token } = useUserStore();
+  const { isSignedIn } = useAuth();
   const { data, isLoading } = useQuery({
     queryKey: ['my-playlists'],
     queryFn: playlistServices.getMyPlaylists,
-    enabled: !!token
+    enabled: isSignedIn
   });
 
   return {

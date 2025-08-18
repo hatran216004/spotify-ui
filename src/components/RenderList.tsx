@@ -7,5 +7,5 @@ export default function RenderList({
   data: any;
   render: (ele: any, index: number) => React.ReactNode;
 }) {
-  return <>{data.map(render)}</>;
+  return <>{data?.map(render)}</>;
 }

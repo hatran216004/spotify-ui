@@ -98,7 +98,7 @@ export default function Register() {
               const token = await getToken();
               const user = data.data.data.user;
               if (user && token) {
-                setUser(user, token);
+                setUser(user);
                 navigate('/');
                 toast.success('Sign up successfully');
               }
