@@ -8,19 +8,19 @@ import {
   CarouselItem
 } from '@/components/ui/carousel';
 import { trackServices } from '@/services/track';
-import { useAuth } from '@clerk/clerk-react';
+import { useUserStore } from '@/store/ui.store';
 import { useQuery } from '@tanstack/react-query';
 
 export default function RecommendedList() {
-  const { isSignedIn } = useAuth();
+  const { isLogin } = useUserStore();
 
   const { data, isLoading } = useQuery({
     queryKey: ['recommended-tracks'],
     queryFn: trackServices.getRecommendedTracks,
-    enabled: isSignedIn
+    enabled: isLogin
   });
 
-  if (isLoading || !isSignedIn) return null;
+  if (!isLogin || isLoading) return null;
   const tracks = data?.data?.data?.tracks;
 
   return (

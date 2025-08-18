@@ -1,13 +1,13 @@
 import { artistServices } from '@/services/artist';
-import { useAuth } from '@clerk/clerk-react';
+import { useUserStore } from '@/store/ui.store';
 import { useQuery } from '@tanstack/react-query';
 
 function useArtistFollows() {
-  const { userId, isSignedIn } = useAuth();
+  const { isLogin, user } = useUserStore();
   const { data, isPending, isError } = useQuery({
-    queryKey: ['artists-followed', userId],
+    queryKey: ['artists-followed', user?._id],
     queryFn: artistServices.getUserFollowedArtists,
-    enabled: isSignedIn
+    enabled: isLogin
   });
 
   const artistFollows = data?.data?.data?.artistFollows;
