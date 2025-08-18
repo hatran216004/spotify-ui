@@ -1,13 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, {
   AxiosError,
   AxiosInstance,
   InternalAxiosRequestConfig
 } from 'axios';
-
 import { getClerkToken } from './auth';
+import { useUserStore } from '@/store/ui.store';
 
 class Http {
   instance: AxiosInstance;
+
   constructor() {
     this.instance = axios.create({
       // baseURL: 'http://127.0.0.1:3000/api/v1',
@@ -22,8 +24,12 @@ class Http {
     this.instance.interceptors.request.use(
       async (config: InternalAxiosRequestConfig) => {
         const token = await getClerkToken();
+        const tokenFromStore = useUserStore.getState().token; //  for first login
+
         if (token && !config.headers.Authorization) {
           config.headers.Authorization = `Bearer ${token}`;
+        } else if (tokenFromStore) {
+          config.headers.Authorization = `Bearer ${tokenFromStore}`;
         }
         return config;
       },

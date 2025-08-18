@@ -12,7 +12,6 @@ import toast from 'react-hot-toast';
 import { useMutation } from '@tanstack/react-query';
 
 import { FcGoogle } from 'react-icons/fc';
-import { FaFacebook } from 'react-icons/fa';
 
 import Input from '@/components/Input';
 import Logo from '@/components/Logo';
@@ -98,7 +97,7 @@ export default function Register() {
               const token = await getToken();
               const user = data.data.data.user;
               if (user && token) {
-                setUser(user);
+                setUser(user, token);
                 navigate('/');
                 toast.success('Sign up successfully');
               }
@@ -167,13 +166,6 @@ export default function Register() {
             className="rounded-full w-full h-12 text-md flex items-center gap-2"
           >
             <FcGoogle className="size-6" /> Sign up with Google
-          </Button>
-          <Button
-            variant="outline"
-            className="rounded-full w-full h-12 text-md flex items-center gap-2"
-          >
-            <FaFacebook className="size-6 text-blue-500" /> Sign up with
-            Facebook
           </Button>
         </div>
         <SectionSeparator className="my-8" text="or" />

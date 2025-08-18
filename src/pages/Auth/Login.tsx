@@ -7,7 +7,6 @@ import toast from 'react-hot-toast';
 import { isAxiosError } from 'axios';
 
 import { FcGoogle } from 'react-icons/fc';
-import { FaFacebook } from 'react-icons/fa';
 
 import { authServices } from '@/services/auth';
 import { useUserStore } from '@/store/ui.store';
@@ -70,12 +69,10 @@ export default function Login() {
 
         mutate(payload, {
           onSuccess: async (data) => {
-            const token = await getToken();
             const user = data.data.data.user;
-
-            console.log({ token });
+            const token = await getToken();
             if (user && token) {
-              setUser(user);
+              setUser(user, token);
               navigate('/');
               toast.success('Login successfully');
             }
@@ -146,13 +143,6 @@ export default function Login() {
             className="rounded-full w-full h-12 text-md flex items-center gap-2"
           >
             <FcGoogle className="size-6" /> Continue with Google
-          </Button>
-          <Button
-            variant="outline"
-            className="rounded-full w-full h-12 text-md flex items-center gap-2"
-          >
-            <FaFacebook className="size-6 text-blue-500" /> Continue with
-            Facebook
           </Button>
         </div>
         <SectionSeparator className="my-8 opacity-20" />
