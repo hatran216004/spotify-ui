@@ -33,8 +33,8 @@ type SidebarStore = {
 export const useSidebar = create<SidebarStore>()(
   persist(
     (set) => ({
-      isExpanded: false,
-      isSidebarRightExpanded: false,
+      isExpanded: true,
+      isSidebarRightExpanded: true,
 
       onExpanded: () => set((state) => ({ isExpanded: !state.isExpanded })),
       onExpandedRightSidebar: () =>

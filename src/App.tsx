@@ -22,6 +22,8 @@ import CollectionPage from './pages/Collection/CollectionPage';
 import SearchPage from './pages/Search/SearchPage';
 import AlbumPage from './pages/Album/AlbumPage';
 
+// TODO: Search album, google auth
+
 function ProtecedRoute() {
   const { user } = useUserStore();
   return user?.clerkId ? <Outlet /> : <Navigate to="/login" replace />;
