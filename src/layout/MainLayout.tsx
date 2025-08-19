@@ -1,15 +1,16 @@
 import { Outlet } from 'react-router-dom';
 import Topbar from './Topbar';
 import clsx from 'clsx';
-import { useSidebar, useUserStore } from '@/store/ui.store';
+import { useSidebar } from '@/store/ui.store';
 import NowPlayingBar from '@/components/NowPlayingBar';
 import Sidebar from './Sidebar/Sidebar';
 import PublicFooter from './PublicFooter';
 import RightSidebar from './Sidebar/RightSidebar';
+import { useAuth } from '@clerk/clerk-react';
 
 export default function MainLayout() {
   const { isExpanded, isSidebarRightExpanded } = useSidebar();
-  const { isLogin } = useUserStore();
+  const { isSignedIn } = useAuth();
 
   return (
     <main>
@@ -40,7 +41,7 @@ export default function MainLayout() {
           </div>
         </div>
       </div>
-      {isLogin ? <NowPlayingBar /> : <PublicFooter />}
+      {isSignedIn ? <NowPlayingBar /> : <PublicFooter />}
     </main>
   );
 }

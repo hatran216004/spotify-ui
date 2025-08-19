@@ -3,11 +3,12 @@ import { useUserStore } from '@/store/ui.store';
 import { useQuery } from '@tanstack/react-query';
 
 function useArtistFollows() {
-  const { isLogin, user } = useUserStore();
+  const { user } = useUserStore();
+
   const { data, isPending, isError } = useQuery({
     queryKey: ['artists-followed', user?._id],
     queryFn: artistServices.getUserFollowedArtists,
-    enabled: isLogin
+    enabled: !!user
   });
 
   const artistFollows = data?.data?.data?.artistFollows;

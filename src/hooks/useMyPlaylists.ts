@@ -3,11 +3,12 @@ import { useUserStore } from '@/store/ui.store';
 import { useQuery } from '@tanstack/react-query';
 
 function useMyPlaylists() {
-  const { isLogin } = useUserStore();
+  const { user } = useUserStore();
+
   const { data, isLoading } = useQuery({
     queryKey: ['my-playlists'],
     queryFn: playlistServices.getMyPlaylists,
-    enabled: isLogin
+    enabled: !!user
   });
 
   return {

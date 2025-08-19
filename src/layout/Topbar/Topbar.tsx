@@ -4,17 +4,17 @@ import Logo from '@/components/Logo';
 import SearchBar from '@/components/SearchBar';
 import TopBarGuest from './TopBarGuest';
 import TopBarUser from './TopBarUser';
-import { useUserStore } from '@/store/ui.store';
+import { useAuth } from '@clerk/clerk-react';
 
 export default function Topbar() {
   const location = useLocation();
-  const { user } = useUserStore();
+  const { isSignedIn } = useAuth();
 
   return (
     <header>
       <div className="flex items-center p-2 bg-black justify-between">
         <Logo />
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-[530px] max-w-full">
           <Link
             to="/"
             className="group size-12 rounded-full flex items-center justify-center bg-[#1f1f1f] cursor-pointer hover:scale-[1.05] transition-transform duration-250"
@@ -36,7 +36,7 @@ export default function Topbar() {
           </Link>
           <SearchBar />
         </div>
-        {user?.clerkId ? <TopBarUser /> : <TopBarGuest />}
+        {isSignedIn ? <TopBarUser /> : <TopBarGuest />}
       </div>
     </header>
   );

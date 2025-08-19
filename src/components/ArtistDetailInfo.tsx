@@ -127,7 +127,7 @@ export default function ArtistDetailInfo() {
                   }
 
                   return (
-                    <li>
+                    <li key={key}>
                       <Link
                         target="_blank"
                         to={mainArtist!.socialLinks[key] ?? '#'}

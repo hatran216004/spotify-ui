@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import TogglePlayBackAudio from './TogglePlayBackAudio';
 import { useTrack } from '@/store/track.store';
 import { HTMLAttributes } from 'react';
-import { useUserStore } from '@/store/ui.store';
 import usePlayContext from '@/hooks/usePlayContext';
+import { useAuth } from '@clerk/clerk-react';
 
 type TrackCardType = {
   track?: Track;
@@ -15,7 +15,7 @@ type TrackCardType = {
 export default function TrackCard({ track, className = '' }: TrackCardType) {
   const navigate = useNavigate();
   const { isPlaying } = useTrack();
-  const { isLogin } = useUserStore();
+  const { isSignedIn } = useAuth();
 
   const { isSameTrack, handlePlayTrackItem } = usePlayContext({
     id: track?._id as string,
@@ -39,7 +39,7 @@ export default function TrackCard({ track, className = '' }: TrackCardType) {
           />
           <TogglePlayBackAudio
             onPlayAudio={() => {
-              if (!isLogin) {
+              if (!isSignedIn) {
                 return navigate('/register');
               }
               handlePlayTrackItem();

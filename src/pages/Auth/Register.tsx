@@ -1,36 +1,21 @@
-import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useAuth, useSignUp } from '@clerk/clerk-react';
-import {
-  type SignUpResource,
-  type SetActive as SetActiveType
-} from '@clerk/types';
-import { isClerkAPIResponseError } from '@clerk/clerk-js';
+import { useSignUp } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
-import { useMutation } from '@tanstack/react-query';
-
-import { FcGoogle } from 'react-icons/fc';
 
 import Input from '@/components/Input';
 import Logo from '@/components/Logo';
 import SectionSeparator from '@/components/SectionSeparator';
 import { Button } from '@/components/ui/button';
-import Loading from '@/components/Loading';
-import OTPForm from './OTPForm';
 import { type RegisterSchema, registerSchema } from '@/utils/rules';
-import { authServices } from '@/services/auth';
-import { useUserStore } from '@/store/ui.store';
+import { useState } from 'react';
+import Loading from '@/components/Loading';
+import OAuthSignIn from '@/components/OAuthSignIn';
 
 type FormData = RegisterSchema;
 
 export default function Register() {
-  const navigate = useNavigate();
-  const { mutate: registerApi, isPending } = useMutation({
-    mutationFn: authServices.callbackRegister
-  });
-  const { setActive, isLoaded, signUp } = useSignUp();
   const {
     formState: { errors },
     reset,
@@ -39,115 +24,33 @@ export default function Register() {
   } = useForm<FormData>({
     resolver: yupResolver(registerSchema)
   });
-  const { getToken } = useAuth();
-
-  const [verifying, setVerifying] = useState(false);
-  const [isVerifyOTP, setIsVerifyOTP] = useState(false);
-
-  const { setUser } = useUserStore();
+  const [isSendingOTP, setIsSendingOTP] = useState(false);
+  const { isLoaded, signUp } = useSignUp();
+  const navigate = useNavigate();
 
   const onSubmit = async (data: FormData) => {
     if (!isLoaded) return;
 
     const { email, password, username } = data;
+    setIsSendingOTP(true);
     try {
+      reset();
       toast.success('OTP sent! Please check your email.');
-      setVerifying(true);
+      navigate('/auth/verify-otp');
 
       await signUp.create({
         emailAddress: email,
         username,
         password
       });
-
       await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
-
-      reset();
     } catch (error) {
       console.log(error);
       toast.error('Password is too weak, please enter another password');
-      setVerifying(false);
-    }
-  };
-
-  const handleVerifyOTP = async (otp: string) => {
-    if (!isLoaded) return;
-
-    try {
-      setIsVerifyOTP(true);
-
-      const { status, createdSessionId, emailAddress, username } = await (
-        signUp! as SignUpResource
-      ).attemptEmailAddressVerification({
-        code: otp
-      });
-
-      if (status === 'complete') {
-        await (setActive! as SetActiveType)({ session: createdSessionId });
-        const clerkId = signUp.createdUserId;
-
-        registerApi(
-          {
-            email: emailAddress,
-            username,
-            clerkId: clerkId!
-          },
-          {
-            onSuccess: async (data) => {
-              const token = await getToken();
-              const user = data.data.data.user;
-              if (user && token) {
-                setUser(user, token);
-                navigate('/');
-                toast.success('Sign up successfully');
-              }
-            },
-            onError: (error) => {
-              console.log(error);
-              toast.error('Fail to sign up, please try again later 😟');
-              setVerifying(false);
-            }
-          }
-        );
-      } else {
-        console.log(status);
-      }
-    } catch (error: unknown) {
-      if (isClerkAPIResponseError(error)) {
-        if (error.message === 'Incorrect code') {
-          toast.error('Invalid OTP. Please enter a valid OTP.');
-        } else {
-          toast.error('The code has expired. Please request a new one.');
-        }
-      }
     } finally {
-      setIsVerifyOTP(false);
+      setIsSendingOTP(false);
     }
   };
-
-  const handleResendOTP = async () => {
-    try {
-      await (signUp! as SignUpResource).prepareEmailAddressVerification({
-        strategy: 'email_code'
-      });
-      toast.success('OTP sent! Please check your email.');
-    } catch (error) {
-      console.log(error);
-      toast.error(
-        'OTP sent! Please check your email.Failed to send OTP. Please try again.'
-      );
-    }
-  };
-
-  if (verifying) {
-    return (
-      <OTPForm
-        onVerifyOTP={handleVerifyOTP}
-        onResendOTP={handleResendOTP}
-        isVerifyOTP={isVerifyOTP || isPending}
-      />
-    );
-  }
 
   return (
     <main>
@@ -161,12 +64,7 @@ export default function Register() {
           </h1>
         </header>
         <div className="space-y-2">
-          <Button
-            variant="outline"
-            className="rounded-full w-full h-12 text-md flex items-center gap-2"
-          >
-            <FcGoogle className="size-6" /> Sign up with Google
-          </Button>
+          <OAuthSignIn />
         </div>
         <SectionSeparator className="my-8" text="or" />
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -205,9 +103,9 @@ export default function Register() {
 
           <Button
             className="bg-[#1ed760] rounded-full h-12 w-[324px] max-w-full font-semibold text-lg"
-            disabled={verifying || !isLoaded}
+            disabled={isSendingOTP}
           >
-            {!isLoaded ? <Loading /> : 'Register'}
+            {isSendingOTP ? <Loading /> : 'Register'}
           </Button>
         </form>
 
@@ -225,6 +123,7 @@ export default function Register() {
           Copyright hatran, All rights reserved.
         </p>
       </footer>
+      <div id="clerk-captcha" className="absolute bottom-0 left-0"></div>
     </main>
   );
 }

@@ -6,8 +6,6 @@ import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { isAxiosError } from 'axios';
 
-import { FcGoogle } from 'react-icons/fc';
-
 import { authServices } from '@/services/auth';
 import { useUserStore } from '@/store/ui.store';
 import { isEmail, isUsername } from '@/utils/helpers';
@@ -19,10 +17,13 @@ import Logo from '@/components/Logo';
 import SectionSeparator from '@/components/SectionSeparator';
 import Loading from '@/components/Loading';
 import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import OAuthSignIn from '@/components/OAuthSignIn';
 
 type FormData = LoginSchema;
 
 export default function Login() {
+  const [isLoading, setIsLoading] = useState(false);
   const { signOut, getToken } = useAuth();
   const {
     formState: { errors },
@@ -59,6 +60,7 @@ export default function Login() {
     if (!isLoaded) return;
 
     const { email_username, password } = data;
+    setIsLoading(true);
     try {
       const signInSuccess = await handleSignIn(email_username, password);
       if (signInSuccess) {
@@ -87,13 +89,16 @@ export default function Login() {
               );
             }
             await signOut();
-          }
+          },
+          onSettled: () => setIsLoading(false)
         });
       }
     } catch (error: unknown) {
       if (error) {
         toast.error('Email/Username or Password is incorrect');
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -133,17 +138,12 @@ export default function Login() {
             className="bg-[#1ed760] rounded-full h-12 w-[324px] max-w-full font-semibold text-lg"
             disabled={isPending}
           >
-            {isPending ? <Loading /> : 'Login'}
+            {isLoading || isPending ? <Loading /> : 'Login'}
           </Button>
         </form>
         <SectionSeparator className="my-8" text="or" />
         <div className="space-y-2">
-          <Button
-            variant="outline"
-            className="rounded-full w-full h-12 text-md flex items-center gap-2"
-          >
-            <FcGoogle className="size-6" /> Continue with Google
-          </Button>
+          <OAuthSignIn />
         </div>
         <SectionSeparator className="my-8 opacity-20" />
         <div className="text-center">

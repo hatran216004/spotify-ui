@@ -21,8 +21,11 @@ import ArtistPage from './pages/Artist/ArtistPage';
 import CollectionPage from './pages/Collection/CollectionPage';
 import SearchPage from './pages/Search/SearchPage';
 import AlbumPage from './pages/Album/AlbumPage';
+import SSOCallBackPage from './pages/Auth/SSOCallBackPage';
+import AuthCallbackPage from './pages/Auth/AuthCallbackPage';
+import VerifyOTPPage from './pages/Auth/VerifyOTPPage';
 
-// TODO: Search album, google auth
+// TODO: Search album, queue, admin dashboard
 
 function ProtecedRoute() {
   const { user } = useUserStore();
@@ -58,6 +61,11 @@ export default function App() {
       <TooltipProvider>
         <BrowserRouter>
           <Routes>
+            <Route path="/auth/sso-callback" element={<SSOCallBackPage />} />
+            <Route path="/auth-callback" element={<AuthCallbackPage />} />
+
+            <Route path="/auth/verify-otp" element={<VerifyOTPPage />} />
+
             <Route element={<MainLayout />}>
               <Route path="/" element={<HomePage />} />
               <Route path="/search" element={<SearchPage />} />
