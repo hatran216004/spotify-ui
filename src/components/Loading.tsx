@@ -1,9 +1,24 @@
-export default function Loading() {
+import clsx from 'clsx';
+
+export default function Loading({
+  size = 'md'
+}: {
+  size?: 'md' | 'sm' | 'lg';
+}) {
+  const customSize = {
+    md: 'size-8',
+    sm: 'size-6',
+    lg: 'size-10'
+  };
+
   return (
     <div role="status">
       <svg
         aria-hidden="true"
-        className="size-8 text-gray-200 animate-spin fill-white"
+        className={clsx(
+          'text-gray-200 animate-spin fill-white',
+          customSize[size]
+        )}
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

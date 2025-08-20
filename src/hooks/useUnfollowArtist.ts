@@ -1,6 +1,7 @@
 import { artistServices } from '@/services/artist';
 import { useUserStore } from '@/store/ui.store';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 
 function useUnfollowArtist() {
   const queryClient = useQueryClient();
@@ -13,6 +14,7 @@ function useUnfollowArtist() {
   } = useMutation({
     mutationFn: artistServices.unFollowArtist,
     onSuccess: () => {
+      toast.success('Unfollow artist successfully');
       queryClient.invalidateQueries({
         queryKey: ['artists-followed', userId]
       });

@@ -24,6 +24,8 @@ import AlbumPage from './pages/Album/AlbumPage';
 import SSOCallBackPage from './pages/Auth/SSOCallBackPage';
 import AuthCallbackPage from './pages/Auth/AuthCallbackPage';
 import VerifyOTPPage from './pages/Auth/VerifyOTPPage';
+import ConfirmationDialog from './components/ConfirmationDialog';
+import UpdatePlaylistDialog from './components/UpdatePlaylistDialog';
 
 // TODO: Search album, queue, admin dashboard
 
@@ -58,6 +60,8 @@ export default function App() {
   return (
     <>
       <AudioPlayer />
+      <ConfirmationDialog />
+      <UpdatePlaylistDialog />
       <TooltipProvider>
         <BrowserRouter>
           <Routes>

@@ -13,16 +13,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger
 } from '@/components/ui/context-menu';
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription
-} from './ui/dialog';
-import { Button } from './ui/button';
-import { useState } from 'react';
+import { useDialogStore } from '@/store/dialog.store';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { playlistServices } from '@/services/playlist';
 import toast from 'react-hot-toast';
@@ -30,33 +21,22 @@ import toast from 'react-hot-toast';
 type ItemType = PlaylistType;
 
 export default function LibraryItem({ playlist }: { playlist: ItemType }) {
-  const [openDialog, setOpenDialog] = useState(false);
-  const { mutate, isPending } = useMutation({
-    mutationFn: playlistServices.deletePlaylist
-  });
-  const queryClient = useQueryClient();
+  const { openDialog, closeDialog, setDisabled } = useDialogStore();
 
   const navigate = useNavigate();
   const { playlistId } = useParams();
   const { isPlaying } = useTrack();
   const { contextId } = useCurrentContext();
 
-  const hasItemPlaying = isPlaying && contextId === playlist._id;
-  const isActive = playlistId === playlist._id;
-
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
-  };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-  };
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation({
+    mutationFn: playlistServices.deletePlaylist
+  });
 
   const handleDeletePlaylist = () => {
     if (!playlist._id) return;
 
-    handleCloseDialog();
-
+    setDisabled(true);
     mutate(playlist._id, {
       onSuccess: () => {
         queryClient.invalidateQueries({
@@ -66,9 +46,16 @@ export default function LibraryItem({ playlist }: { playlist: ItemType }) {
       },
       onError: () => {
         toast.error('Failed remove from Your Library');
+      },
+      onSettled: () => {
+        closeDialog();
+        setDisabled(false);
       }
     });
   };
+
+  const hasItemPlaying = isPlaying && contextId === playlist._id;
+  const isActive = playlistId === playlist._id;
 
   return (
     <>
@@ -129,13 +116,40 @@ export default function LibraryItem({ playlist }: { playlist: ItemType }) {
             )}
           </div>
         </ContextMenuTrigger>
+
         <ContextMenuContent>
-          <ContextMenuItem onClick={handleOpenDialog}>
+          <ContextMenuItem
+            onClick={() => {
+              openDialog({
+                openName: 'confirm',
+                title: 'Delete from Your Library?',
+                actionLabel: 'Delete',
+                cancelLabel: 'Cancel',
+                description: (
+                  <>
+                    This will delete <strong>{playlist.name}</strong> from Your
+                    Library.
+                  </>
+                ),
+                onAction: handleDeletePlaylist,
+                onCancel: closeDialog
+              });
+            }}
+          >
             <CircleMinus />
             Delete
           </ContextMenuItem>
 
-          <ContextMenuItem>
+          <ContextMenuItem
+            onClick={() => {
+              openDialog({
+                openName: 'update',
+                title: 'Edit details',
+                actionLabel: 'Save',
+                onAction: () => {}
+              });
+            }}
+          >
             <Pencil />
             Edit details
           </ContextMenuItem>
@@ -145,36 +159,6 @@ export default function LibraryItem({ playlist }: { playlist: ItemType }) {
           </ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
-
-      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-        <DialogContent className="w-[420px] bg-white">
-          <DialogHeader>
-            <DialogTitle className="text-black text-2xl font-bold">
-              Delete from Your Library?
-            </DialogTitle>
-            <DialogDescription className="text-black text-md">
-              This will delete <strong>{playlist.name}</strong> from
-              <strong>Your Library.</strong>
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              onClick={handleCloseDialog}
-              className="px-8 rounded-full font-semibold h-12 text-black bg-transparent shadow-none hover:bg-gray-100"
-            >
-              Cancel
-            </Button>
-            <Button
-              disabled={isPending}
-              type="submit"
-              className="bg-green-500 text-lg rounded-full px-8 h-12 font-bold"
-              onClick={handleDeletePlaylist}
-            >
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }

@@ -4,7 +4,7 @@ import { useTrack } from '@/store/track.store';
 import { Track } from '@/types/track.type';
 import { useNavigate } from 'react-router-dom';
 
-export default function SearchTrack({ track }: { track: Track }) {
+export default function SearchTracks({ track }: { track: Track }) {
   const navigate = useNavigate();
   const { isPlaying } = useTrack();
   const { isSameTrack, handlePlayTrackItem } = usePlayContext({
