@@ -1,3 +1,5 @@
+import { SuccessResponseApi } from './response.type';
+
 export type SocialKey = 'facebook' | 'instagram' | 'youtube';
 
 export type ViewMode = 'compact' | 'list';
@@ -12,6 +14,14 @@ export type DragState = {
   currentY: number;
   currentX: number;
   offset: { x: number; y: number };
+};
+
+export type FileExtensions = {
+  image: ['jpg', 'gif', 'png', 'jpeg', 'svg', 'webp'];
+};
+
+export type QueryData<T> = {
+  data: SuccessResponseApi<T>;
 };
 
 /*

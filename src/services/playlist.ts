@@ -3,7 +3,7 @@ import { SuccessResponseApi } from '@/types/response.type';
 import { Track } from '@/types/track.type';
 import { http } from '@/utils/http';
 
-type Data = {
+type TrackInfo = {
   trackId: string;
   playlistId: string;
 };
@@ -26,12 +26,12 @@ export const playlistServices = {
     http.get<SuccessResponseApi<PlaylistList>>('/me/playlists'),
   getPlaylist: (id: string) =>
     http.get<SuccessResponseApi<{ playlist: Playlist }>>(`/playlists/${id}`),
-  addTrackToPlaylist: ({ trackId, playlistId }: Data) =>
+  addTrackToPlaylist: ({ trackId, playlistId }: TrackInfo) =>
     http.patch<SuccessResponseApi<{ playlist: Playlist }>>(
       `me/playlists/${playlistId}/tracks`,
       { trackId }
     ),
-  removeTrackFromPlaylist: ({ trackId, playlistId }: Data) =>
+  removeTrackFromPlaylist: ({ trackId, playlistId }: TrackInfo) =>
     http.delete(`me/playlists/${playlistId}/tracks/${trackId}`),
   createNewPlaylist: () => http.post('/me/playlists'),
   deletePlaylist: (id: string) => http.delete(`/me/playlists/${id}`),
@@ -41,5 +41,15 @@ export const playlistServices = {
   }: {
     id: string;
     body: { fromIndex: number; toIndex: number; trackId: string };
-  }) => http.patch(`/me/playlists/${id}/reorder`, body)
+  }) => http.patch(`/me/playlists/${id}/reorder`, body),
+  updatePlaylist: ({ id, data }: { id: string; data: FormData }) =>
+    http.patch<SuccessResponseApi<{ playlist: Playlist }>>(
+      `me/playlists/${id}`,
+      data,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+    )
 };

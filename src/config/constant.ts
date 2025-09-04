@@ -10,3 +10,5 @@ export const SPOTIFY_COLORS = [
   '#00BCD4', // xanh ngọc
   '#F44336' // đỏ
 ];
+
+export const MAX_FILE_SIZE = 1024 * 1024; // 1MG

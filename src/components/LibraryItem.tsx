@@ -22,8 +22,8 @@ type ItemType = PlaylistType;
 
 export default function LibraryItem({ playlist }: { playlist: ItemType }) {
   const { openDialog, closeDialog, setDisabled } = useDialogStore();
-
   const navigate = useNavigate();
+
   const { playlistId } = useParams();
   const { isPlaying } = useTrack();
   const { contextId } = useCurrentContext();
@@ -146,7 +146,12 @@ export default function LibraryItem({ playlist }: { playlist: ItemType }) {
                 openName: 'update',
                 title: 'Edit details',
                 actionLabel: 'Save',
-                onAction: () => {}
+                payload: {
+                  name: playlist.name,
+                  description: playlist.description,
+                  coverImage: playlist.coverImage,
+                  id: playlist._id
+                }
               });
             }}
           >

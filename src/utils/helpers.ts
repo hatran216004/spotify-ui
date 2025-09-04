@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { SPOTIFY_COLORS } from '@/config/constant';
+import { FileExtensions } from '@/types/utils.type';
 
 export const isUsername = (value: string) => {
   const isUsername = /^[a-zA-Z0-9_]{3,30}$/.test(value);
@@ -45,4 +47,18 @@ export const debounce = <T extends (...args: any[]) => void>(
       callback(...args);
     }, timeout);
   };
+};
+
+export const validFileExtensions = {
+  image: ['jpg', 'gif', 'png', 'jpeg', 'svg', 'webp']
+} as const;
+
+export const isValidFileType = <T extends keyof FileExtensions>(
+  fileName: string,
+  fileType: T
+) => {
+  if (!fileName) return false;
+  const ext = fileName.split('.').pop()?.toLowerCase();
+  if (!ext) return false;
+  return validFileExtensions[fileType].indexOf(ext as any) > -1;
 };

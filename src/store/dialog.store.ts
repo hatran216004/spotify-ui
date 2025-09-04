@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from 'zustand';
 
 type DialogName = 'update' | 'confirm' | 'none';
@@ -9,6 +10,7 @@ type DialogState = {
   cancelLabel: string | React.ReactNode | null;
   actionLabel: string | React.ReactNode | null;
   disabled: boolean;
+  payload?: any;
   onAction: () => void;
   onCancel: () => void;
 };
@@ -20,7 +22,8 @@ type DialogActions = {
     description?: string | React.ReactNode;
     cancelLabel?: string | React.ReactNode;
     actionLabel: string | React.ReactNode;
-    onAction: () => void;
+    payload?: any;
+    onAction?: () => void;
     onCancel?: () => void;
   }) => void;
   closeDialog: () => void;

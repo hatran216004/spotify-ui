@@ -12,8 +12,8 @@ function useMyPlaylists() {
   });
 
   return {
-    myPlaylists: data?.data.data.playlists,
-    pagination: data?.data.data.playlists,
+    myPlaylists: data?.data?.data?.playlists,
+    pagination: data?.data?.data?.playlists,
     isLoading
   };
 }

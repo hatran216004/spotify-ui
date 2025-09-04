@@ -13,6 +13,7 @@ export default function MyLibrary() {
   const { isSignedIn } = useAuth();
   const { myPlaylists } = useMyPlaylists();
   const { artistFollows } = useArtistFollows();
+
   const [isPin, setIsPin] = useState(
     localStorage.getItem('pin-playlist') === 'true'
   );

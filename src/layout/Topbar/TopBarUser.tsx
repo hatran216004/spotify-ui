@@ -15,7 +15,6 @@ import { useAuth, useUser } from '@clerk/clerk-react';
 import { Bell, LayoutDashboard, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { useTrack } from '@/store/track.store';
 
 export default function TopBarUser() {
   const naviage = useNavigate();
@@ -25,14 +24,11 @@ export default function TopBarUser() {
   const { user } = useUser();
   const { user: userStore, setUser } = useUserStore();
 
-  const { setCurrentTrack } = useTrack();
-
   async function handleSignOut() {
     try {
       await signOut();
       setUser(null);
       naviage('/');
-      setCurrentTrack(null);
       toast.success('Logout successfully');
     } catch (error: unknown) {
       if (error) {

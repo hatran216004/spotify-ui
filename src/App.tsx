@@ -9,7 +9,6 @@ import MainLayout from './layout/MainLayout';
 import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
 import { Toaster } from 'react-hot-toast';
-import { useUserStore } from './store/ui.store';
 import { TooltipProvider } from './components/ui/tooltip';
 import AudioPlayer from './components/AudioPlayer';
 import TrackPage from './pages/Track/TrackPage';
@@ -26,25 +25,21 @@ import AuthCallbackPage from './pages/Auth/AuthCallbackPage';
 import VerifyOTPPage from './pages/Auth/VerifyOTPPage';
 import ConfirmationDialog from './components/ConfirmationDialog';
 import UpdatePlaylistDialog from './components/UpdatePlaylistDialog';
+import { useUserStore } from './store/ui.store';
 
-// TODO: Search album, queue, admin dashboard
+// TODO: queue, admin dashboard
 
 function ProtecedRoute() {
-  const { user } = useUserStore();
-  return user?.clerkId ? <Outlet /> : <Navigate to="/login" replace />;
+  const { isLogin } = useUserStore();
+  return isLogin ? <Outlet /> : <Navigate to="/login" replace />;
 }
 
 function RejectedRoute() {
-  const { user } = useUserStore();
-  return !user?.clerkId ? <Outlet /> : <Navigate to="/" replace />;
+  const { isLogin } = useUserStore();
+  return !isLogin ? <Outlet /> : <Navigate to="/" replace />;
 }
 
 export default function App() {
-  // const { data } = useQuery({
-  //   queryKey: ['current-playback', userId],
-  //   queryFn: playerServices.getCurrentPlayback
-  // });
-
   // useEffect(() => {
   //   const handler = (e: KeyboardEvent) => {
   //     if (e.code === 'Space') {

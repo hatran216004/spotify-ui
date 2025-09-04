@@ -65,8 +65,8 @@ export default function Login() {
       const signInSuccess = await handleSignIn(email_username, password);
       if (signInSuccess) {
         const payload = {
-          email: isEmail(email_username) ? email_username.trim() : null,
-          username: isUsername(email_username) ? email_username.trim() : null
+          email: isEmail(email_username) ? email_username : null,
+          username: isUsername(email_username) ? email_username : null
         };
 
         mutate(payload, {
