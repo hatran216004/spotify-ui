@@ -1,7 +1,7 @@
 import { usePlaybackContext } from '@/store/playback.store';
 import { useTrack } from '@/store/track.store';
 
-const PREV_THRESHOLD = 3;
+// const PREV_THRESHOLD = 3;
 
 function useControlsPlayer() {
   const { currentTrack, isShuffle, handlePlayTrack } = useTrack();
