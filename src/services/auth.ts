@@ -11,13 +11,6 @@ type AuthData = {
 };
 
 export const authServices = {
-  callbackRegister: (data: AuthData) =>
-    http.post<SuccessResponseApi<{ user: User }>>(
-      '/auth/callback-register',
-      data
-    ),
-  callbackLogin: (data: Omit<AuthData, 'clerkId'>) =>
-    http.post<SuccessResponseApi<{ user: User }>>('/auth/callback-login', data),
   callbackSSO: (data: AuthData) =>
     http.post<SuccessResponseApi<{ user: User }>>('/auth/callback-sso', data)
 };

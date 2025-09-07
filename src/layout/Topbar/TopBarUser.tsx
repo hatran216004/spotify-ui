@@ -13,12 +13,10 @@ import useAdmin from '@/hooks/useAdmin';
 import { useUserStore } from '@/store/ui.store';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import { Bell, LayoutDashboard, LogOut } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 export default function TopBarUser() {
-  const naviage = useNavigate();
-
   const { isAdmin } = useAdmin();
   const { signOut } = useAuth();
   const { user } = useUser();
@@ -26,10 +24,8 @@ export default function TopBarUser() {
 
   async function handleSignOut() {
     try {
-      await signOut();
+      await signOut({ redirectUrl: '/login' });
       setUser(null);
-      naviage('/');
-      toast.success('Logout successfully');
     } catch (error: unknown) {
       if (error) {
         toast.error('Logout error. Please try again later 😟');
@@ -41,13 +37,13 @@ export default function TopBarUser() {
     <div className="flex items-center gap-2">
       <div className="flex items-center gap-2 px-2">
         {isAdmin && (
-              <Link
-                to="/admin"
-                className="flex items-center gap-2 p-2 cursor-pointer rounded-md bg-[#1f1f1f] hover:opacity-90"
-              >
-                <LayoutDashboard size={18} color="#b3b3b3" />
-                <span className="text-sm">Dashboard</span>
-              </Link>
+          <Link
+            to="/admin"
+            className="flex items-center gap-2 p-2 cursor-pointer rounded-md bg-[#1f1f1f] hover:opacity-90"
+          >
+            <LayoutDashboard size={18} color="#b3b3b3" />
+            <span className="text-sm">Dashboard</span>
+          </Link>
 
           //  <PopoverContent className="bg-blue-50 border border-blue-300 shadow-md rounded-xl p-4">
           //     <div className="flex items-center gap-2">
@@ -67,7 +63,7 @@ export default function TopBarUser() {
           //         Function is under development...
           //       </span>
           //     </div>
-          //   </PopoverContent> 
+          //   </PopoverContent>
         )}
 
         <Tooltip>

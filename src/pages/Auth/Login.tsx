@@ -1,16 +1,10 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useAuth, useSignIn } from '@clerk/clerk-react';
-import { useMutation } from '@tanstack/react-query';
+import { useSignIn } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
-import { isAxiosError } from 'axios';
 
-import { authServices } from '@/services/auth';
-import { useUserStore } from '@/store/ui.store';
-import { isEmail, isUsername } from '@/utils/helpers';
 import { type LoginSchema, loginSchema } from '@/utils/rules';
-import { ErrorResponseApi } from '@/types/response.type';
 
 import Input from '@/components/Input';
 import Logo from '@/components/Logo';
@@ -24,7 +18,6 @@ type FormData = LoginSchema;
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
-  const { signOut, getToken } = useAuth();
   const {
     formState: { errors },
     register,
@@ -33,11 +26,6 @@ export default function Login() {
     resolver: yupResolver(loginSchema)
   });
   const { isLoaded, signIn, setActive } = useSignIn();
-  const { mutate, isPending } = useMutation({
-    mutationFn: authServices.callbackLogin
-  });
-  const navigate = useNavigate();
-  const { setUser } = useUserStore();
 
   const handleSignIn = async (email_username: string, password: string) => {
     if (!isLoaded) return;
@@ -49,7 +37,10 @@ export default function Login() {
     });
 
     if (status === 'complete') {
-      await setActive({ session: createdSessionId });
+      await setActive({
+        session: createdSessionId,
+        redirectUrl: '/auth-callback'
+      });
       return true;
     } else {
       return false;
@@ -58,45 +49,14 @@ export default function Login() {
 
   const onSubmit = async (data: FormData) => {
     if (!isLoaded) return;
+    setIsLoading(true);
 
     const { email_username, password } = data;
-    setIsLoading(true);
     try {
-      const signInSuccess = await handleSignIn(email_username, password);
-      if (signInSuccess) {
-        const payload = {
-          email: isEmail(email_username) ? email_username : null,
-          username: isUsername(email_username) ? email_username : null
-        };
-
-        mutate(payload, {
-          onSuccess: async (data) => {
-            const user = data.data.data.user;
-            const token = await getToken();
-            if (user && token) {
-              setUser(user, token);
-              navigate('/');
-              toast.success('Login successfully');
-            }
-          },
-          onError: async (error: unknown) => {
-            console.log(error);
-            if (isAxiosError(error)) {
-              const errorMessage = (error.response?.data as ErrorResponseApi)
-                .message;
-              toast.error(
-                errorMessage || 'Fail to login. Please try again later 😟'
-              );
-            }
-            await signOut();
-          },
-          onSettled: () => setIsLoading(false)
-        });
-      }
+      await handleSignIn(email_username, password);
     } catch (error: unknown) {
-      if (error) {
-        toast.error('Email/Username or Password is incorrect');
-      }
+      console.log(error);
+      toast.error('Email/Username or Password is incorrect');
     } finally {
       setIsLoading(false);
     }
@@ -128,17 +88,24 @@ export default function Login() {
             placeholder="Enter your password"
             name="password"
             type="password"
-            defaultValue="hatmuser1234"
+            defaultValue="minhhatran1234"
             label="Password"
             register={register}
             errorMessage={errors.password?.message}
           />
 
+          <Link
+            to={'/forgot-password'}
+            className="block text-sm text-[#1ed760] text-right hover:underline"
+          >
+            Forgot password
+          </Link>
+
           <Button
             className="bg-[#1ed760] rounded-full h-12 w-[324px] max-w-full font-semibold text-lg"
-            disabled={isPending}
+            disabled={isLoading}
           >
-            {isLoading || isPending ? <Loading /> : 'Login'}
+            {isLoading || isLoading ? <Loading /> : 'Login'}
           </Button>
         </form>
         <SectionSeparator className="my-8" text="or" />

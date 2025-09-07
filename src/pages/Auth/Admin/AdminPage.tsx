@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import {
@@ -412,13 +413,13 @@ const topUsers = [
 
 export default function SpotifyAdminDashboard() {
   const [activeSection, setActiveSection] = useState('overview');
-  const [dropdownOpen, setDropdownOpen] = useState({});
+  const [dropdownOpen, setDropdownOpen] = useState<Record<string, boolean>>({});
 
   const toggleDropdown = (id: string) => {
-    // setDropdownOpen((prev) => ({
-    //   ...prev,
-    //   [id]: !prev[id],
-    // }))
+    setDropdownOpen((prev) => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
   };
 
   const renderContent = () => {
@@ -754,7 +755,13 @@ function AnalyticsSection() {
   );
 }
 
-function UsersSection({ toggleDropdown, dropdownOpen }) {
+function UsersSection({
+  toggleDropdown,
+  dropdownOpen
+}: {
+  toggleDropdown: (id: string) => void;
+  dropdownOpen: any;
+}) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -859,7 +866,13 @@ function UsersSection({ toggleDropdown, dropdownOpen }) {
   );
 }
 
-function TracksSection({ toggleDropdown, dropdownOpen }) {
+function TracksSection({
+  toggleDropdown,
+  dropdownOpen
+}: {
+  toggleDropdown: (id: string) => void;
+  dropdownOpen: any;
+}) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -951,7 +964,13 @@ function TracksSection({ toggleDropdown, dropdownOpen }) {
   );
 }
 
-function PlaylistsSection({ toggleDropdown, dropdownOpen }) {
+function PlaylistsSection({
+  toggleDropdown,
+  dropdownOpen
+}: {
+  toggleDropdown: (id: string) => void;
+  dropdownOpen: any;
+}) {
   const playlists = [
     {
       name: "Today's Top Hits",

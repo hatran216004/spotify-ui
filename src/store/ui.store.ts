@@ -1,4 +1,5 @@
 import { User } from '@/types/user.type';
+import { omit } from 'lodash';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -21,7 +22,10 @@ export const useUserStore = create<UserStore>()(
     }),
     {
       name: 'user-store',
-      partialize: ({ user, isLogin }) => ({ user, isLogin })
+      partialize: ({ user, isLogin }) => ({
+        user: omit(user, ['likedTracks', '__v']),
+        isLogin
+      })
     }
   )
 );

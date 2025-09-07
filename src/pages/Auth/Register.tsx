@@ -12,6 +12,7 @@ import { type RegisterSchema, registerSchema } from '@/utils/rules';
 import { useState } from 'react';
 import Loading from '@/components/Loading';
 import OAuthSignIn from '@/components/OAuthSignIn';
+import { isClerkAPIResponseError } from '@clerk/clerk-js';
 
 type FormData = RegisterSchema;
 
@@ -46,7 +47,10 @@ export default function Register() {
       await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
     } catch (error) {
       console.log(error);
-      toast.error('Password is too weak, please enter another password');
+      if (isClerkAPIResponseError(error)) {
+        const errorMsg = error.errors[0].longMessage;
+        toast.error(errorMsg || 'Something went wrong, please try again later');
+      }
     } finally {
       setIsSendingOTP(false);
     }

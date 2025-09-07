@@ -26,8 +26,8 @@ import VerifyOTPPage from './pages/Auth/VerifyOTPPage';
 import ConfirmationDialog from './components/ConfirmationDialog';
 import UpdatePlaylistDialog from './components/UpdatePlaylistDialog';
 import { useUserStore } from './store/ui.store';
-
-// TODO: queue, admin dashboard
+import ForgotPassword from './pages/Auth/ForgotPassword';
+import ResetPassword from './pages/Auth/ResetPassword';
 
 function ProtecedRoute() {
   const { isLogin } = useUserStore();
@@ -91,6 +91,8 @@ export default function App() {
             <Route element={<RejectedRoute />}>
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
             </Route>
           </Routes>
         </BrowserRouter>

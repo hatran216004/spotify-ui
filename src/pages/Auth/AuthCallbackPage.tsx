@@ -39,6 +39,7 @@ export default function AuthCallbackPage() {
             if (userData) {
               setUser(userData, token);
               navigate('/');
+              toast.success('Login successfully');
             }
           },
           onError: async () => {

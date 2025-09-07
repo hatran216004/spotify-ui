@@ -1,27 +1,13 @@
 import Logo from '@/components/Logo';
-import { authServices } from '@/services/auth';
-import { useUserStore } from '@/store/ui.store';
 import { isClerkAPIResponseError } from '@clerk/clerk-js';
-import { useAuth, useSignUp } from '@clerk/clerk-react';
+import { useSignUp } from '@clerk/clerk-react';
 import { SignUpResource, type SetActive as SetActiveType } from '@clerk/types';
-import { useMutation } from '@tanstack/react-query';
 import React, { useState, useRef, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
 
 export default function VerifyOTPPage() {
-  const { setUser } = useUserStore();
-
-  const { getToken } = useAuth();
   const { setActive, isLoaded, signUp } = useSignUp();
-
   const [isVerifyOTP, setIsVerifyOTP] = useState(false);
-  const navigate = useNavigate();
-
-  const { mutate: registerApi, isPending } = useMutation({
-    mutationFn: authServices.callbackRegister
-  });
-
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const inputRefs = useRef<HTMLInputElement[] | []>([]);
 
@@ -58,38 +44,17 @@ export default function VerifyOTPPage() {
     try {
       setIsVerifyOTP(true);
 
-      const { status, createdSessionId, emailAddress, username } = await (
+      const { status, createdSessionId } = await (
         signUp! as SignUpResource
       ).attemptEmailAddressVerification({
         code: otp
       });
 
       if (status === 'complete') {
-        await (setActive! as SetActiveType)({ session: createdSessionId });
-        const clerkId = signUp.createdUserId;
-
-        registerApi(
-          {
-            email: emailAddress,
-            username,
-            clerkId: clerkId!
-          },
-          {
-            onSuccess: async (data) => {
-              const token = await getToken();
-              const user = data.data.data.user;
-              if (user && token) {
-                setUser(user, token);
-                navigate('/');
-                toast.success('Sign up successfully');
-              }
-            },
-            onError: (error) => {
-              console.log(error);
-              toast.error('Fail to sign up, please try again later 😟');
-            }
-          }
-        );
+        await (setActive! as SetActiveType)({
+          session: createdSessionId,
+          redirectUrl: '/auth-callback'
+        });
       } else {
         console.log(status);
       }
@@ -165,7 +130,7 @@ export default function VerifyOTPPage() {
             </div>
 
             <button
-              disabled={isPending || isVerifyOTP || otp.join('').length !== 6}
+              disabled={isVerifyOTP || otp.join('').length !== 6}
               className="w-full bg-green-500 hover:bg-green-400 disabled:bg-gray-700 disabled:cursor-not-allowed text-black disabled:text-gray-400 font-semibold py-4 px-6 rounded-full transition-all duration-200 transform hover:scale-105 disabled:hover:scale-100 flex items-center justify-center gap-2"
             >
               {isVerifyOTP ? (
