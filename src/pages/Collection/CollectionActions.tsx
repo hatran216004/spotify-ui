@@ -46,7 +46,7 @@ export default function CollectionActions({
             </button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>More options for</p>
+            <p>More options for Liked Songs</p>
           </TooltipContent>
         </Tooltip>
         <Popover>

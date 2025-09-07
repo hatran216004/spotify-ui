@@ -20,7 +20,7 @@ export default function CollectionPage() {
 
   const { handleStartPlay, hasTrackPlaying } = usePlayContext({
     id: null,
-    type: 'liked',
+    type: 'liked_tracks',
     data: likedTracks?.map((entry) => entry.track)
   });
 

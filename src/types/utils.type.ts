@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { LucideProps } from 'lucide-react';
 import { SuccessResponseApi } from './response.type';
 
 export type SocialKey = 'facebook' | 'instagram' | 'youtube';
@@ -22,6 +24,43 @@ export type FileExtensions = {
 
 export type QueryData<T> = {
   data: SuccessResponseApi<T>;
+};
+
+export type MenuItemIds =
+  | 'add-to-liked'
+  | 'add-to-queue'
+  | 'add-to-playlist'
+  | 'remove-from-liked'
+  | 'remove-from-queue'
+  | 'remove-from-playlist';
+
+export type MenuItem = {
+  id: MenuItemIds;
+  label: string;
+  icon?: React.ForwardRefExoticComponent<
+    Omit<LucideProps, 'ref'> & React.RefAttributes<SVGSVGElement>
+  >;
+  disabled?: boolean;
+  show?: boolean;
+  className?: string;
+  variant?: 'default' | 'destructive';
+  separator?: boolean;
+  children?: MenuItem[];
+  onClick?: () => void;
+};
+
+export type MenuPreset =
+  | 'full'
+  | 'playlist'
+  | 'liked'
+  | 'search'
+  | 'album'
+  | 'queue'
+  | 'artist';
+
+export type MenyItemContext = {
+  playlistId?: string;
+  children?: MenuItem[];
 };
 
 /*

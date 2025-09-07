@@ -4,48 +4,43 @@ import { Track } from '@/types/track.type';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-type CurrentContextStore = {
-  contextType: ContextType | null;
-  contextId: string | null;
+export type PlaybackContext = {
+  type: ContextType | null;
+  id: string | null;
+  tracks: Track[];
+  totalTracks: number;
 
-  setCurrentContext: (context: {
-    contextType: ContextType;
-    contextId: string | null;
-  }) => void;
-};
-
-type CurrentTracksStore = {
-  currentTracks: Track[];
-  setCurrentTracks: (tracks: Track[]) => void;
+  setPlaybackContext: (
+    contextType: ContextType,
+    contextId: string | null
+  ) => void;
+  setPlaybackTracks: (tracks: Track[], totalTracks: number) => void;
 };
 
 type CurrentPlaybackStore = {
   currentPlayback: CurrentPlayback | null;
-
   setCurrentPlayback: (currentPlayback: CurrentPlayback) => void;
 };
-
-export const useCurrentTracks = create<CurrentTracksStore>((set) => ({
-  currentTracks: [],
-  setCurrentTracks: (currentTracks) => set({ currentTracks })
-}));
 
 export const useCurrentPlayback = create<CurrentPlaybackStore>((set) => ({
   currentPlayback: null,
   setCurrentPlayback: (currentPlayback) => set({ currentPlayback })
 }));
 
-export const useCurrentContext = create<CurrentContextStore>()(
+export const usePlaybackContext = create<PlaybackContext>()(
   persist(
     (set) => ({
-      contextType: null,
-      contextId: null,
-      setCurrentContext: ({ contextId, contextType }) =>
-        set({ contextId, contextType })
+      type: null,
+      id: null,
+      tracks: [],
+      totalTracks: 0,
+      setPlaybackContext: (contextType, contextId) =>
+        set({ id: contextId, type: contextType }),
+      setPlaybackTracks: (tracks, totalTracks) => set({ tracks, totalTracks })
     }),
     {
       name: 'current-playback',
-      partialize: ({ contextId, contextType }) => ({ contextId, contextType })
+      partialize: ({ id, type }) => ({ id, type })
     }
   )
 );

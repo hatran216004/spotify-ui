@@ -1,9 +1,16 @@
+import { PlaybackContext } from '@/store/playback.store';
 import { CurrentPlayback } from '@/types/player.type';
 import { SuccessResponseApi } from '@/types/response.type';
 import { http } from '@/utils/http';
 
-export type RepeatMode = 'off' | 'track' | 'playlist';
-export type ContextType = 'artist' | 'playlist' | 'search' | 'album' | 'liked';
+export type RepeatMode = 'off' | 'track' | 'context';
+export type ContextType =
+  | 'artist'
+  | 'playlist'
+  | 'search'
+  | 'album'
+  | 'liked_tracks'
+  | 'queue';
 
 type StartPlayTrack = {
   trackId: string;
@@ -47,5 +54,14 @@ export const playerServices = {
     http.patch<SuccessResponseApi<{ updatedPlayback: CurrentPlayback }>>(
       'me/player/repeat',
       { repeatMode }
-    )
+    ),
+  getPlaybackContext: (id: string | null, type: ContextType) =>
+    http.get<
+      SuccessResponseApi<{
+        playbackContext: Omit<
+          PlaybackContext,
+          'setPlaybackContext' | 'setPlaybackTracks'
+        >;
+      }>
+    >(`/me/player/context/${id}/${type}`)
 };

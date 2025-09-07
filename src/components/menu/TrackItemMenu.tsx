@@ -1,29 +1,43 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   DropdownMenu,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuContent
+  DropdownMenuContent,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent
 } from '@/components/ui/dropdown-menu';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip';
-import useAddTrackToLiked from '@/hooks/useAddTrackToLiked';
-import useRemoveTrackFromPlaylist from '@/hooks/useRemoveTrackFromPlaylist';
-import { CirclePlus, Ellipsis, LibraryBig, ListEnd, Trash } from 'lucide-react';
-import { useParams } from 'react-router-dom';
+import useMenu from '@/hooks/useMenu';
+import { MenuPreset, MenyItemContext } from '@/types/utils.type';
+import { Ellipsis } from 'lucide-react';
+import { ElementType } from 'react';
+
+type TrackItemMenuProps = {
+  trackId?: string;
+  tooltipText?: string;
+  preset?: MenuPreset;
+  hiddenItems?: string[]; // Ẩn các item cụ thể
+  context?: MenyItemContext; // Context bổ sung cho các action
+  onCustomAction?: (actionId: string, trackId: string, context?: any) => void;
+};
 
 export default function TrackItemMenu({
   tooltipText,
-  trackId
-}: {
-  tooltipText?: string;
-  trackId?: string;
-}) {
-  const { playlistId } = useParams();
-  const { handleRemoveFromPlaylist } = useRemoveTrackFromPlaylist();
-  const { handleAddTrackToLiked, isPending } = useAddTrackToLiked();
+  trackId,
+  preset = 'full',
+  context
+}: TrackItemMenuProps) {
+  const { filteredDefaultItems, handleItemClick } = useMenu({
+    trackId,
+    context,
+    preset
+  });
 
   return (
     <DropdownMenu>
@@ -43,26 +57,41 @@ export default function TrackItemMenu({
         </TooltipContent>
       </Tooltip>
       <DropdownMenuContent align="center">
-        <DropdownMenuItem>
-          <LibraryBig />
-          Add to Your Library
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => handleAddTrackToLiked(trackId as string)}
-          disabled={isPending}
-        >
-          <CirclePlus />
-          Save to your Liked Songs
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <ListEnd />
-          Add to queue
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => handleRemoveFromPlaylist({ trackId, playlistId })}
-        >
-          <Trash /> Remove from this playlist
-        </DropdownMenuItem>
+        {filteredDefaultItems.map((item) => {
+          const Icon = item.icon as ElementType;
+
+          if (item.children?.length) {
+            return (
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <Icon className="opacity-40 mx-1" size={18} />
+                  {item.label}
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent>
+                  {item.children.map((it, index) => (
+                    <DropdownMenuItem
+                      key={index}
+                      onClick={() => handleItemClick(it)}
+                      disabled={it.disabled}
+                    >
+                      {it.label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+            );
+          }
+
+          return (
+            <DropdownMenuItem
+              onClick={() => handleItemClick(item)}
+              disabled={item.disabled}
+            >
+              <Icon />
+              {item.label}
+            </DropdownMenuItem>
+          );
+        })}
       </DropdownMenuContent>
     </DropdownMenu>
   );

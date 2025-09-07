@@ -1,14 +1,15 @@
+import { usePlaybackContext } from '@/store/playback.store';
 import { useTrack } from '@/store/track.store';
-import { Track } from '@/types/track.type';
 
-function useControlsPlayer(currentTracks: Track[] = []) {
+const PREV_THRESHOLD = 3;
+
+function useControlsPlayer() {
   const { currentTrack, isShuffle, handlePlayTrack } = useTrack();
-
-  const getCurrentPlaylistLength = () => currentTracks?.length ?? 0;
+  const { tracks, totalTracks } = usePlaybackContext();
 
   const getCurrentTrackIndex = () => {
-    if (!currentTracks) return -1;
-    const currIndex = currentTracks?.findIndex(
+    if (!tracks) return -1;
+    const currIndex = tracks?.findIndex(
       (track) => track._id === currentTrack?._id
     );
     return currIndex;
@@ -16,21 +17,20 @@ function useControlsPlayer(currentTracks: Track[] = []) {
 
   const getRandomIndex = () => {
     const currIndex = getCurrentTrackIndex();
-    const playlistTrackLength = getCurrentPlaylistLength();
 
-    if (playlistTrackLength <= 1 || currIndex === -1) return 0;
+    if (totalTracks <= 1 || currIndex === -1) return 0;
 
     let randomIndex = null;
 
     do {
-      randomIndex = Math.floor(Math.random() * playlistTrackLength);
+      randomIndex = Math.floor(Math.random() * totalTracks);
     } while (currIndex === randomIndex);
     return randomIndex;
   };
 
   const handleShuffle = () => {
     const randomIndex = getRandomIndex();
-    const nextTrackPlay = currentTracks![randomIndex];
+    const nextTrackPlay = tracks![randomIndex];
     handlePlayTrack(nextTrackPlay);
   };
 
@@ -40,14 +40,13 @@ function useControlsPlayer(currentTracks: Track[] = []) {
       return;
     }
 
-    const playlistTrackLength = getCurrentPlaylistLength();
     let currIndex = getCurrentTrackIndex();
 
     if (currIndex === -1) return;
 
     currIndex += direction === 'next' ? 1 : -1;
-    const newIndex = (currIndex! + playlistTrackLength) % playlistTrackLength;
-    const nextTrackPlay = currentTracks![newIndex];
+    const newIndex = (currIndex! + totalTracks) % totalTracks;
+    const nextTrackPlay = tracks![newIndex];
     handlePlayTrack(nextTrackPlay);
   };
 

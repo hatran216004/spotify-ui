@@ -36,7 +36,7 @@ export default function CollectionTracksTable({
             key={entry.track._id}
             track={entry.track}
             order={index}
-            type="liked"
+            type="liked_tracks"
             addedAt={entry.addedAt}
           />
         ))}

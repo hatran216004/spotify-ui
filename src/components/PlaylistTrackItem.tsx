@@ -112,7 +112,12 @@ export default function TrackItem({
           <span className="text-[#b3b3b3] text-sm">
             {trackTimeFormat(track.duration || 0)}
           </span>
-          <TrackItemMenu tooltipText={track.title} trackId={track._id} />
+          <TrackItemMenu
+            tooltipText={track.title}
+            trackId={track._id}
+            context={{ playlistId }}
+            preset={type === 'liked_tracks' ? 'liked' : 'playlist'}
+          />
         </div>
       </div>
     </li>

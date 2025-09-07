@@ -1,5 +1,5 @@
 import { ContextType } from '@/services/player';
-import { useCurrentContext } from '@/store/playback.store';
+import { usePlaybackContext } from '@/store/playback.store';
 import { useTrack } from '@/store/track.store';
 import { Track } from '@/types/track.type';
 
@@ -19,7 +19,11 @@ function usePlayContext({
     togglePlayBack,
     handlePlayTrack
   } = useTrack();
-  const { contextId, contextType, setCurrentContext } = useCurrentContext();
+  const {
+    type: contextType,
+    id: contextId,
+    setPlaybackContext
+  } = usePlaybackContext();
   const isSameContext = contextId === id;
   const hasTrackPlaying = isSameContext && contextType === type && isPlaying;
   let isSameTrack = false;
@@ -41,7 +45,7 @@ function usePlayContext({
       audioElement.currentTime = 0;
       const firstTrack = (data as Track[])?.[0];
       handlePlayTrack(firstTrack!);
-      setCurrentContext({ contextId: id, contextType: type });
+      setPlaybackContext(type, id);
     }
   };
 
@@ -52,7 +56,7 @@ function usePlayContext({
       audioElement!.currentTime = 0;
       handlePlayTrack(data as Track);
     }
-    setCurrentContext({ contextId: id, contextType: type });
+    setPlaybackContext(type, id);
   };
 
   return { isSameTrack, hasTrackPlaying, handleStartPlay, handlePlayTrackItem };

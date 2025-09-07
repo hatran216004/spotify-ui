@@ -20,6 +20,10 @@ export const playlistServices = {
     http.patch<SuccessResponseApi<{ track: Track }>>('me/liked-tracks', {
       trackId
     }),
+  moveTrackFromLiked: (trackId: string) =>
+    http.delete<SuccessResponseApi<{ track: Track }>>(
+      `me/liked-tracks/${trackId}`
+    ),
   getAllPlaylists: () =>
     http.get<SuccessResponseApi<PlaylistList>>('/playlists'),
   getMyPlaylists: () =>

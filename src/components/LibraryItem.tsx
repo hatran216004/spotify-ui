@@ -5,7 +5,7 @@ import { CircleMinus, Lock, Pencil, Play, Volume2 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { Playlist as PlaylistType } from '@/types/playlist.type';
 import { useTrack } from '@/store/track.store';
-import { useCurrentContext } from '@/store/playback.store';
+import { usePlaybackContext } from '@/store/playback.store';
 import PlaylistPlaceholder from './PlaylistPlaceholder';
 import {
   ContextMenu,
@@ -26,7 +26,7 @@ export default function LibraryItem({ playlist }: { playlist: ItemType }) {
 
   const { playlistId } = useParams();
   const { isPlaying } = useTrack();
-  const { contextId } = useCurrentContext();
+  const { id } = usePlaybackContext();
 
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
@@ -54,7 +54,7 @@ export default function LibraryItem({ playlist }: { playlist: ItemType }) {
     });
   };
 
-  const hasItemPlaying = isPlaying && contextId === playlist._id;
+  const hasItemPlaying = isPlaying && id === playlist._id;
   const isActive = playlistId === playlist._id;
 
   return (

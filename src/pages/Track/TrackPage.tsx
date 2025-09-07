@@ -15,17 +15,22 @@ import { useTrack } from '@/store/track.store';
 import TogglePlayBackAudio from '@/components/TogglePlayBackAudio';
 
 import InfoFooter from '@/layout/InfoFooter';
-import MenuOtps from '@/components/menu/MenuOtps';
 import { useDominantColor } from '@/hooks/useDominantColor';
 import usePlayContext from '@/hooks/usePlayContext';
+import TrackItemMenu from '@/components/menu/TrackItemMenu';
+import useMyPlaylists from '@/hooks/useMyPlaylists';
+import useAddTrackToPlaylist from '@/hooks/useAddTrackToPlaylist';
 
 export default function TrackPage() {
   const { trackId } = useParams();
+  const { myPlaylists } = useMyPlaylists();
 
   const { data, isLoading } = useQuery({
     queryKey: ['track', trackId],
     queryFn: () => trackServices.getTrack(trackId!)
   });
+
+  const { handleAddToPlaylist } = useAddTrackToPlaylist();
 
   const imgRef = useRef<HTMLImageElement | null>(null);
   const { color } = useDominantColor(imgRef, data);
@@ -117,7 +122,20 @@ export default function TrackPage() {
                 </TooltipContent>
               </Tooltip>
 
-              <MenuOtps tooltipText={track.title} />
+              <TrackItemMenu
+                preset="search"
+                context={{
+                  children:
+                    myPlaylists?.map((p) => ({
+                      id: 'add-to-playlist',
+                      label: p.name,
+                      onClick: () =>
+                        handleAddToPlaylist({ trackId, playlistId: p._id })
+                    })) ?? []
+                }}
+                tooltipText={track.title}
+                trackId={trackId}
+              />
             </div>
           </div>
         </div>

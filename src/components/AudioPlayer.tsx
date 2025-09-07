@@ -1,5 +1,4 @@
 import useControlsPlayer from '@/hooks/useControlsPlayer';
-import { useCurrentTracks } from '@/store/playback.store';
 import { useTrack } from '@/store/track.store';
 import { useEffect, useRef } from 'react';
 
@@ -13,8 +12,7 @@ export default function AudioPlayer() {
     setAudioElement
   } = useTrack();
 
-  const { currentTracks } = useCurrentTracks();
-  const { handleShuffle, handleSkipTrack } = useControlsPlayer(currentTracks);
+  const { handleShuffle, handleSkipTrack } = useControlsPlayer();
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioUrl = currentTrack?.audioUrl;
