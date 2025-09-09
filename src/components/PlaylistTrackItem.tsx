@@ -3,11 +3,11 @@ import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { Pause, Play } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import PlayingBarIcon from './PlayingBarIcon';
-import TrackItemMenu from './menu/TrackItemMenu';
 import { ParamsStartDragType } from './PlaylistTracksContent';
 import { Track } from '@/types/track.type';
 import usePlayContext from '@/hooks/usePlayContext';
 import { ContextType } from '@/services/player';
+import PlaylistTrackMenu from './menu/PlaylistTrackMenu';
 
 type TrackItemType = {
   addedAt?: string;
@@ -112,11 +112,12 @@ export default function TrackItem({
           <span className="text-[#b3b3b3] text-sm">
             {trackTimeFormat(track.duration || 0)}
           </span>
-          <TrackItemMenu
+          <PlaylistTrackMenu
             tooltipText={track.title}
             trackId={track._id}
-            context={{ playlistId }}
-            preset={type === 'liked_tracks' ? 'liked' : 'playlist'}
+            hiddenItems={[
+              type === 'liked_tracks' ? 'remove-playlist' : 'remove-liked'
+            ]}
           />
         </div>
       </div>

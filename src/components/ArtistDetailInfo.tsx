@@ -69,7 +69,7 @@ export default function ArtistDetailInfo() {
             />
           </div>
           <div className="space-y-2 px-3 pt-2">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 justify-between">
               <Link
                 to={`/artists/${mainArtist?._id}`}
                 className="hover:underline text-white font-semibold text-lg"

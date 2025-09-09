@@ -12,6 +12,14 @@ export default function MainLayout() {
   const { isExpanded, isSidebarRightExpanded } = useSidebar();
   const { isSignedIn } = useAuth();
 
+  const colClass = isExpanded
+    ? isSidebarRightExpanded
+      ? 'col-span-7'
+      : 'col-span-9'
+    : isSidebarRightExpanded
+    ? 'col-span-9'
+    : 'col-span-11';
+
   return (
     <main>
       <Topbar />
@@ -21,19 +29,14 @@ export default function MainLayout() {
           <div
             className={clsx(
               'h-[calc(100vh-var(--now-playing-bar-height)-var(--top-bar-height))] rounded-[10px] bg-[#121212] transition-all duration-250',
-              {
-                'col-span-6': isExpanded && isSidebarRightExpanded,
-                'col-span-9': isExpanded && !isSidebarRightExpanded,
-                'col-span-8': !isExpanded && isSidebarRightExpanded,
-                'col-span-11': !isExpanded && !isSidebarRightExpanded
-              }
+              colClass
             )}
           >
             <Outlet />
           </div>
           <div
             className={clsx(
-              'col-span-3 bg-[#121212] rounded-[10px] transition-all duration-250',
+              'col-span-2 bg-[#121212] rounded-[10px] transition-all duration-250',
               isSidebarRightExpanded ? 'block' : 'hidden'
             )}
           >

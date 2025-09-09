@@ -50,10 +50,10 @@ export default function RightSidebar() {
         />
       </div>
       <div className="flex items-center justify-between gap-2 flex-wrap">
-        <div className="flex-1 text-nowrap">
+        <div className="flex-1 truncate">
           <Link
             to={`/tracks/${currentTrack?._id}`}
-            className="font-semibold text-3xl hover:underline"
+            className="font-semibold text-2xl hover:underline"
           >
             {currentTrack?.title}
           </Link>

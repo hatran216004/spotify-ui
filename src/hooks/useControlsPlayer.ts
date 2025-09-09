@@ -1,10 +1,10 @@
 import { usePlaybackContext } from '@/store/playback.store';
 import { useTrack } from '@/store/track.store';
 
-// const PREV_THRESHOLD = 3;
+const PREV_THRESHOLD = 3;
 
 function useControlsPlayer() {
-  const { currentTrack, isShuffle, handlePlayTrack } = useTrack();
+  const { currentTrack, isShuffle, audioElement, handlePlayTrack } = useTrack();
   const { tracks, totalTracks } = usePlaybackContext();
 
   const getCurrentTrackIndex = () => {
@@ -35,10 +35,12 @@ function useControlsPlayer() {
   };
 
   const handleSkipTrack = (direction: 'next' | 'prev') => {
-    if (isShuffle) {
-      handleShuffle();
+    if (direction === 'prev' && audioElement!.currentTime > PREV_THRESHOLD) {
+      audioElement!.currentTime = 0;
       return;
     }
+
+    if (isShuffle) return handleShuffle();
 
     let currIndex = getCurrentTrackIndex();
 

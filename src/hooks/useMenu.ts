@@ -3,7 +3,7 @@ import { getDefaultMenuItems, presetConfigurations } from '@/config/menu';
 import useRemoveTrackFromPlaylist from './useRemoveTrackFromPlaylist';
 import useAddTrackToLiked from './useAddTrackToLiked';
 import useRemoveTrackFromLiked from './useRemoveTrackFromLiked';
-import { MenuItem, MenuPreset } from '@/types/utils.type';
+import { MenuItem, MenuItemIds, MenuPreset } from '@/types/utils.type';
 
 type MenuOptions = {
   trackId?: string;
@@ -29,9 +29,12 @@ function useMenu({ context, trackId, preset }: MenuOptions) {
 
   const defaultItems = getDefaultMenuItems(trackId as string, context, hooks);
   const presetItemIds = presetConfigurations[preset];
-  const filteredDefaultItems = defaultItems.filter((item) =>
-    presetItemIds.includes(item.id)
-  );
+  const filteredDefaultItems = Object.keys(defaultItems)
+    .map((key) => {
+      if (presetItemIds.includes(key)) return defaultItems[key as MenuItemIds];
+      return null;
+    })
+    .filter(Boolean);
 
   const handleItemClick = (item: MenuItem) => {
     if (item.disabled) return;

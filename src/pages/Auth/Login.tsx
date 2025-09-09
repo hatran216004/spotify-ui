@@ -88,7 +88,7 @@ export default function Login() {
             placeholder="Enter your password"
             name="password"
             type="password"
-            defaultValue="minhhatran1234"
+            defaultValue="hatmuser1234@"
             label="Password"
             register={register}
             errorMessage={errors.password?.message}

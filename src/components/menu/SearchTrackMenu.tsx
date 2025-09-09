@@ -18,7 +18,11 @@ import useMyPlaylists from '@/hooks/useMyPlaylists';
 import { Ellipsis, LibraryBig, ListEnd, Plus } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 
-export default function MenuOtps({ tooltipText }: { tooltipText?: string }) {
+export default function SearchTrackMenu({
+  tooltipText
+}: {
+  tooltipText?: string;
+}) {
   const { myPlaylists } = useMyPlaylists();
   const { trackId } = useParams();
   const { handleAddToPlaylist } = useAddTrackToPlaylist();

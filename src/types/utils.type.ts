@@ -35,7 +35,6 @@ export type MenuItemIds =
   | 'remove-from-playlist';
 
 export type MenuItem = {
-  id: MenuItemIds;
   label: string;
   icon?: React.ForwardRefExoticComponent<
     Omit<LucideProps, 'ref'> & React.RefAttributes<SVGSVGElement>
@@ -58,9 +57,24 @@ export type MenuPreset =
   | 'queue'
   | 'artist';
 
-export type MenyItemContext = {
-  playlistId?: string;
-  children?: MenuItem[];
+export type MenuItemContextType =
+  | 'playlist'
+  | 'liked_tracks'
+  | 'album'
+  | 'search'
+  | 'artist'
+  | 'queue';
+
+export type MenuItemContextChildrens = {
+  targetItem: MenuItemIds;
+  data: any;
+}[];
+
+export type MenuItemContext = {
+  playlistId?: string | null;
+  albumId?: string | null;
+  queueId?: string | null;
+  childrens?: MenuItemContextChildrens | [];
 };
 
 /*
