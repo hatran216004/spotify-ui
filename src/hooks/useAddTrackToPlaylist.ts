@@ -14,7 +14,7 @@ function useAddTrackToPlaylist() {
     trackId,
     playlistId
   }: {
-    trackId?: string;
+    trackId?: string | null;
     playlistId?: string;
   }) => {
     if (!playlistId || !trackId) return;

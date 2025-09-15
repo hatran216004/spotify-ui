@@ -8,7 +8,7 @@ function useControlsPlayer() {
   const { tracks, totalTracks } = usePlaybackContext();
 
   const getCurrentTrackIndex = () => {
-    if (!tracks) return -1;
+    if (!tracks || tracks.length === 1) return -1;
     const currIndex = tracks?.findIndex(
       (track) => track._id === currentTrack?._id
     );
@@ -43,7 +43,6 @@ function useControlsPlayer() {
     if (isShuffle) return handleShuffle();
 
     let currIndex = getCurrentTrackIndex();
-
     if (currIndex === -1) return;
 
     currIndex += direction === 'next' ? 1 : -1;

@@ -7,11 +7,12 @@ import { ParamsStartDragType } from './PlaylistTracksContent';
 import { Track } from '@/types/track.type';
 import usePlayContext from '@/hooks/usePlayContext';
 import { ContextType } from '@/services/player';
-import PlaylistTrackMenu from './menu/PlaylistTrackMenu';
+import PlaylistMenu from './menu/PlaylistMenu';
+import { LikedTrack } from '@/types/libraryItem.type';
 
 type TrackItemType = {
   addedAt?: string;
-  track: Track;
+  track: Track | LikedTrack;
   type?: ContextType;
   order: number;
   ref?: (ele: HTMLLIElement | null) => void;
@@ -112,7 +113,7 @@ export default function TrackItem({
           <span className="text-[#b3b3b3] text-sm">
             {trackTimeFormat(track.duration || 0)}
           </span>
-          <PlaylistTrackMenu
+          <PlaylistMenu
             tooltipText={track.title}
             trackId={track._id}
             hiddenItems={[

@@ -1,22 +1,24 @@
 import InfoFooter from '@/layout/InfoFooter';
 import { useUserStore } from '@/store/ui.store';
 import { useQuery } from '@tanstack/react-query';
-import { playlistServices } from '@/services/playlist';
 import usePlayContext from '@/hooks/usePlayContext';
 import CollectionHeader from './CollectionHeader';
 import CollectionActions from './CollectionActions';
 import CollectionTracksTable from './CollectionTracksTable';
+import { trackServices } from '@/services/track';
 
 export default function CollectionPage() {
   const { user } = useUserStore();
 
   const { data, isLoading } = useQuery({
     queryKey: ['liked-tracks', user?._id],
-    queryFn: playlistServices.getMeLikedTracks
+    queryFn: trackServices.getMeLikedTracks
   });
 
-  const likedTracks = data?.data?.data?.tracks;
+  const likedTracks = data?.data?.data?.items;
   const likedTracksLength = likedTracks?.length ?? 0;
+
+  console.log(likedTracks);
 
   const { handleStartPlay, hasTrackPlaying } = usePlayContext({
     id: null,

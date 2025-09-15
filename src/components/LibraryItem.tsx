@@ -1,9 +1,8 @@
-import { useNavigate, useParams } from 'react-router-dom';
 import clsx from 'clsx';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { CircleMinus, Lock, Pencil, Play, Volume2 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
-import { Playlist as PlaylistType } from '@/types/playlist.type';
 import { useTrack } from '@/store/track.store';
 import { usePlaybackContext } from '@/store/playback.store';
 import PlaylistPlaceholder from './PlaylistPlaceholder';
@@ -17,14 +16,20 @@ import { useDialogStore } from '@/store/dialog.store';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { playlistServices } from '@/services/playlist';
 import toast from 'react-hot-toast';
+import { PlaylistMetadata } from '@/types/libraryItem.type';
+import { useUserStore } from '@/store/ui.store';
+import { MdPublic } from 'react-icons/md';
 
-type ItemType = PlaylistType;
-
-export default function LibraryItem({ playlist }: { playlist: ItemType }) {
+export default function LibraryItem({
+  playlistPreview
+}: {
+  playlistPreview: PlaylistMetadata;
+}) {
   const { openDialog, closeDialog, setDisabled } = useDialogStore();
   const navigate = useNavigate();
-
+  const { user } = useUserStore();
   const { playlistId } = useParams();
+
   const { isPlaying } = useTrack();
   const { id } = usePlaybackContext();
 
@@ -33,11 +38,15 @@ export default function LibraryItem({ playlist }: { playlist: ItemType }) {
     mutationFn: playlistServices.deletePlaylist
   });
 
+  const { mutate: update, isPending } = useMutation({
+    mutationFn: playlistServices.visibilityPlaylist
+  });
+
   const handleDeletePlaylist = () => {
-    if (!playlist._id) return;
+    if (!playlistPreview._id) return;
 
     setDisabled(true);
-    mutate(playlist._id, {
+    mutate(playlistPreview._id, {
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: ['my-playlists']
@@ -54,8 +63,38 @@ export default function LibraryItem({ playlist }: { playlist: ItemType }) {
     });
   };
 
-  const hasItemPlaying = isPlaying && id === playlist._id;
-  const isActive = playlistId === playlist._id;
+  const handleVisibility = () => {
+    if (!isOwner || isPending) return;
+
+    const isPublic = playlistPreview.isPublic;
+
+    update(
+      {
+        id: playlistPreview._id,
+        isPublic: !isPublic
+      },
+      {
+        onSuccess: () => {
+          toast.success(
+            `Playlist has been made ${isPublic ? 'private' : 'public'}`
+          );
+        },
+        onSettled: () => {
+          queryClient.invalidateQueries({
+            queryKey: ['my-playlists']
+          });
+          queryClient.invalidateQueries({
+            queryKey: ['playlists-popular']
+          });
+        }
+      }
+    );
+  };
+
+  const hasItemPlaying = isPlaying && id === playlistPreview._id;
+  const isActive = playlistId === playlistPreview._id;
+
+  const isOwner = playlistPreview.user._id === user?._id;
 
   return (
     <>
@@ -63,7 +102,7 @@ export default function LibraryItem({ playlist }: { playlist: ItemType }) {
         <ContextMenuTrigger>
           <div
             onClick={() => {
-              navigate(`/playlists/${playlist._id}`);
+              navigate(`/playlists/${playlistPreview._id}`);
             }}
             className={clsx(
               'group/playlist flex items-center gap-3 p-2 rounded-lg hover:bg-[#2a2a2a] relative',
@@ -77,14 +116,14 @@ export default function LibraryItem({ playlist }: { playlist: ItemType }) {
                 </button>
               </TooltipTrigger>
               <TooltipContent sideOffset={20}>
-                <p>Play {playlist.name}</p>
+                <p>Play {playlistPreview.name}</p>
               </TooltipContent>
             </Tooltip>
 
-            {playlist.coverImage ? (
+            {playlistPreview.coverImage ? (
               <Avatar className="w-[48px] h-[48px] rounded-[4px] group-hover/playlist:opacity-60">
                 <AvatarImage
-                  src={playlist.coverImage}
+                  src={playlistPreview.coverImage}
                   className="object-cover"
                 />
               </Avatar>
@@ -99,10 +138,10 @@ export default function LibraryItem({ playlist }: { playlist: ItemType }) {
                   isActive ? 'text-[#1db954]' : 'text-[#eee]'
                 )}
               >
-                {playlist.name}
+                {playlistPreview.name}
               </h4>
               <span className="text-[#929092] text-sm capitalize">
-                Playlist . {playlist.user.username}
+                Playlist . {playlistPreview.user?.username}
               </span>
             </div>
 
@@ -127,8 +166,8 @@ export default function LibraryItem({ playlist }: { playlist: ItemType }) {
                 cancelLabel: 'Cancel',
                 description: (
                   <>
-                    This will delete <strong>{playlist.name}</strong> from Your
-                    Library.
+                    This will delete <strong>{playlistPreview.name}</strong>{' '}
+                    from Your Library.
                   </>
                 ),
                 onAction: handleDeletePlaylist,
@@ -147,10 +186,10 @@ export default function LibraryItem({ playlist }: { playlist: ItemType }) {
                 title: 'Edit details',
                 actionLabel: 'Save',
                 payload: {
-                  name: playlist.name,
-                  description: playlist.description,
-                  coverImage: playlist.coverImage,
-                  id: playlist._id
+                  name: playlistPreview.name,
+                  description: playlistPreview.description,
+                  coverImage: playlistPreview.coverImage,
+                  id: playlistPreview._id
                 }
               });
             }}
@@ -158,10 +197,27 @@ export default function LibraryItem({ playlist }: { playlist: ItemType }) {
             <Pencil />
             Edit details
           </ContextMenuItem>
-          <ContextMenuItem>
-            <Lock />
-            Make private
-          </ContextMenuItem>
+          {isOwner && (
+            <ContextMenuItem onClick={handleVisibility}>
+              {playlistPreview.isPublic ? (
+                <>
+                  <Lock />
+                  Make private
+                </>
+              ) : (
+                <>
+                  <MdPublic />
+                  Make public
+                </>
+              )}
+            </ContextMenuItem>
+          )}
+          {!isOwner && (
+            <ContextMenuItem onClick={() => {}}>
+              <Lock />
+              Unfollowing
+            </ContextMenuItem>
+          )}
         </ContextMenuContent>
       </ContextMenu>
     </>

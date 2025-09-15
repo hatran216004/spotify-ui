@@ -113,34 +113,35 @@ export default function ArtistDetailInfo() {
                 <span className="text-[#b3b3b3] text-sm">Followers</span>
               </div>
               <ul className="space-y-3">
-                {Object.keys(mainArtist!.socialLinks).map((social) => {
-                  const key = social as SocialKey;
-                  if (!key) return null;
+                {mainArtist &&
+                  Object.keys(mainArtist!.socialLinks).map((social) => {
+                    const key = social as SocialKey;
+                    if (!key) return null;
 
-                  let Icon = null;
-                  if (key === 'facebook') {
-                    Icon = FaFacebook;
-                  } else if (key === 'instagram') {
-                    Icon = FaInstagram;
-                  } else {
-                    Icon = FaYoutube;
-                  }
+                    let Icon = null;
+                    if (key === 'facebook') {
+                      Icon = FaFacebook;
+                    } else if (key === 'instagram') {
+                      Icon = FaInstagram;
+                    } else {
+                      Icon = FaYoutube;
+                    }
 
-                  return (
-                    <li key={key}>
-                      <Link
-                        target="_blank"
-                        to={mainArtist!.socialLinks[key] ?? '#'}
-                        className="flex items-center"
-                      >
-                        <Icon size={24} />
-                        <span className="ml-2 font-semibold text-sm capitalize">
-                          {key}
-                        </span>
-                      </Link>
-                    </li>
-                  );
-                })}
+                    return (
+                      <li key={key}>
+                        <Link
+                          target="_blank"
+                          to={mainArtist!.socialLinks[key] ?? '#'}
+                          className="flex items-center"
+                        >
+                          <Icon size={24} />
+                          <span className="ml-2 font-semibold text-sm capitalize">
+                            {key}
+                          </span>
+                        </Link>
+                      </li>
+                    );
+                  })}
               </ul>
             </div>
             <div className="col-span-8">

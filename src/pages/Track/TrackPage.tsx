@@ -80,7 +80,11 @@ export default function TrackPage() {
                       className="w-6 h-6 rounded-full object-cover"
                     />
                     {track.artists?.map((artist) => (
-                      <Link to="#" className="hover:underline" key={artist._id}>
+                      <Link
+                        to={`/artists/${artist._id}`}
+                        className="hover:underline"
+                        key={artist._id}
+                      >
                         {artist.name}
                       </Link>
                     ))}

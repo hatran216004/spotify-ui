@@ -6,9 +6,10 @@ import {
 import SidebarSearch from '@/components/SidebarSearch';
 import { AlignJustify, PanelRightOpen } from 'lucide-react';
 import { useSidebar } from '@/store/ui.store';
-import TagButton from '@/components/TagButton';
+
 import MyLibrary from '@/components/MyLibrary';
 import CreateNewPlaylistButton from '@/components/CreateNewPlaylistButton';
+import LibraryTabButtons from '@/components/LibraryTabButtons';
 
 export default function ExpandedSidebarContent() {
   const { onExpanded } = useSidebar();
@@ -33,11 +34,7 @@ export default function ExpandedSidebarContent() {
         <CreateNewPlaylistButton />
       </header>
 
-      <div className="mt-5 px-3 flex items-center gap-3">
-        <TagButton>Playlist</TagButton>
-        <TagButton>Artists</TagButton>
-        <TagButton>Albums</TagButton>
-      </div>
+      <LibraryTabButtons />
 
       <div className="mt-5 px-3 flex items-center justify-between">
         <SidebarSearch />

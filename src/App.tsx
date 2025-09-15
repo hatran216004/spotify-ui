@@ -40,18 +40,6 @@ function RejectedRoute() {
 }
 
 export default function App() {
-  // useEffect(() => {
-  //   const handler = (e: KeyboardEvent) => {
-  //     if (e.code === 'Space') {
-  //       togglePlayBack();
-  //     }
-  //   };
-  //   document.addEventListener('keydown', handler);
-  //   return () => {
-  //     document.removeEventListener('keydown', handler);
-  //   };
-  // }, [togglePlayBack]);
-
   return (
     <>
       <AudioPlayer />

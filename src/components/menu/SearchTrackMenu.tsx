@@ -13,9 +13,10 @@ import {
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip';
+import useAddTrackToLiked from '@/hooks/useAddTrackToLiked';
 import useAddTrackToPlaylist from '@/hooks/useAddTrackToPlaylist';
 import useMyPlaylists from '@/hooks/useMyPlaylists';
-import { Ellipsis, LibraryBig, ListEnd, Plus } from 'lucide-react';
+import { CirclePlus, Ellipsis, LibraryBig, ListEnd, Plus } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 
 export default function SearchTrackMenu({
@@ -26,6 +27,7 @@ export default function SearchTrackMenu({
   const { myPlaylists } = useMyPlaylists();
   const { trackId } = useParams();
   const { handleAddToPlaylist } = useAddTrackToPlaylist();
+  const { handleAddTrackToLiked } = useAddTrackToLiked();
 
   return (
     <DropdownMenu>
@@ -49,6 +51,12 @@ export default function SearchTrackMenu({
           <LibraryBig />
           Add to Your Library
         </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => handleAddTrackToLiked(trackId as string)}
+        >
+          <CirclePlus />
+          Add to liked songs
+        </DropdownMenuItem>
         <DropdownMenuItem>
           <ListEnd />
           Add to queue
@@ -65,12 +73,15 @@ export default function SearchTrackMenu({
               {!!myPlaylists &&
                 myPlaylists.map((item) => (
                   <DropdownMenuItem
-                    key={item._id}
+                    key={item.playlist_metadata._id}
                     onClick={() =>
-                      handleAddToPlaylist({ playlistId: item._id, trackId })
+                      handleAddToPlaylist({
+                        playlistId: item.playlist_metadata._id,
+                        trackId
+                      })
                     }
                   >
-                    {item.name}
+                    {item.playlist_metadata.name}
                   </DropdownMenuItem>
                 ))}
             </DropdownMenuSubContent>

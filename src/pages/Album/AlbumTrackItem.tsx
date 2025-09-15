@@ -1,4 +1,4 @@
-import PlaylistTrackMenu from '@/components/menu/PlaylistTrackMenu';
+import PlaylistMenu from '@/components/menu/PlaylistMenu';
 import PlayingBarIcon from '@/components/PlayingBarIcon';
 import {
   Tooltip,
@@ -9,7 +9,6 @@ import usePlayContext from '@/hooks/usePlayContext';
 import { useTrack } from '@/store/track.store';
 import { Track } from '@/types/track.type';
 import { trackTimeFormat } from '@/utils/datetime';
-import { formatPlayCount } from '@/utils/number';
 import { Pause, Play } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 
@@ -74,19 +73,34 @@ export default function AlbumTrackItem({
       </div>
       <div className="col-span-3">
         {/* Placeholder for album name */}
-        <span className="px-4 text-[#b3b3b3] text-sm">
-          {formatPlayCount(track.playCount || 0)}
-        </span>
+        {track.artists?.map((artist, index, arr) => {
+          const hasMore = index !== arr.length - 1;
+          return (
+            <Link
+              to={`/artists/${artist._id}`}
+              key={artist._id}
+              className="px-4 text-[#b3b3b3] text-sm"
+            >
+              {artist.name}
+              {hasMore ? ', ' : ''}
+            </Link>
+          );
+        })}
       </div>
       <div className="col-span-3">
         <div className="flex items-center gap-2 justify-end">
           <span className="text-[#b3b3b3] text-sm">
             {trackTimeFormat(track.duration || 0)}
           </span>
-          <PlaylistTrackMenu
+          <PlaylistMenu
             tooltipText={track.title}
             trackId={track._id}
-            hiddenItems={['remove-playlist', 'remove-liked']}
+            hiddenItems={[
+              'remove-playlist',
+              'remove-liked',
+              'follow-playlist',
+              'unfollow-playlist'
+            ]}
           />
         </div>
       </div>

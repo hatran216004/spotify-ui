@@ -1,17 +1,14 @@
+import PlaylistMenu from '@/components/menu/PlaylistMenu';
 import TogglePlayBackAudio from '@/components/TogglePlayBackAudio';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger
-} from '@/components/ui/tooltip';
-import { Ellipsis } from 'lucide-react';
 
 export default function AlbumActions({
   albumName,
+  albumId,
   hasTrackPlaying,
   handleStartPlay
 }: {
   albumName: string;
+  albumId: string;
   hasTrackPlaying: boolean;
   handleStartPlay: () => void;
 }) {
@@ -27,19 +24,20 @@ export default function AlbumActions({
           iconClassname="size-6"
           className="hover:opacity-100 hover:scale-[1.02]"
         />
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button className="group p-1 cursor-pointer">
-              <Ellipsis
-                size={32}
-                className="text-[#929092] group-hover:text-white group-hover:scale-[1.05]"
-              />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>More options for {albumName}</p>
-          </TooltipContent>
-        </Tooltip>
+        <PlaylistMenu
+          albumId={albumId}
+          tooltipText={albumName}
+          trackId={null}
+          hiddenItems={[
+            'remove-playlist',
+            'remove-liked',
+            'follow-playlist',
+            'unfollow-playlist',
+            'add-playlist',
+            'add-queue',
+            'add-liked'
+          ]}
+        />
       </div>
     </div>
   );

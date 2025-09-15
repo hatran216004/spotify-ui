@@ -1,11 +1,11 @@
 import PlaylistTrackItem from '@/components/PlaylistTrackItem';
-import { LikedTrack } from '@/services/playlist';
+import { LibraryItemTrack } from '@/types/libraryItem.type';
 import { Clock3 } from 'lucide-react';
 
 export default function CollectionTracksTable({
   likedTracks
 }: {
-  likedTracks: LikedTrack[];
+  likedTracks: LibraryItemTrack[];
 }) {
   return (
     <div className="p-4">

@@ -38,7 +38,7 @@ export default function TrackInfo() {
               </h4>
             </Link>
             <div className="flex truncate">
-              {currentTrack.artists!.map((artist, _, array) => {
+              {currentTrack.artists?.map((artist, _, array) => {
                 const isLastArtist = artist._id === array[array.length - 1]._id;
                 return (
                   <Link to="#" key={artist._id}>

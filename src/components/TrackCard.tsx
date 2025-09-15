@@ -55,16 +55,14 @@ export default function TrackCard({ track, className = '' }: TrackCardType) {
           {track?.title}
         </h1>
         <div className="truncate">
-          {track?.artists &&
-            track?.artists.map((artist, index) => (
-              <span
-                className="text-[#b3b3b3] text-sm capitalize"
-                key={artist._id}
-              >
+          {track?.artists?.map((artist, index) => {
+            return (
+              <span key={index} className="text-[#b3b3b3] text-sm capitalize">
                 {artist.name}
                 {track?.artists![index + 1]?.name ? ', ' : ''}
               </span>
-            ))}
+            );
+          })}
         </div>
       </div>
     </div>

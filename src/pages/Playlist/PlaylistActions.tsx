@@ -4,16 +4,13 @@ import {
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger
-} from '@/components/ui/tooltip';
-import { Check, Ellipsis } from 'lucide-react';
+
+import { Check } from 'lucide-react';
 import { TfiMenuAlt } from 'react-icons/tfi';
 import { HiMenu } from 'react-icons/hi';
 import MenuItem from '@/components/MenuItem';
 import useViewMode from '@/hooks/useViewMode';
+import PlaylistMenu from '@/components/menu/PlaylistMenu';
 
 export default function PlaylistActions({
   playlistName,
@@ -38,19 +35,16 @@ export default function PlaylistActions({
           iconClassname="size-6"
           className="hover:opacity-100 hover:scale-[1.02]"
         />
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button className="group p-1 cursor-pointer">
-              <Ellipsis
-                size={32}
-                className="text-[#929092] group-hover:text-white group-hover:scale-[1.05]"
-              />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>More options for {playlistName}</p>
-          </TooltipContent>
-        </Tooltip>
+        <PlaylistMenu
+          tooltipText={playlistName}
+          trackId={null}
+          hiddenItems={[
+            'add-liked',
+            'add-playlist',
+            'remove-liked',
+            'remove-playlist'
+          ]}
+        />
         <Popover>
           <PopoverTrigger asChild>
             <button className="font-semibold flex items-center gap-2 text-sm text-[#929092] hover:text-white cursor-pointer ml-auto">

@@ -3,6 +3,7 @@ import { Clock3 } from 'lucide-react';
 import AlbumTrackItem from './AlbumTrackItem';
 
 export default function AlbumTable({ tracksList }: { tracksList: Track[] }) {
+  console.log(tracksList);
   return (
     <>
       <div className="group p-2 grid grid-cols-12 items-center border-b border-[#444] text-[#b3b3b3]">

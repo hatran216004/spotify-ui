@@ -24,7 +24,7 @@ export default function PlaybackControls() {
   const { data, isLoading } = useQuery({
     queryKey: ['playback-context', type, id],
     queryFn: () => playerServices.getPlaybackContext(id, type as ContextType),
-    enabled: !!type && isSignedIn
+    enabled: !!type && !!isSignedIn
   });
 
   useEffect(() => {

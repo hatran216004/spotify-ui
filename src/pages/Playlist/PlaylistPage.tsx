@@ -27,13 +27,13 @@ export default function PlaylistPage() {
       {playlist && (
         <>
           <PlaylistHeader playlist={playlist} />
+          <PlaylistActions
+            playlistName={playlist.name}
+            hasTrackPlaying={hasTrackPlaying}
+            handleStartPlay={handleStartPlay}
+          />
           {playlistTrackLength > 0 && (
             <>
-              <PlaylistActions
-                playlistName={playlist.name}
-                hasTrackPlaying={hasTrackPlaying}
-                handleStartPlay={handleStartPlay}
-              />
               <PlaylistTracks>
                 <PlaylistTracksHeading />
                 <PlaylistTracksContent

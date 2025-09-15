@@ -13,7 +13,7 @@ function useAddTrackToLiked() {
   const queryClient = useQueryClient();
   const userId = useUserStore().user?._id;
 
-  const handleAddTrackToLiked = (trackId: string) => {
+  const handleAddTrackToLiked = (trackId: string | null) => {
     if (!trackId) return;
 
     mutate(trackId, {

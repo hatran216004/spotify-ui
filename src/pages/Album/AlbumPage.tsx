@@ -6,6 +6,7 @@ import AlbumHeader from './AlbumHeader';
 import AlbumActions from './AlbumActions';
 import AlbumTable from './AlbumTable';
 import { albumServices } from '@/services/album';
+import DotIndicator from '@/components/DotIndicator';
 
 export default function ArtistPage() {
   const { albumId } = useParams();
@@ -26,7 +27,12 @@ export default function ArtistPage() {
     data: tracksList
   });
 
-  if (isLoading) return null;
+  if (isLoading)
+    return (
+      <div className="h-full flex items-center justify-center">
+        <DotIndicator />
+      </div>
+    );
 
   return (
     <div className="h-full overflow-auto rounded-[10px]">
@@ -40,6 +46,7 @@ export default function ArtistPage() {
                 handleStartPlay={handleStartPlay}
                 hasTrackPlaying={hasTrackPlaying}
                 albumName={album.title}
+                albumId={album._id}
               />
 
               <AlbumTable tracksList={tracksList} />

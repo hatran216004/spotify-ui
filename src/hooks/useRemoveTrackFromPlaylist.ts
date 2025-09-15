@@ -12,8 +12,8 @@ function useRemoveTrackFromPlaylist() {
     trackId,
     playlistId
   }: {
-    trackId?: string;
-    playlistId?: string;
+    trackId?: string | null;
+    playlistId?: string | null;
   }) => {
     if (!playlistId || !trackId) return;
 

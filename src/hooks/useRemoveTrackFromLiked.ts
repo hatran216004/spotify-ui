@@ -13,7 +13,7 @@ function useRemoveTrackFromLiked() {
   const queryClient = useQueryClient();
   const userId = useUserStore().user?._id;
 
-  const handleRemoveTrackFromLiked = (trackId: string) => {
+  const handleRemoveTrackFromLiked = (trackId: string | null) => {
     if (!trackId) return;
 
     mutate(trackId, {

@@ -1,4 +1,5 @@
 import TagButton from '@/components/TagButton';
+import { useNavigate } from 'react-router-dom';
 
 export default function HomeHeader({
   scrolling,
@@ -7,6 +8,8 @@ export default function HomeHeader({
   scrolling?: boolean;
   bgColor?: string;
 }) {
+  const navigate = useNavigate();
+
   return (
     <header
       style={{ background: scrolling ? bgColor : 'transparent' }}
@@ -16,10 +19,10 @@ export default function HomeHeader({
         <TagButton className="bg-white text-black hover:opacity-90 hover:bg-white">
           All
         </TagButton>
-        <TagButton className="bg-[#ffffff1a] text-white shadow-2xl hover:opacity-90 hover:bg-[#ffffff1a]">
-          Album
-        </TagButton>
-        <TagButton className="bg-[#ffffff1a] text-white shadow-2xl hover:opacity-90 hover:bg-[#ffffff1a]">
+        <TagButton
+          onClick={() => navigate('/collection/tracks')}
+          className="bg-[#ffffff1a] text-white shadow-2xl hover:opacity-90 hover:bg-[#ffffff1a]"
+        >
           My favorite songs
         </TagButton>
       </div>

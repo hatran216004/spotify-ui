@@ -1,9 +1,11 @@
 import clsx from 'clsx';
 
 export default function Loading({
-  size = 'md'
+  size = 'md',
+  className = ''
 }: {
   size?: 'md' | 'sm' | 'lg';
+  className?: string;
 }) {
   const customSize = {
     md: 'size-8',
@@ -17,7 +19,8 @@ export default function Loading({
         aria-hidden="true"
         className={clsx(
           'text-gray-200 animate-spin fill-white',
-          customSize[size]
+          customSize[size],
+          className
         )}
         viewBox="0 0 100 101"
         fill="none"

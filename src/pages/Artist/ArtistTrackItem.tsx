@@ -1,4 +1,4 @@
-import PlaylistTrackMenu from '@/components/menu/PlaylistTrackMenu';
+import PlaylistMenu from '@/components/menu/PlaylistMenu';
 import PlayingBarIcon from '@/components/PlayingBarIcon';
 import {
   Tooltip,
@@ -83,7 +83,7 @@ export default function ArtistTrackItem({
           <span className="text-[#b3b3b3] text-sm">
             {trackTimeFormat(track.duration || 0)}
           </span>
-          <PlaylistTrackMenu
+          <PlaylistMenu
             tooltipText={track.title}
             trackId={track._id}
             hiddenItems={['remove-playlist', 'remove-liked']}

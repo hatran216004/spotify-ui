@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { LibraryItemList, LibraryItemPlaylist } from '@/types/libraryItem.type';
 import { Playlist, PlaylistList } from '@/types/playlist.type';
 import { SuccessResponseApi } from '@/types/response.type';
 import { Track } from '@/types/track.type';
@@ -14,8 +16,6 @@ export type LikedTrack = {
 };
 
 export const playlistServices = {
-  getMeLikedTracks: () =>
-    http.get<SuccessResponseApi<{ tracks: LikedTrack[] }>>('me/liked-tracks'),
   addTrackToLiked: (trackId: string) =>
     http.patch<SuccessResponseApi<{ track: Track }>>('me/liked-tracks', {
       trackId
@@ -26,8 +26,15 @@ export const playlistServices = {
     ),
   getAllPlaylists: () =>
     http.get<SuccessResponseApi<PlaylistList>>('/playlists'),
-  getMyPlaylists: () =>
-    http.get<SuccessResponseApi<PlaylistList>>('/me/playlists'),
+  getPopularPlaylists: () =>
+    http.get<SuccessResponseApi<PlaylistList>>('/playlists/popular'),
+  getMyPlaylists: (queryConfig: any) =>
+    http.get<SuccessResponseApi<LibraryItemList<LibraryItemPlaylist>>>(
+      '/me/playlists',
+      {
+        params: queryConfig
+      }
+    ),
   getPlaylist: (id: string) =>
     http.get<SuccessResponseApi<{ playlist: Playlist }>>(`/playlists/${id}`),
   addTrackToPlaylist: ({ trackId, playlistId }: TrackInfo) =>
@@ -46,14 +53,23 @@ export const playlistServices = {
     id: string;
     body: { fromIndex: number; toIndex: number; trackId: string };
   }) => http.patch(`/me/playlists/${id}/reorder`, body),
-  updatePlaylist: ({ id, data }: { id: string; data: FormData }) =>
+  updatePlaylist: ({ id, data }: { id: string; data: any }) =>
     http.patch<SuccessResponseApi<{ playlist: Playlist }>>(
-      `me/playlists/${id}`,
+      `/playlists/${id}`,
       data,
       {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       }
-    )
+    ),
+  visibilityPlaylist: ({ id, isPublic }: { id: string; isPublic: boolean }) =>
+    http.patch<SuccessResponseApi<{ playlist: Playlist }>>(`/playlists/${id}`, {
+      isPublic
+    }),
+  followPlaylist: (id: string) =>
+    http.post<SuccessResponseApi<{ playlist: Playlist }>>(
+      `/playlists/${id}/follow`
+    ),
+  unfollowPlaylist: (id: string) => http.delete(`/playlists/${id}/unfollow`)
 };
