@@ -1,5 +1,5 @@
 import { PlaylistTrack } from '@/types/playlist.type';
-import PlaylistTrackItem from './PlaylistTrackItem';
+import TrackItem from './TrackItem';
 import { useEffect, useRef } from 'react';
 import useReorderTracks from '@/hooks/useReorderTracks';
 import { useMutation } from '@tanstack/react-query';
@@ -119,7 +119,7 @@ export default function PlaylistTracksContent({
             {dropIndicatorIndex === index && (
               <div className="h-0.5 bg-green-500 rounded-full mx-4 transition-all duration-200" />
             )}
-            <PlaylistTrackItem
+            <TrackItem
               addedAt={ele.addedAt}
               track={ele.track}
               order={index}

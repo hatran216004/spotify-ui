@@ -1,4 +1,4 @@
-import PlaylistTrackItem from '@/components/PlaylistTrackItem';
+import TrackItem from '@/components/TrackItem';
 import { LibraryItemTrack } from '@/types/libraryItem.type';
 import { Clock3 } from 'lucide-react';
 
@@ -32,7 +32,7 @@ export default function CollectionTracksTable({
       </div>
       <div className="py-2">
         {likedTracks.map((entry, index) => (
-          <PlaylistTrackItem
+          <TrackItem
             key={entry.track._id}
             track={entry.track}
             order={index}

@@ -8,11 +8,10 @@ import { Track } from '@/types/track.type';
 import usePlayContext from '@/hooks/usePlayContext';
 import { ContextType } from '@/services/player';
 import PlaylistMenu from './menu/PlaylistMenu';
-import { LikedTrack } from '@/types/libraryItem.type';
 
 type TrackItemType = {
   addedAt?: string;
-  track: Track | LikedTrack;
+  track: Track;
   type?: ContextType;
   order: number;
   ref?: (ele: HTMLLIElement | null) => void;
