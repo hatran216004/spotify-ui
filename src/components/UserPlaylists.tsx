@@ -42,7 +42,7 @@ export default function UserPlaylists() {
     <section>
       {show && (
         <>
-          {playlists.length && (
+          {!!playlists.length && (
             <RenderList data={myPlaylists} render={renderPlaylists} />
           )}
 
