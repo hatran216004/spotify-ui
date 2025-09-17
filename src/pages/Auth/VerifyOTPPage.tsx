@@ -58,13 +58,10 @@ export default function VerifyOTPPage() {
       } else {
         console.log(status);
       }
-    } catch (error: unknown) {
+    } catch (error) {
       if (isClerkAPIResponseError(error)) {
-        if (error.message === 'Incorrect code') {
-          toast.error('Invalid OTP. Please enter a valid OTP.');
-        } else {
-          toast.error('The code has expired. Please request a new one.');
-        }
+        const errorMsg = error.errors[0].longMessage;
+        toast.error(errorMsg || 'Something went wrong, please try again later');
       }
     } finally {
       setIsVerifyOTP(false);

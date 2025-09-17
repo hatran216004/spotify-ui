@@ -8,7 +8,7 @@ import { SuccessResponseApi } from '@/types/response.type';
 import { AxiosResponse } from 'axios';
 
 function useMyPlaylists() {
-  const { isLogin } = useUserStore();
+  const isLogin = useUserStore((s) => s.isLogin);
   const { query } = useQueryConfig();
   const queryConfig = omitBy(
     {
